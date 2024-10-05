@@ -3,23 +3,20 @@
 
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <!--jQuery library-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!--Latest compiled and minified JavaScript-->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- <link rel="stylesheet" href="index.css" type="text/css">-->
     <script src="cart.js" async></script>
     <title>Cart</title>
 
     <style>
         .container {
             margin: 0 auto;
-            /* padding: 0 1.5em; */
         }
 
         .cart-row {
             display: flex;
+            align-items: center; /* Aligns items vertically */
         }
 
         .cart-item {
@@ -28,17 +25,12 @@
 
         .cart-price {
             width: 20%;
+            text-align: center; /* Center price */
         }
 
-        .cart-quantity-input {
-            height: 35px;
-            width: 50px;
-            border-radius: 7px;
-            /* border: 1px solid #56ccf2; */
-            color: #333;
-            text-align: center;
-            font-size: large;
-            margin-right: 10px;
+        .cart-quantity {
+            width: 20%;
+            text-align: center; /* Center quantity */
         }
 
         .cart-total {
@@ -78,70 +70,65 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="First Page.html">Canteen Automation System</a>
-
             </div>
             <div class="collapse navbar-collapse" id="abc">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="cart.html"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a>
-                    </li>
-                    <li><a href="settings.html"><span class="glyphicon glyphicon-cog"></span> Settings</a>
-                    </li>
-                    <li><a href="logout.html"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
-                    </li>
+                    <li><a href="cart.html"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+                    <li><a href="settings.html"><span class="glyphicon glyphicon-cog"></span> Settings</a></li>
+                    <li><a href="logout.html"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                 </ul>
             </div>
-
         </div>
     </nav>
 
-    <!-- <div class="container" style="margin-top: 100px;">
-        <div class="cart-items">
-            <div class="col-md-4 col-lg-offset-4 col-md-6 col-md-offset-3">
-                <table class="table table-hover">
-                    <tbody>
-                        <tr>
-
-                            <th class="cart-item-name">Item Name</th>
-                            <th class="cart-item-price">Price</th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                        </tr>
-                        <tr>
-                            <td>Chicken Tikka</td>
-                            <td>Rs 150</td>
-
-                            <td><button type="button" class="btn btn-danger">Remove</button></td>
-                            <td><button class="btn btn-primary btn-lg-active"><a href="Order Confirmation.html"
-                                        style="color: white;">Confirm Order</a></button></td>
-                        </tr>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div> -->
-
-
-
-    <section class="container content-section">
-        <h2 style="margin-top: 50px;text-decoration: underline;" class="section-header">CART</h2>
+    <section class="container content-section" style="margin-top: 100px;">
+        <h2 style="text-decoration: underline;" class="section-header">CART</h2>
         <div class="cart-row">
             <span class="cart-item cart-header cart-column">ITEM</span>
             <span class="cart-price cart-header cart-column">PRICE</span>
             <span class="cart-quantity cart-header cart-column">QUANTITY</span>
-        
         </div>
-        <b>
-            <hr>
-        </b>
-        <div class="cartItems"></div>
+        <b><hr></b>
+        <div class="cartItems">
+            <!-- Sample Cart Item for Testing -->
+            <div class="cart-row">
+                <div class="cart-item cart-column">
+                    <img class="cart-item-image" src="image-url.jpg" width="100" height="100">
+                    <span class="cart-item-title">Garlic Butter Naan</span>
+                </div>
+                <span class="cart-price cart-column">₹20</span>
+                <div class="cart-quantity cart-column">
+                    <input class="cart-quantity-input" type="number" value="2">
+                    <button class="removeBtn btn btn-danger" type="button">Remove</button>
+                </div>
+            </div>
+            <div class="cart-row">
+                <div class="cart-item cart-column">
+                    <img class="cart-item-image" src="image-url.jpg" width="100" height="100">
+                    <span class="cart-item-title">Tangdi Kabab</span>
+                </div>
+                <span class="cart-price cart-column">₹160</span>
+                <div class="cart-quantity cart-column">
+                    <input class="cart-quantity-input" type="number" value="2">
+                    <button class="removeBtn btn btn-danger" type="button">Remove</button>
+                </div>
+            </div>
+        </div>
         <div class="cart-total">
             <strong class="cart-total-title">Total</strong>
-            <span class="cart-total-price">₹0</span>
+            <span class="cart-total-price">&#8377;0</span> <!-- Changed &#8377; to ₹ for clarity -->
         </div>
-       
+        <button class="purchaseBtn btn btn-primary">Purchase</button>
     </section>
+
+    <script>
+        // Call the function to update the cart on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the cart total when the page loads
+            updateCartTotal();
+        });
+    </script>
 </body>
 
 </html>
+

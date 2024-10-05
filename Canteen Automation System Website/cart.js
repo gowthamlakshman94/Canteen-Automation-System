@@ -93,21 +93,28 @@ if (document.readyState == "loading") {
   }
   
   function updateCartTotal() {
-    var cartItemContainer = document.getElementsByClassName("cartItems")[0];
-    var cartRows = cartItemContainer.getElementsByClassName("cart-row");
+    var cartItemContainer = document.getElementsByClassName('cartItems')[0];
+    var cartRows = cartItemContainer.getElementsByClassName('cart-row');
     var total = 0;
     for (var i = 0; i < cartRows.length; i++) {
-      var cartRow = cartRows[i];
-      var priceElement = cartRow.getElementsByClassName("cart-price")[0];
-      var quantityElement = cartRow.getElementsByClassName(
-        "cart-quantity-input"
-      )[0];
-      var price = parseFloat(priceElement.innerText.replace("₹", ""));
-      var quantity = quantityElement.value;
-      total = total + price * quantity;
+        var cartRow = cartRows[i];
+        var priceElement = cartRow.getElementsByClassName('cart-price')[0];
+        var quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0];
+
+        // Extract the price and clean it up by removing non-numeric characters
+        var priceText = priceElement.innerText.replace(/[^\d.-]/g, ''); // Removes ₹ and other non-numeric characters
+        var price = parseFloat(priceText);
+
+        var quantity = parseInt(quantityElement.value);
+
+        if (!isNaN(price) && !isNaN(quantity)) {
+            total += price * quantity;
+        }
     }
-    total = Math.round(total * 100) / 100;
-    document.getElementsByClassName("cart-total-price")[0].innerText =
-      "₹" + total;
-  }
-  
+
+    total = Math.round(total * 100) / 100; // Round to 2 decimal place
+    document.getElementsByClassName('cart-total-price')[0].innerHTML = "&#8377;" + total;
+
+}
+
+

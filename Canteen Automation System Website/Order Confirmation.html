@@ -9,6 +9,16 @@
     <link rel="stylesheet" href="order.css" type="text/css">
     <title>Order Confirmation</title>
     <script src="cart.js" async></script>
+    <script>
+        function generateOrderId() {
+            return Math.floor(10000 + Math.random() * 90000); // Generates a random 5-digit number
+        }
+
+        $(document).ready(function() {
+            const orderId = generateOrderId(); // Generates a random order ID
+            $('#orderId').text(orderId); // Sets the order ID in the placeholder
+        });
+    </script>
 </head>
 
 <body style="background-image: url('SEPM 150.jpg');">
@@ -21,28 +31,24 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="First Page.html">SRM Canteen</a>
-
+                <a class="navbar-brand" href="First Page.html">IIT Patna Canteen</a>
             </div>
             <div class="collapse navbar-collapse" id="abc">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="Dinner.html"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a>
-                    </li>
-                    <li><a href="First Page.html"><span class="glyphicon glyphicon-home"></span> Home</a>
-                    </li>
-                    <li><a href="login.html"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
-                    </li>
+                    <li><a href="Dinner.html"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+                    <li><a href="First Page.html"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                    <li><a href="login.html"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                 </ul>
             </div>
-
         </div>
     </nav>
     <nav>
         <div class="container">
             <div class="jumbotron" style="margin-top: 9%; text-align: center; border-radius: 15px 15px 15px 15px;">
                 <h1>Your Order is Confirmed</h1>
-                <p>Thankyou for choosing Canteen Automation System</p>
+                <p>Thank you for choosing Canteen Automation System</p>
                 <p>You can collect your order from canteen in 15-20 minutes</p>
+                <h3>Your Order ID: <span id="orderId" style="color: blue;"></span></h3> <!-- Placeholder for Order ID -->
             </div>
             <h1 class="" style="text-align: center; color: black; padding-top: 70px;">Back to
                 <a href="First Page.html" style="color: rgb(184, 230, 238);"><u>HOME</u></a> Page
@@ -55,15 +61,15 @@
             style="background-color: black; text-align: center; padding-bottom: 5px; padding-top: 7px;">
             <b>
                 <p style="color:black;">
-                    Copyright <span class="glyphicon glyphicon-copyright-mark" style="color: black;"><b> SRM Canteen.
+                    Copyright <span class="glyphicon glyphicon-copyright-mark" style="color: black;"><b> IIT Patna Canteen.
                             All Rights Reserved | Contact Us: 9999999991
                         </b>
                     </span>
                 </p>
             </b>
-
         </div>
     </footer>
 </body>
 
 </html>
+
