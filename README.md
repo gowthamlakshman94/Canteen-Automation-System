@@ -4,3 +4,10 @@
 Consists of Sign Up, Login, Menu, Add to Cart, Order Success Page.
 
 Designed with HTML, CSS, Bootstrap, Javascript, MySQL, PHP. </p>
+
+To run this website simply run the below commands
+
+```
+cd ~/Canteen-Automation-System/'Canteen Automation System Website'
+nohup python3 -m http.server 80 &
+```
