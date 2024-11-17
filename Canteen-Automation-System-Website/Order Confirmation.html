@@ -9,16 +9,42 @@
     <link rel="stylesheet" href="order.css" type="text/css">
     <title>Order Confirmation</title>
     <script src="cart.js" async></script>
-    <script>
-        function generateOrderId() {
-            return Math.floor(10000 + Math.random() * 90000); // Generates a random 5-digit number
-        }
+<script>
+    function generateOrderId() {
+        return Math.floor(10000 + Math.random() * 90000); // Generates a random 5-digit number
+    }
 
-        $(document).ready(function() {
-            const orderId = generateOrderId(); // Generates a random order ID
-            $('#orderId').text(orderId); // Sets the order ID in the placeholder
+    $(document).ready(function () {
+        const orderId = generateOrderId(); // Generates a random order ID
+        $('#orderId').text(orderId); // Sets the order ID in the placeholder
+
+        // Fetch cart details
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        const items = cartItems.map((item) => ({
+            itemName: item.name,
+            price: item.price,
+            quantity: item.quantity,
+        }));
+
+        // Send order data to the backend
+        $.ajax({
+            url: 'http://localhost:3000/submitOrder', // Replace with your backend endpoint
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                orderId,
+                items,
+            }),
+            success: function (response) {
+                console.log('Order submitted:', response);
+            },
+            error: function (err) {
+                console.error('Error submitting order:', err);
+            },
         });
-    </script>
+    });
+</script>
+
 </head>
 
 <body style="background-image: url('SEPM 150.jpg');">
