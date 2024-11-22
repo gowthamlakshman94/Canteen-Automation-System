@@ -92,6 +92,55 @@ app.post('/api/updateDeliveryStatus', (req, res) => {
   });
 });
 
+// API to fetch daily metrics
+app.get('/api/dailyMetrics', (req, res) => {
+  const query = `
+    SELECT 
+      SUM(price * quantity) AS totalSales, 
+      COUNT(DISTINCT order_id) AS totalOrders,
+      SUM(quantity) AS totalItems
+    FROM orders
+    WHERE DATE(FROM_UNIXTIME(order_id / 1000)) = CURDATE();`;
+
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Error fetching daily metrics:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    const metrics = result[0];
+    res.json({
+      totalSales: metrics.totalSales || 0,
+      totalOrders: metrics.totalOrders || 0,
+      totalItems: metrics.totalItems || 0
+    });
+  });
+});
+
+// API to fetch item-wise metrics
+app.get('/api/itemMetrics', (req, res) => {
+  const query = `
+    SELECT 
+      item_name, 
+      SUM(price * quantity) AS totalSales, 
+      SUM(quantity) AS totalQuantity
+    FROM orders
+    GROUP BY item_name
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching item metrics:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    // Send the results as JSON
+    res.json(results);
+  });
+});
+
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

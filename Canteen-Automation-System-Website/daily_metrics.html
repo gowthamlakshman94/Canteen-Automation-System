@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Metrics</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .metrics {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .metric-card {
+            background-color: #e0f7fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 30%;
+            text-align: center;
+        }
+        .metric-card h2 {
+            margin: 0;
+            font-size: 2em;
+            color: #00796b;
+        }
+        .metric-card p {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Daily Metrics</h1>
+        <div class="metrics">
+            <div class="metric-card" id="totalSales">
+                <h2>0</h2>
+                <p>Total Sales</p>
+            </div>
+            <div class="metric-card" id="totalOrders">
+                <h2>0</h2>
+                <p>Total Orders</p>
+            </div>
+            <div class="metric-card" id="totalItems">
+                <h2>0</h2>
+                <p>Total Items</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch daily metrics from the backend
+        function fetchDailyMetrics() {
+            fetch('http://localhost:3000/api/dailyMetrics')  // Assuming this is your API endpoint
+                .then(response => response.json())
+                .then(data => {
+                    // Update the UI with the fetched data
+                    document.getElementById('totalSales').querySelector('h2').innerText = `₹${data.totalSales}`;
+                    document.getElementById('totalOrders').querySelector('h2').innerText = data.totalOrders;
+                    document.getElementById('totalItems').querySelector('h2').innerText = data.totalItems;
+                })
+                .catch(error => {
+                    console.error('Error fetching daily metrics:', error);
+                    alert('Failed to fetch metrics');
+                });
+        }
+
+        // Call the function to fetch and display metrics on page load
+        window.onload = function() {
+            fetchDailyMetrics();
+        }
+    </script>
+</body>
+</html>
+
