@@ -29,7 +29,7 @@ nohup python3 -m http.server 80 &
 
 You can also run the website using docker by building the frontend using the dockerfile in path ~/Canteen-Automation-System
 
-docker build *t cas-fe:1 .
+docker build -t cas-fe:1 .
 # make sure to run it in docker network
 docker network create app-network
 docker run -d   --name cas-fe   --network app-network  -p 80:80   cas-fe:1
