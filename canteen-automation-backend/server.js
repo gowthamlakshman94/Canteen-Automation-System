@@ -39,7 +39,7 @@ app.post('/submitOrder', (req, res) => {
 
   // Prepare data for insertion
   const query = `
-    INSERT INTO orders (order_id, item_name, price, quantity)
+    INSERT INTO orders (order_id, item_name, price, quantity, delivered)
     VALUES ?`;
 
   const values = items.map((item) => [

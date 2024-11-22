@@ -38,6 +38,7 @@
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Delivered</th>
+                <th>Date and Time</th> <!-- New column for Date and Time -->
             </tr>
         </thead>
         <tbody>
@@ -55,12 +56,18 @@
                     const row = document.createElement('tr');
                     const deliveredStatus = order.delivered ? 'Yes' : 'No'; // Check if delivered is true
                     const button = order.delivered ? '' : `<button onclick="markDelivered('${order.order_id}')">Mark as Delivered</button>`;
+                    
+                    // Convert the order_id (epoch time) to a human-readable date and time
+                    const orderDate = new Date(order.order_id);  // Assuming order_id is in epoch time
+                    const formattedDate = orderDate.toLocaleString();  // This formats the date and time
+
                     row.innerHTML = `
                         <td>${order.order_id}</td>
                         <td>${order.item_name}</td>
                         <td>${order.price}</td>
                         <td>${order.quantity}</td>
                         <td>${deliveredStatus} ${button}</td>
+                        <td>${formattedDate}</td> <!-- Display formatted date and time -->
                     `;
                     tableBody.appendChild(row);
                 });
