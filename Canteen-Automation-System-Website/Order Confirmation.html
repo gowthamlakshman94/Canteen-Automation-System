@@ -9,43 +9,6 @@
     <link rel="stylesheet" href="order.css" type="text/css">
     <title>Order Confirmation</title>
     <script src="cart.js" async></script>
-<script>
-    function generateOrderId() {
-    // Get the current epoch time in milliseconds
-    const epochTime = Date.now();
-    return `${epochTime}`;
-    }
-
-    $(document).ready(function () {
-        const orderId = generateOrderId(); // Generates a random order ID
-        $('#orderId').text(orderId); // Sets the order ID in the placeholder
-
-        // Fetch cart details
-        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-        const items = cartItems.map((item) => ({
-            itemName: item.name,
-            price: item.price,
-            quantity: item.quantity,
-        }));
-
-        // Send order data to the backend
-        $.ajax({
-            url: 'http://localhost:3000/submitOrder', // Replace with your backend endpoint
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                orderId,
-                items,
-            }),
-            success: function (response) {
-                console.log('Order submitted:', response);
-            },
-            error: function (err) {
-                console.error('Error submitting order:', err);
-            },
-        });
-    });
-</script>
 
 </head>
 
@@ -97,6 +60,19 @@
             </b>
         </div>
     </footer>
+
+    <script>
+        // Fetch the orderId from localStorage and display it
+        window.onload = function() {
+            var orderId = localStorage.getItem('orderId');
+            
+            if (orderId) {
+                document.getElementById("orderId").innerText = orderId;
+            } else {
+                document.getElementById("orderId").innerText = "Not available";
+            }
+        }
+    </script>
 </body>
 
 </html>

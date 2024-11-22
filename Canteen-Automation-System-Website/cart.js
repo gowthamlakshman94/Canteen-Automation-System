@@ -33,9 +33,6 @@ function ready() {
 function purchaseClicked() {
     alert("Thank you for Shopping here!!");
     var cartItems = document.getElementsByClassName("cartItems")[0];
-    while (cartItems.hasChildNodes()) {
-        cartItems.removeChild(cartItems.firstChild);
-    }
     updateCartTotal();
 
     // Prepare order data and submit the order
@@ -43,6 +40,11 @@ function purchaseClicked() {
     if (orderData) {
         submitOrder(orderData);
     }
+	
+	while (cartItems.hasChildNodes()) {
+        cartItems.removeChild(cartItems.firstChild);
+    }	
+
 }
 
 function removeCartItem(event) {
@@ -128,6 +130,8 @@ function prepareOrderData() {
         var cartRow = cartRows[i];
         var itemName = cartRow.getElementsByClassName("cart-item-title")[0].innerText;
         var price = cartRow.getElementsByClassName("cart-price")[0].innerText;
+		price = parseFloat(price.slice(1));
+
         var quantity = cartRow.getElementsByClassName("cart-quantity-input")[0].value;
 
         items.push({
@@ -138,7 +142,9 @@ function prepareOrderData() {
     }
 
     if (items.length > 0) {
-        return { orderId: new Date().getTime(), items: items };
+        var orderId = new Date().getTime(); // Generate order ID
+        localStorage.setItem('orderId', orderId);  // Store the orderId in localStorage
+        return { orderId: orderId, items: items };
     } else {
         alert("Your cart is empty!");
         return null;
@@ -163,5 +169,6 @@ function submitOrder(orderData) {
         console.error('Error submitting order:', error);
         alert('Error submitting order');
     });
-}
+	
 
+}
