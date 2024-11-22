@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+<body>
+    <h1>Order List</h1>
+    <table id="orderTable">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Item Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Delivered</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be populated here dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        // Fetch the orders from the API
+        fetch('http://localhost:3000/api/orders')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('orderTable').getElementsByTagName('tbody')[0];
+                data.forEach(order => {
+                    const row = document.createElement('tr');
+                    const deliveredStatus = order.delivered ? 'Yes' : 'No'; // Check if delivered is true
+                    const button = order.delivered ? '' : `<button onclick="markDelivered('${order.order_id}')">Mark as Delivered</button>`;
+                    row.innerHTML = `
+                        <td>${order.order_id}</td>
+                        <td>${order.item_name}</td>
+                        <td>${order.price}</td>
+                        <td>${order.quantity}</td>
+                        <td>${deliveredStatus} ${button}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching orders:', error);
+            });
+
+        // Update the order delivery status
+        function markDelivered(orderId) {
+            fetch('http://localhost:3000/api/updateDeliveryStatus', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ order_id: orderId, delivered: true })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert('Order marked as delivered');
+                    location.reload();  // Reload the page to update the table
+                } else {
+                    alert('Failed to mark order as delivered');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating delivery status:', error);
+            });
+        }
+    </script>
+</body>
+</html>
+

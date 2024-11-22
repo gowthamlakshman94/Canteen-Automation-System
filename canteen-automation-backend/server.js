@@ -41,12 +41,13 @@ app.post('/submitOrder', (req, res) => {
   const query = `
     INSERT INTO orders (order_id, item_name, price, quantity)
     VALUES ?`;
-  
+
   const values = items.map((item) => [
     orderId,
     item.itemName,
     item.price,
     item.quantity,
+    false  // Assuming orders are not delivered by default
   ]);
 
   // Insert order into database
@@ -57,6 +58,37 @@ app.post('/submitOrder', (req, res) => {
     }
     console.log('Order successfully inserted:', result);
     res.status(200).json({ message: 'Order submitted successfully' });
+  });
+});
+
+// API to fetch orders
+app.get('/api/orders', (req, res) => {
+  const query = 'SELECT * FROM orders';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching orders:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+    res.json(results);
+  });
+});
+
+// API to update delivery status
+app.post('/api/updateDeliveryStatus', (req, res) => {
+  const { order_id, delivered } = req.body;
+
+  if (typeof delivered !== 'boolean') {
+    return res.status(400).json({ message: 'Invalid status' });
+  }
+
+  const query = 'UPDATE orders SET delivered = ? WHERE order_id = ?';
+
+  db.query(query, [delivered, order_id], (err, results) => {
+    if (err) {
+      console.error('Error updating delivery status:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+    res.json({ success: true });
   });
 });
 
