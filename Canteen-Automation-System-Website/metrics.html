@@ -1,92 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Item-wise Metrics</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Metrics</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        #metricsChart {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="container my-5">
-    <h1>Item-wise Metrics</h1>
+    <h1>Item Metrics</h1>
+    <div>
+        <label for="fromDate">From:</label>
+        <input type="date" id="fromDate" />
+        <label for="toDate">To:</label>
+        <input type="date" id="toDate" />
+        <button onclick="fetchMetrics()">Filter</button>
+    </div>
 
-    <!-- Table to display item-wise metrics -->
-    <h2 class="my-4">Item Metrics Table</h2>
-    <table class="table table-bordered" id="metricsTable">
-      <thead>
-        <tr>
-          <th>Item Name</th>
-          <th>Total Sales</th>
-          <th>Total Quantity</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Data will be inserted here dynamically -->
-      </tbody>
+    <table>
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Total Sales</th>
+                <th>Total Quantity</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody id="metricsTableBody"></tbody>
     </table>
 
-    <!-- Graph to display item-wise metrics -->
-    <h2 class="my-4">Sales & Quantity Graph</h2>
-    <canvas id="metricsChart" width="400" height="200"></canvas>
-  </div>
+    <div id="metricsChart">
+        <canvas id="chart"></canvas>
+    </div>
 
-  <script>
-    // Fetch data from the backend API
-    fetch('http://localhost:3000/api/itemMetrics')
-      .then(response => response.json())
-      .then(data => {
-        // Populate the table with item data
-        const tableBody = document.querySelector('#metricsTable tbody');
-        data.forEach(item => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${item.item_name}</td>
-            <td>${item.totalSales}</td>
-            <td>${item.totalQuantity}</td>
-          `;
-          tableBody.appendChild(row);
-        });
+    <script>
+        // Function to fetch item metrics data from the API
+        function fetchMetrics() {
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            const apiUrl = `http://localhost:3000/api/itemMetrics?from=${fromDate}&to=${toDate}`;
 
-        // Prepare data for the graph
-        const labels = data.map(item => item.item_name);
-        const salesData = data.map(item => item.totalSales);
-        const quantityData = data.map(item => item.totalQuantity);
+            console.log('Fetching metrics from:', apiUrl); // Log the URL for debugging
 
-        // Create the bar chart
-        const ctx = document.getElementById('metricsChart').getContext('2d');
-        new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: 'Total Sales',
-                data: salesData,
-                backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-              },
-              {
-                label: 'Total Quantity',
-                data: quantityData,
-                backgroundColor: 'rgba(153, 102, 255, 0.5)',
-                borderColor: 'rgba(153, 102, 255, 1)',
-                borderWidth: 1
-              }
-            ]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
-          }
-        });
-      })
-      .catch(error => console.error('Error fetching item metrics:', error));
-  </script>
+            // Fetch data from the backend API
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        alert('Error fetching metrics: ' + data.message);
+                        return;
+                    }
+                    populateMetricsTable(data.metrics);
+                    renderChart(data.metrics); // Render chart after data is fetched
+                })
+                .catch(err => {
+                    console.error('Error fetching metrics:', err);
+                });
+        }
+
+        // Function to populate the metrics table with fetched data
+        function populateMetricsTable(metrics) {
+            const tableBody = document.getElementById('metricsTableBody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            metrics.forEach(metric => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${metric.item_name}</td>
+                    <td>${metric.totalSales}</td>
+                    <td>${metric.totalQuantity}</td>
+                    <td>${new Date(metric.createdAt).toLocaleString()}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to render a chart with the fetched metrics
+        function renderChart(metrics) {
+            const itemNames = metrics.map(metric => metric.item_name);
+            const totalSales = metrics.map(metric => metric.totalSales);
+            const totalQuantities = metrics.map(metric => metric.totalQuantity);
+
+            const ctx = document.getElementById('chart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: itemNames,
+                    datasets: [{
+                        label: 'Total Sales',
+                        data: totalSales,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Total Quantity',
+                        data: totalQuantities,
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initial fetch without date filter (if any)
+        fetchMetrics();
+    </script>
 </body>
 </html>
 

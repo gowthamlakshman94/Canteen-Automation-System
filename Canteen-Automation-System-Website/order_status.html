@@ -55,7 +55,7 @@
                 data.forEach(order => {
                     const row = document.createElement('tr');
                     const deliveredStatus = order.delivered ? 'Yes' : 'No'; // Check if delivered is true
-                    const button = order.delivered ? '' : `<button onclick="markDelivered('${order.order_id}')">Mark as Delivered</button>`;
+                    const button = order.delivered ? '' : `<button onclick="markDelivered('${order.order_id}', '${order.item_name}')">Mark as Delivered</button>`;
                     
                     // Convert the order_id (epoch time) to a human-readable date and time
                     const orderDate = new Date(order.order_id);  // Assuming order_id is in epoch time
@@ -76,22 +76,22 @@
                 console.error('Error fetching orders:', error);
             });
 
-        // Update the order delivery status
-        function markDelivered(orderId) {
+        // Update the delivery status of a specific item in the order
+        function markDelivered(orderId, itemName) {
             fetch('http://localhost:3000/api/updateDeliveryStatus', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ order_id: orderId, delivered: true })
+                body: JSON.stringify({ order_id: orderId, item_name: itemName, delivered: true })
             })
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
-                    alert('Order marked as delivered');
+                    alert('Item marked as delivered');
                     location.reload();  // Reload the page to update the table
                 } else {
-                    alert('Failed to mark order as delivered');
+                    alert('Failed to mark item as delivered');
                 }
             })
             .catch(error => {

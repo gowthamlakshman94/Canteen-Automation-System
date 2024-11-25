@@ -64,7 +64,8 @@ CREATE TABLE orders (
     item_name VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     quantity INT NOT NULL,
-    delivered BOOLEAN DEFAULT FALSE
+    delivered BOOLEAN DEFAULT FALSE,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 

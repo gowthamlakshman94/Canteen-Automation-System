@@ -126,24 +126,27 @@ function prepareOrderData() {
     var cartItems = document.getElementsByClassName("cartItems")[0];
     var cartRows = cartItems.getElementsByClassName("cart-row");
     var items = [];
+    var createdAt = new Date().toISOString(); // Current timestamp in ISO format
+
     for (var i = 0; i < cartRows.length; i++) {
         var cartRow = cartRows[i];
         var itemName = cartRow.getElementsByClassName("cart-item-title")[0].innerText;
         var price = cartRow.getElementsByClassName("cart-price")[0].innerText;
-		price = parseFloat(price.slice(1));
+        price = parseFloat(price.slice(1));
 
         var quantity = cartRow.getElementsByClassName("cart-quantity-input")[0].value;
 
         items.push({
             itemName: itemName,
             price: price,
-            quantity: quantity
+            quantity: quantity,
+            createdAt: createdAt // Add the createdAt field
         });
     }
 
     if (items.length > 0) {
         var orderId = new Date().getTime(); // Generate order ID
-        localStorage.setItem('orderId', orderId);  // Store the orderId in localStorage
+        localStorage.setItem('orderId', orderId); // Store the orderId in localStorage
         return { orderId: orderId, items: items };
     } else {
         alert("Your cart is empty!");

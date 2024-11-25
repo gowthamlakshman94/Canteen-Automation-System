@@ -740,3 +740,187 @@ Keyboard interrupt received, exiting.
 127.0.0.1 - - [22/Nov/2024 10:41:44] "GET /order_status.html HTTP/1.1" 304 -
 127.0.0.1 - - [22/Nov/2024 10:41:48] "GET /order_status.html HTTP/1.1" 304 -
 127.0.0.1 - - [22/Nov/2024 10:41:52] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /Lunch.html HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /order.css HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /Roti1.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /SEPM%20147.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /Navbar.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /SEPM%20146.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /panner2.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:05] "GET /cart.js HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:06] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:06] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:06] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:06] "GET /Chicken-Biryani3.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:06] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:06] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 10:36:06] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 10:36:19] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:19] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:32] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 10:36:32] "GET /Order_status.html HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 10:36:48] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 10:36:48] "GET /rder_status.html HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 10:36:39] "GET /order_status.html HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:36:44] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:39:03] "GET /metrics.html HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:43:53] "GET /metrics.html HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:43:57] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:45:04] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:45:08] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:45:11] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:45:14] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:45:16] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:45:18] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:45:20] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:45:56] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:48:24] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:48:29] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:48:44] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:52:50] "GET /metrics.html HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:52:53] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:52:59] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:54:11] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:56:53] "GET /daily_metrics.html HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 10:57:23] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 10:57:29] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:05:43] "GET /First%20Page.html HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 11:05:43] "GET /First%20Page.css HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 11:05:43] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 11:05:43] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 11:05:43] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 11:05:43] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 11:05:43] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 11:05:51] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:10:19] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:10:22] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:10:24] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:10:25] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:10:26] "GET /order_status.html HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 11:10:26] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:10:40] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:11:42] "GET /metrics.html HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 11:11:42] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:11:42] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:11:45] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:11:45] "GET /api/itemMetrics?date=2024-10-29 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:11:46] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:11:46] "GET /api/itemMetrics?date=2024-10-29 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:11:48] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:11:48] "GET /api/itemMetrics?date=2024-09-30 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:11:51] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:11:51] "GET /api/itemMetrics?date=2024-11-25 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:11:53] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:11:53] "GET /api/itemMetrics?date=2024-11-24 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:11:57] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:11:57] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:11:57] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:12:28] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:12:28] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:12:28] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:12:29] "GET /daily_metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:12:30] "GET /daily_metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:12:30] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:12:30] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:12:30] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:16:10] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:16:12] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:16:07] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:16:09] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:16:27] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:16:29] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:16:33] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:16:52] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:17:00] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:17:05] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:17:06] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:17:06] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:17:07] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:17:07] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:17:08] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:17:08] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:17:10] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:17:10] "GET /api/itemMetrics?date=2024-11-01 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:17:19] "GET /daily_metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:17:27] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:17:27] "GET /api/itemMetrics?date=2024-11-01 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:17:46] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:18:03] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:17:58] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:18:03] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:18:03] "GET /api/itemMetrics?date=2024-11-01 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:18:08] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:18:08] "GET /api/itemMetrics?date=2024-11-01 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:18:08] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:18:08] "GET /api/itemMetrics?date=2024-11-01 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:20:07] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:21:26] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:21:26] "GET /api/itemMetrics?date=2024-11-01 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:25:43] "GET /daily_metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:26:06] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:26:08] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:26:56] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:27:10] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:27:38] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:28:55] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:33:15] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:41:21] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:45:41] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:45:41] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:45:57] "GET /daily_metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:46:03] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:46:03] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:46:03] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:46:04] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:46:16] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:46:16] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:46:05] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:46:05] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:46:06] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:46:06] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:46:06] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:46:06] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:46:09] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:46:09] "GET /api/itemMetrics?date=2024-11-01 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:46:10] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:46:11] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:46:11] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:46:16] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:46:16] "GET /api/itemMetrics?date=2024-11-13 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:46:22] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:46:36] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:46:43] "GET /Dinner.html HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 11:46:43] "GET /SEPM%20145.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 11:46:44] "GET /Garlic-Butter-Naan.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 11:46:50] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:50:24] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:50:43] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:50:43] "GET /api/itemMetrics?date=2024-11-13 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:51:08] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:51:22] "GET /daily_metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:51:24] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:51:24] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:51:24] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:51:25] "GET /daily_metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 11:52:09] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:52:09] "GET /api/itemMetrics?date= HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 11:52:18] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 11:52:18] "GET /api/itemMetrics?date=2024-11-01 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 12:00:14] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 12:00:14] "GET /api/itemMetrics?date=2024-11-01 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 12:03:06] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 12:03:06] "GET /api/itemMetrics?date=2024-11-25 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 12:03:07] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 12:03:07] "GET /api/itemMetrics?date=2024-11-25 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 12:03:08] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 12:03:08] "GET /api/itemMetrics?date=2024-11-25 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 12:03:36] code 404, message File not found
+127.0.0.1 - - [25/Nov/2024 12:03:36] "GET /api/itemMetrics?date=2024-11-25 HTTP/1.1" 404 -
+127.0.0.1 - - [25/Nov/2024 12:06:30] "GET /metrics.html HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2024 12:11:44] "GET /daily_metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [25/Nov/2024 12:11:46] "GET /metrics.html HTTP/1.1" 200 -

@@ -1,4 +1,3 @@
-// backend/server.js
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
@@ -8,7 +7,7 @@ const port = 3000;
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors());  // Enable CORS for all domains (or restrict it to your frontend domain if needed)
+app.use(cors()); // Enable CORS for all domains (or restrict it to your frontend domain if needed)
 
 // MySQL Connection Setup
 const db = mysql.createConnection({
@@ -28,37 +27,36 @@ db.connect((err) => {
 
 // API to handle order submission
 app.post('/submitOrder', (req, res) => {
-  console.log("Received order data:", req.body); // Log the incoming request body
+    const { orderId, items } = req.body;
+    
+    // Generate current timestamp in YYYY-MM-DD HH:MM:SS format
+    const createdAt = new Date().toISOString().slice(0, 19).replace("T", " ");  // '2024-11-25 11:46:48'
 
-  const { orderId, items } = req.body;
-
-  // Validate the incoming data
-  if (!orderId || !items || !Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({ message: 'Invalid order data' });
-  }
-
-  // Prepare data for insertion
-  const query = `
-    INSERT INTO orders (order_id, item_name, price, quantity, delivered)
-    VALUES ?`;
-
-  const values = items.map((item) => [
-    orderId,
-    item.itemName,
-    item.price,
-    item.quantity,
-    false  // Assuming orders are not delivered by default
-  ]);
-
-  // Insert order into database
-  db.query(query, [values], (err, result) => {
-    if (err) {
-      console.error('Error inserting order:', err);
-      return res.status(500).json({ message: 'Database error' });
+    if (!orderId || !items || !Array.isArray(items)) {
+        return res.status(400).send({ message: 'Invalid order data' });
     }
-    console.log('Order successfully inserted:', result);
-    res.status(200).json({ message: 'Order submitted successfully' });
-  });
+
+    const values = items.map(item => [
+        orderId,
+        item.itemName,
+        item.price,
+        item.quantity,
+        item.delivered ? 1 : 0,
+        createdAt  // Add createdAt in correct format
+    ]);
+
+    const sql = `
+        INSERT INTO orders (order_id, item_name, price, quantity, delivered, createdAt)
+        VALUES ?
+    `;
+
+    db.query(sql, [values], (err, result) => {
+        if (err) {
+            console.error('Error inserting order:', err);
+            return res.status(500).send({ message: 'Error submitting order' });
+        }
+        res.status(200).send({ message: 'Order submitted successfully' });
+    });
 });
 
 // API to fetch orders
@@ -73,34 +71,40 @@ app.get('/api/orders', (req, res) => {
   });
 });
 
-// API to update delivery status
+// Update delivery status for a specific item in an order
 app.post('/api/updateDeliveryStatus', (req, res) => {
-  const { order_id, delivered } = req.body;
+  const { order_id, item_name, delivered } = req.body;
 
-  if (typeof delivered !== 'boolean') {
-    return res.status(400).json({ message: 'Invalid status' });
+  if (typeof delivered !== 'boolean' || !order_id || !item_name) {
+    return res.status(400).json({ message: 'Invalid data' });
   }
 
-  const query = 'UPDATE orders SET delivered = ? WHERE order_id = ?';
+  const query = 'UPDATE orders SET delivered = ? WHERE order_id = ? AND item_name = ?';
 
-  db.query(query, [delivered, order_id], (err, results) => {
+  db.query(query, [delivered, order_id, item_name], (err, results) => {
     if (err) {
       console.error('Error updating delivery status:', err);
       return res.status(500).json({ message: 'Database error' });
     }
-    res.json({ success: true });
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
+
+    res.json({ success: true, message: 'Delivery status updated successfully' });
   });
 });
 
 // API to fetch daily metrics
 app.get('/api/dailyMetrics', (req, res) => {
   const query = `
-    SELECT 
-      SUM(price * quantity) AS totalSales, 
+    SELECT
+      SUM(price * quantity) AS totalSales,
       COUNT(DISTINCT order_id) AS totalOrders,
       SUM(quantity) AS totalItems
     FROM orders
-    WHERE DATE(FROM_UNIXTIME(order_id / 1000)) = CURDATE();`;
+    WHERE DATE(createdAt) = CURDATE();
+  `;
 
   db.query(query, (err, result) => {
     if (err) {
@@ -112,34 +116,49 @@ app.get('/api/dailyMetrics', (req, res) => {
     res.json({
       totalSales: metrics.totalSales || 0,
       totalOrders: metrics.totalOrders || 0,
-      totalItems: metrics.totalItems || 0
+      totalItems: metrics.totalItems || 0,
     });
   });
 });
 
 // API to fetch item-wise metrics
 app.get('/api/itemMetrics', (req, res) => {
-  const query = `
-    SELECT 
-      item_name, 
-      SUM(price * quantity) AS totalSales, 
-      SUM(quantity) AS totalQuantity
+  const { date } = req.query;
+
+  // Parse the provided date into start and end timestamps
+  const startDate = date ? new Date(date + 'T00:00:00Z').getTime() : null;
+  const endDate = date ? new Date(date + 'T23:59:59Z').getTime() : null;
+
+  let sql = `
+    SELECT
+      item_name,
+      SUM(price * quantity) AS totalSales,
+      SUM(quantity) AS totalQuantity,
+      MIN(createdAt) AS createdAt
     FROM orders
+  `;
+  const params = [];
+
+  if (startDate && endDate) {
+    sql += `
+      WHERE UNIX_TIMESTAMP(createdAt) BETWEEN ? AND ?
+    `;
+    params.push(startDate / 1000, endDate / 1000);
+  }
+
+  sql += `
     GROUP BY item_name
+    ORDER BY totalSales DESC
   `;
 
-  db.query(query, (err, results) => {
+  db.query(sql, params, (err, results) => {
     if (err) {
       console.error('Error fetching item metrics:', err);
-      return res.status(500).json({ message: 'Database error' });
+      return res.status(500).send({ error: true, message: 'Error fetching item metrics' });
     }
-
-    // Send the results as JSON
-    res.json(results);
+    res.send({ metrics: results });
   });
 });
-
-
 
 // Start the server
 app.listen(port, () => {
