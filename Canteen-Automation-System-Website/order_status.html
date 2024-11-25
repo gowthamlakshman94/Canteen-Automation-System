@@ -57,9 +57,9 @@
                     const deliveredStatus = order.delivered ? 'Yes' : 'No'; // Check if delivered is true
                     const button = order.delivered ? '' : `<button onclick="markDelivered('${order.order_id}', '${order.item_name}')">Mark as Delivered</button>`;
                     
-                    // Convert the order_id (epoch time) to a human-readable date and time
-                    const orderDate = new Date(order.order_id);  // Assuming order_id is in epoch time
-                    const formattedDate = orderDate.toLocaleString();  // This formats the date and time
+                    // Use createdAt field to get the date and time
+                    const createdAt = new Date(order.createdAt);  // Assuming createdAt is a valid date/time string
+                    const formattedDate = createdAt.toLocaleString();  // Format the createdAt date and time
 
                     row.innerHTML = `
                         <td>${order.order_id}</td>
@@ -67,7 +67,7 @@
                         <td>${order.price}</td>
                         <td>${order.quantity}</td>
                         <td>${deliveredStatus} ${button}</td>
-                        <td>${formattedDate}</td> <!-- Display formatted date and time -->
+                        <td>${formattedDate}</td> <!-- Display formatted createdAt date and time -->
                     `;
                     tableBody.appendChild(row);
                 });
