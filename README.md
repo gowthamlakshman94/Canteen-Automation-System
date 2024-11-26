@@ -29,6 +29,10 @@ nohup python3 -m http.server 80 &
 
 You can also run the website using docker by building the frontend using the dockerfile in path ~/Canteen-Automation-System
 
+# Make sure to run this script to replace the localhost names into api_urls
+
+sh ~/Canteen-Automation-System/'Canteen Automation System Website'/replace_localhost.sh
+
 docker build -t cas-fe:1 .
 # make sure to run it in docker network
 docker network create app-network
