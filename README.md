@@ -29,7 +29,7 @@ nohup python3 -m http.server 80 &
 
 You can also run the website using docker by building the frontend using the dockerfile in path ~/Canteen-Automation-System
 
-# Make sure to run this script to replace the localhost names into api_urls
+# Make sure to run this script to replace the localhost names into api_urls. This should be done if your host your app in any cloud VM. Mostly it should be a load balancer IP or the public url of the VM
 
 sh ~/Canteen-Automation-System/'Canteen Automation System Website'/replace_localhost.sh
 
