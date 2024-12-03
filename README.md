@@ -158,6 +158,7 @@ docker run -d --name cas-be --network app-network -p 3000:3000 cas-be:10
 ### Notes:
 - Ensure the frontend, backend, and database are running in the same Docker network (`app-network`) to allow seamless communication between them.
 - You can customize database credentials and configurations by modifying the Docker run commands.
+- Users can access the admin console of the app using the url http://<your_url>/admin.html
 
 Feel free to open an issue if you encounter any problems, or contribute to the project by submitting a pull request!
 
@@ -172,3 +173,4 @@ Feel free to open an issue if you encounter any problems, or contribute to the p
 - Added headers to clearly separate sections.
 - Specified `Notes` and `License` sections for clarity and extensibility.
 - Corrected some minor formatting issues for consistency (e.g., code blocks and command usage).
+
