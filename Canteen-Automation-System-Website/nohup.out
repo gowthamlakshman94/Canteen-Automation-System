@@ -937,3 +937,42 @@ Keyboard interrupt received, exiting.
 127.0.0.1 - - [25/Nov/2024 13:47:18] "GET /order_status.html HTTP/1.1" 200 -
 127.0.0.1 - - [25/Nov/2024 13:48:07] "GET /order_status.html HTTP/1.1" 304 -
 127.0.0.1 - - [25/Nov/2024 13:49:14] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [03/Dec/2024 09:48:28] "GET /daily_item_quantity.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:48:28] code 404, message File not found
+127.0.0.1 - - [03/Dec/2024 09:48:28] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [03/Dec/2024 09:52:33] "GET /daily_wastage_report.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:28] "GET /Lunch.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:28] "GET /order.css HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:28] "GET /SEPM%20146.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:28] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:29] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:29] "GET /panner2.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:29] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:30] "GET /cart.js HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:31] "GET /Navbar.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:31] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:31] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:31] "GET /SEPM%20147.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:31] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:31] "GET /Roti1.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:31] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:31] "GET /Chicken-Biryani3.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:31] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:31] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:45] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:53:45] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:54:05] "GET /order_status.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:54:35] "GET /daily_item_quantity.html HTTP/1.1" 304 -
+127.0.0.1 - - [03/Dec/2024 09:55:11] code 404, message File not found
+127.0.0.1 - - [03/Dec/2024 09:55:11] "GET /item_metrics.html HTTP/1.1" 404 -
+127.0.0.1 - - [03/Dec/2024 09:55:21] code 404, message File not found
+127.0.0.1 - - [03/Dec/2024 09:55:21] "GET /daily_item_metrics.html HTTP/1.1" 404 -
+127.0.0.1 - - [03/Dec/2024 09:55:27] "GET /metrics.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:55:43] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:55:51] "GET /daily_metrics.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:58:42] "GET /admin.html HTTP/1.1" 200 -
+127.0.0.1 - - [03/Dec/2024 09:58:44] "GET /daily_wastage_report.html HTTP/1.1" 304 -
+127.0.0.1 - - [03/Dec/2024 09:58:47] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [03/Dec/2024 09:58:51] "GET /daily_item_quantity.html HTTP/1.1" 304 -
+127.0.0.1 - - [03/Dec/2024 09:58:54] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [03/Dec/2024 09:58:56] "GET /daily_metrics.html HTTP/1.1" 304 -

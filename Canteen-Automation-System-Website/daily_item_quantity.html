@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed Daily Item Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .message {
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Feed Daily Item Data</h1>
+    <form id="itemForm">
+        <label for="item_name">Item Name:</label>
+        <input type="text" id="item_name" name="item_name" required>
+        
+        <label for="quantity_prepared">Quantity Prepared:</label>
+        <input type="number" id="quantity_prepared" name="quantity_prepared" min="0" required>
+        
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+        
+        <button type="button" id="submitBtn">Submit</button>
+    </form>
+
+    <div class="message" id="message"></div>
+
+    <script>
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            const itemName = document.getElementById('item_name').value;
+            const quantityPrepared = document.getElementById('quantity_prepared').value;
+            const date = document.getElementById('date').value;
+
+            const data = {
+                item_name: itemName,
+                quantity_prepared: quantityPrepared,
+                date: date
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/daily-item', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                const messageDiv = document.getElementById('message');
+
+                if (response.ok) {
+                    messageDiv.style.color = 'green';
+                    messageDiv.textContent = 'Data inserted successfully!';
+                } else {
+                    messageDiv.style.color = 'red';
+                    messageDiv.textContent = `Error: ${result.message}`;
+                }
+            } catch (error) {
+                document.getElementById('message').textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
+

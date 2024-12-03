@@ -72,6 +72,14 @@ CREATE TABLE orders (
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE daily_item_quantity (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    item_name VARCHAR(255) NOT NULL,
+    quantity_prepared INT NOT NULL,
+    date DATE NOT NULL
+);
+
+
 # Sample data for MYSQl DB
 
 INSERT INTO orders (id, order_id, item_name, price, quantity, delivered, createdAt)

@@ -160,6 +160,60 @@ app.get('/api/itemMetrics', (req, res) => {
   });
 });
 
+// Route to handle data insertion
+app.post('/daily-item', (req, res) => {
+    const { item_name, quantity_prepared, date } = req.body;
+
+    if (!item_name || !quantity_prepared || !date) {
+        return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    const query = 'INSERT INTO daily_item_quantity (item_name, quantity_prepared, date) VALUES (?, ?, ?)';
+    db.query(query, [item_name, quantity_prepared, date], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Database error.' });
+        }
+        res.status(200).json({ message: 'Data inserted successfully.', id: result.insertId });
+    });
+});
+
+// API to fetch wastage report
+app.get('/daily-wastage', (req, res) => {
+    const { date } = req.query;
+
+    if (!date) {
+        return res.status(400).json({ message: 'Date is required.' });
+    }
+
+    const query = `
+        SELECT 
+            diq.item_name, 
+            diq.quantity_prepared, 
+            IFNULL(SUM(o.quantity), 0) AS quantity_ordered, 
+            (diq.quantity_prepared - IFNULL(SUM(o.quantity), 0)) AS wastage
+        FROM 
+            daily_item_quantity diq
+        LEFT JOIN 
+            orders o
+        ON 
+            diq.item_name = o.item_name AND DATE(o.createdAt) = ?
+        WHERE 
+            diq.date = ?
+        GROUP BY 
+            diq.item_name, diq.quantity_prepared;
+    `;
+
+    db.query(query, [date, date], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Database error.' });
+        }
+        res.status(200).json(results);
+    });
+});
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
