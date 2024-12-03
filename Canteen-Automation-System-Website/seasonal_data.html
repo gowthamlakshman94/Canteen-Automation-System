@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seasonal Data and Rankings</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    .top5 {
+      background-color: #c8e6c9;
+    }
+    .bottom5 {
+      background-color: #ffcdd2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Seasonal Data and Rankings</h1>
+  <h2 id="current-season"></h2>
+  <div id="content">
+    <h2>Top 5 Items of the Season</h2>
+    <table id="top5-table"></table>
+    <h2>Bottom 5 Items of the Season</h2>
+    <table id="bottom5-table"></table>
+  </div>
+
+  <script>
+    async function fetchSeasonalData() {
+      try {
+        const response = await fetch('http://localhost:3000/api/seasonalData');
+        const data = await response.json();
+
+        // Display the current season
+        document.getElementById('current-season').textContent =
+          `Current Season: ${data.currentSeason}`;
+
+        // Populate top 5 table
+        const top5Table = document.getElementById('top5-table');
+        top5Table.innerHTML = `
+          <thead>
+            <tr>
+              <th>Item Name</th>
+              <th>Total Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.top5
+              .map(
+                ([item, quantity]) => `
+                <tr class="top5">
+                  <td>${item}</td>
+                  <td>${quantity}</td>
+                </tr>`
+              )
+              .join('')}
+          </tbody>
+        `;
+
+        // Populate bottom 5 table
+        const bottom5Table = document.getElementById('bottom5-table');
+        bottom5Table.innerHTML = `
+          <thead>
+            <tr>
+              <th>Item Name</th>
+              <th>Total Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${data.bottom5
+              .map(
+                ([item, quantity]) => `
+                <tr class="bottom5">
+                  <td>${item}</td>
+                  <td>${quantity}</td>
+                </tr>`
+              )
+              .join('')}
+          </tbody>
+        `;
+      } catch (error) {
+        console.error('Error fetching seasonal data:', error);
+      }
+    }
+
+    fetchSeasonalData();
+  </script>
+</body>
+</html>
+

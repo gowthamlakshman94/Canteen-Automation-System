@@ -213,9 +213,71 @@ app.get('/daily-wastage', (req, res) => {
     });
 });
 
+// API to fetch seasonal data and seasonal rankings
+app.get('/api/seasonalData', (req, res) => {
+  const query = `
+    SELECT 
+      item_name, 
+      SUM(quantity) AS total_quantity, 
+      MONTH(createdAt) AS month 
+    FROM orders 
+    GROUP BY item_name, MONTH(createdAt);
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching seasonal data:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    const seasons = {
+      Spring: [3, 4, 5],  // March, April, May
+      Summer: [6, 7, 8],  // June, July, August
+      Autumn: [9, 10, 11], // September, October, November
+      Winter: [12, 1, 2],  // December, January, February
+    };
+
+    const currentMonth = new Date().getMonth() + 1; // 0-indexed month, add 1
+    let currentSeason = null;
+
+    for (const [season, months] of Object.entries(seasons)) {
+      if (months.includes(currentMonth)) {
+        currentSeason = season;
+        break;
+      }
+    }
+
+    // Filter items for the current season
+    const currentSeasonData = results.filter((item) =>
+      seasons[currentSeason].includes(item.month)
+    );
+
+    const aggregatedSeasonData = currentSeasonData.reduce((acc, item) => {
+      acc[item.item_name] = (acc[item.item_name] || 0) + item.total_quantity;
+      return acc;
+    }, {});
+
+    // Sort items by quantity for the current season
+    const sortedItems = Object.entries(aggregatedSeasonData).sort(
+      ([, a], [, b]) => b - a
+    );
+
+    const top5 = sortedItems.slice(0, 5); // Top 5 items
+    const bottom5 = sortedItems.slice(-5); // Bottom 5 items
+
+    res.json({
+      currentSeason,
+      top5,
+      bottom5,
+      aggregatedData: aggregatedSeasonData,
+    });
+  });
+});
+
 
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
 
