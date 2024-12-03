@@ -213,7 +213,6 @@ app.get('/daily-wastage', (req, res) => {
     });
 });
 
-// API to fetch seasonal data and seasonal rankings
 app.get('/api/seasonalData', (req, res) => {
   const query = `
     SELECT 
@@ -237,39 +236,43 @@ app.get('/api/seasonalData', (req, res) => {
       Winter: [12, 1, 2],  // December, January, February
     };
 
-    const currentMonth = new Date().getMonth() + 1; // 0-indexed month, add 1
-    let currentSeason = null;
+    const currentMonth = new Date().getMonth() + 1; // Get current month (1-indexed)
+    const seasonNames = Object.keys(seasons);
 
-    for (const [season, months] of Object.entries(seasons)) {
-      if (months.includes(currentMonth)) {
-        currentSeason = season;
-        break;
-      }
+    // Determine the current season and last three seasons
+    let currentSeasonIndex = seasonNames.findIndex((season) =>
+      seasons[season].includes(currentMonth)
+    );
+    const selectedSeasons = [];
+    for (let i = 0; i < 4; i++) {
+      selectedSeasons.unshift(seasonNames[currentSeasonIndex]);
+      currentSeasonIndex = (currentSeasonIndex - 1 + seasonNames.length) % seasonNames.length;
     }
 
-    // Filter items for the current season
-    const currentSeasonData = results.filter((item) =>
-      seasons[currentSeason].includes(item.month)
-    );
+    const seasonData = selectedSeasons.reduce((acc, season) => {
+      const months = seasons[season];
+      const filteredData = results.filter((item) => months.includes(item.month));
 
-    const aggregatedSeasonData = currentSeasonData.reduce((acc, item) => {
-      acc[item.item_name] = (acc[item.item_name] || 0) + item.total_quantity;
+      // Aggregate the data for each season
+      const aggregatedData = filteredData.reduce((seasonAcc, item) => {
+        seasonAcc[item.item_name] = (seasonAcc[item.item_name] || 0) + item.total_quantity;
+        return seasonAcc;
+      }, {});
+
+      // Sort items by total quantity
+      const sortedItems = Object.entries(aggregatedData).sort(([, a], [, b]) => b - a);
+
+      // Store the top 5 and bottom 5 items for the season
+      acc[season] = {
+        top5: sortedItems.slice(0, 5),
+        bottom5: sortedItems.slice(-5),
+      };
       return acc;
     }, {});
 
-    // Sort items by quantity for the current season
-    const sortedItems = Object.entries(aggregatedSeasonData).sort(
-      ([, a], [, b]) => b - a
-    );
-
-    const top5 = sortedItems.slice(0, 5); // Top 5 items
-    const bottom5 = sortedItems.slice(-5); // Bottom 5 items
-
     res.json({
-      currentSeason,
-      top5,
-      bottom5,
-      aggregatedData: aggregatedSeasonData,
+      selectedSeasons,
+      seasonData,
     });
   });
 });

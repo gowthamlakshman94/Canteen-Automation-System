@@ -1013,3 +1013,5 @@ Keyboard interrupt received, exiting.
 127.0.0.1 - - [03/Dec/2024 11:36:44] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
 127.0.0.1 - - [03/Dec/2024 11:36:58] "GET /order_status.html HTTP/1.1" 304 -
 127.0.0.1 - - [03/Dec/2024 11:42:06] "GET /seasonal_data.html HTTP/1.1" 304 -
+127.0.0.1 - - [03/Dec/2024 11:49:00] "GET /seasonal_data.html HTTP/1.1" 304 -
+127.0.0.1 - - [03/Dec/2024 11:54:56] "GET /seasonal_data.html HTTP/1.1" 200 -

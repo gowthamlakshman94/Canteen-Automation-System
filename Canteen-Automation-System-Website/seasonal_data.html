@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Seasonal Data and Rankings</title>
+  <title>Seasonal Data</title>
   <style>
     table {
       width: 100%;
@@ -24,17 +24,16 @@
     .bottom5 {
       background-color: #ffcdd2;
     }
+    .season-title {
+      color: #333;
+      text-align: center;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
-  <h1>Seasonal Data and Rankings</h1>
-  <h2 id="current-season"></h2>
-  <div id="content">
-    <h2>Top 5 Items of the Season</h2>
-    <table id="top5-table"></table>
-    <h2>Bottom 5 Items of the Season</h2>
-    <table id="bottom5-table"></table>
-  </div>
+  <h1>Seasonal Data</h1>
+  <div id="seasonal-content"></div>
 
   <script>
     async function fetchSeasonalData() {
@@ -42,53 +41,58 @@
         const response = await fetch('http://localhost:3000/api/seasonalData');
         const data = await response.json();
 
-        // Display the current season
-        document.getElementById('current-season').textContent =
-          `Current Season: ${data.currentSeason}`;
+        const { selectedSeasons, seasonData } = data;
 
-        // Populate top 5 table
-        const top5Table = document.getElementById('top5-table');
-        top5Table.innerHTML = `
-          <thead>
-            <tr>
-              <th>Item Name</th>
-              <th>Total Quantity</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${data.top5
-              .map(
-                ([item, quantity]) => `
-                <tr class="top5">
-                  <td>${item}</td>
-                  <td>${quantity}</td>
-                </tr>`
-              )
-              .join('')}
-          </tbody>
-        `;
+        const container = document.getElementById('seasonal-content');
 
-        // Populate bottom 5 table
-        const bottom5Table = document.getElementById('bottom5-table');
-        bottom5Table.innerHTML = `
-          <thead>
-            <tr>
-              <th>Item Name</th>
-              <th>Total Quantity</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${data.bottom5
-              .map(
-                ([item, quantity]) => `
-                <tr class="bottom5">
-                  <td>${item}</td>
-                  <td>${quantity}</td>
-                </tr>`
-              )
-              .join('')}
-          </tbody>
-        `;
+        selectedSeasons.forEach((season) => {
+          // Create a section for each season
+          const section = document.createElement('div');
+          section.innerHTML = `
+            <h2 class="season-title">${season}</h2>
+            <h3>Top 5 Items</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Total Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${seasonData[season].top5
+                  .map(
+                    ([item, quantity]) => `
+                    <tr class="top5">
+                      <td>${item}</td>
+                      <td>${quantity}</td>
+                    </tr>`
+                  )
+                  .join('')}
+              </tbody>
+            </table>
+            <h3>Bottom 5 Items</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Total Quantity</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${seasonData[season].bottom5
+                  .map(
+                    ([item, quantity]) => `
+                    <tr class="bottom5">
+                      <td>${item}</td>
+                      <td>${quantity}</td>
+                    </tr>`
+                  )
+                  .join('')}
+              </tbody>
+            </table>
+          `;
+          container.appendChild(section);
+        });
       } catch (error) {
         console.error('Error fetching seasonal data:', error);
       }
