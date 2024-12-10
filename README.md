@@ -174,7 +174,8 @@ Feel free to open an issue if you encounter any problems, or contribute to the p
 - Specified `Notes` and `License` sections for clarity and extensibility.
 - Corrected some minor formatting issues for consistency (e.g., code blocks and command usage).
 
+```
 ### Network ports to be opened
-80/TCP
-443/TCP
-3000/TCP
+80/TCP --> Inbound/Outbound
+443/TCP --> Inbound/Outbound
+3000/TCP --> Inbound
