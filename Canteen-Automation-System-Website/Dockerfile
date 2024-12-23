@@ -7,6 +7,10 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy your HTML files to the Nginx web server directory
 COPY . /usr/share/nginx/html
 
+# Set permissions and ownership
+RUN chmod -R 755 /usr/share/nginx/html && \
+    chown -R nginx:nginx /usr/share/nginx/html
+
 # Expose port 80 to access the webpage
 EXPOSE 80
 
