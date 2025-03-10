@@ -1,3 +1,4 @@
+
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
@@ -9,21 +10,33 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(cors()); // Enable CORS for all domains (or restrict it to your frontend domain if needed)
 
-// MySQL Connection Setup
-const db = mysql.createConnection({
-  host: 'mysql', // Replace with your MySQL hostname if needed
-  user: 'root', // Replace with your MySQL username
-  password: 'password', // Replace with your MySQL password
-  database: 'canteen_automation', // Replace with your database name
+// MySQL Connection Pool Setup
+const dbPool = mysql.createPool({
+  connectionLimit: 10,  // Pool size, adjust based on your usage
+  host: 'mysql',  // Replace with your MySQL hostname if needed
+  user: 'root',  // Replace with your MySQL username
+  password: 'password',  // Replace with your MySQL password
+  database: 'canteen_automation',  // Replace with your database name
+  waitForConnections: true,
+  queueLimit: 0,  // No limit for pending connections
+  connectTimeout: 10000,  // 10 seconds for a connection attempt
 });
 
-db.connect((err) => {
-  if (err) {
-    console.error('Database connection failed:', err.stack);
-    return;
-  }
-  console.log('Connected to MySQL database.');
-});
+// Function to check MySQL connection and reconnect if lost
+function handleDBConnection() {
+  dbPool.getConnection((err, connection) => {
+    if (err) {
+      console.error('Database connection failed:', err.stack);
+      setTimeout(handleDBConnection, 5000);  // Retry after 5 seconds
+    } else {
+      console.log('Connected to MySQL database.');
+      connection.release();  // Release the connection after checking
+    }
+  });
+}
+
+// Ensure that the MySQL connection is healthy at the start
+handleDBConnection();
 
 // API to handle order submission
 app.post('/submitOrder', (req, res) => {
@@ -50,7 +63,7 @@ app.post('/submitOrder', (req, res) => {
         VALUES ?
     `;
 
-    db.query(sql, [values], (err, result) => {
+    dbPool.query(sql, [values], (err, result) => {
         if (err) {
             console.error('Error inserting order:', err);
             return res.status(500).send({ message: 'Error submitting order' });
@@ -62,7 +75,7 @@ app.post('/submitOrder', (req, res) => {
 // API to fetch orders
 app.get('/api/orders', (req, res) => {
   const query = 'SELECT * FROM orders';
-  db.query(query, (err, results) => {
+  dbPool.query(query, (err, results) => {
     if (err) {
       console.error('Error fetching orders:', err);
       return res.status(500).json({ message: 'Database error' });
@@ -81,7 +94,7 @@ app.post('/api/updateDeliveryStatus', (req, res) => {
 
   const query = 'UPDATE orders SET delivered = ? WHERE order_id = ? AND item_name = ?';
 
-  db.query(query, [delivered, order_id, item_name], (err, results) => {
+  dbPool.query(query, [delivered, order_id, item_name], (err, results) => {
     if (err) {
       console.error('Error updating delivery status:', err);
       return res.status(500).json({ message: 'Database error' });
@@ -106,7 +119,7 @@ app.get('/api/dailyMetrics', (req, res) => {
     WHERE DATE(createdAt) = CURDATE();
   `;
 
-  db.query(query, (err, result) => {
+  dbPool.query(query, (err, result) => {
     if (err) {
       console.error('Error fetching daily metrics:', err);
       return res.status(500).json({ message: 'Database error' });
@@ -151,7 +164,7 @@ app.get('/api/itemMetrics', (req, res) => {
     ORDER BY totalSales DESC
   `;
 
-  db.query(sql, params, (err, results) => {
+  dbPool.query(sql, params, (err, results) => {
     if (err) {
       console.error('Error fetching item metrics:', err);
       return res.status(500).send({ error: true, message: 'Error fetching item metrics' });
@@ -169,7 +182,7 @@ app.post('/daily-item', (req, res) => {
     }
 
     const query = 'INSERT INTO daily_item_quantity (item_name, quantity_prepared, date) VALUES (?, ?, ?)';
-    db.query(query, [item_name, quantity_prepared, date], (err, result) => {
+    dbPool.query(query, [item_name, quantity_prepared, date], (err, result) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ message: 'Database error.' });
@@ -204,7 +217,7 @@ app.get('/daily-wastage', (req, res) => {
             diq.item_name, diq.quantity_prepared;
     `;
 
-    db.query(query, [date, date], (err, results) => {
+    dbPool.query(query, [date, date], (err, results) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ message: 'Database error.' });
@@ -223,7 +236,7 @@ app.get('/api/seasonalData', (req, res) => {
     GROUP BY item_name, MONTH(createdAt);
   `;
 
-  db.query(query, (err, results) => {
+  dbPool.query(query, (err, results) => {
     if (err) {
       console.error('Error fetching seasonal data:', err);
       return res.status(500).json({ message: 'Database error' });
@@ -277,10 +290,8 @@ app.get('/api/seasonalData', (req, res) => {
   });
 });
 
-
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
-
 

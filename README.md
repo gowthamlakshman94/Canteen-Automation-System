@@ -153,6 +153,13 @@ Make sure to run both the backend and MySQL database in the same Docker network.
 docker run -d --name cas-be --network app-network -p 3000:3000 cas-be:10
 ```
 
+To run the application in kubernetes, please use the k8s_deployment.yaml file
+
+```bash
+kubectl apply -f k8s_deployment.yaml
+```
+
+
 ---
 
 ### Notes:

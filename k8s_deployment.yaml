@@ -1,0 +1,244 @@
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: canteen-automation
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ghcr-secret
+  namespace: canteen-automation
+data:
+  .dockerconfigjson: <docker_secret_here>
+type: kubernetes.io/dockerconfigjson
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cas-fe
+  namespace: canteen-automation
+spec:
+  selector:
+    app: cas-fe
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cas-fe
+  namespace: canteen-automation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cas-fe
+  template:
+    metadata:
+      labels:
+        app: cas-fe
+    spec:
+      containers:
+        - name: cas-fe
+          image: ghcr.io/gowthamlakshman94/cas-fe:1.4
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+        - name: ghcr-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cas-be
+  namespace: canteen-automation
+spec:
+  selector:
+    app: cas-be
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cas-be
+  namespace: canteen-automation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cas-be
+  template:
+    metadata:
+      labels:
+        app: cas-be
+    spec:
+      containers:
+        - name: cas-be
+          image: ghcr.io/gowthamlakshman94/cas-be:11
+          ports:
+            - containerPort: 3000
+      imagePullSecrets:
+        - name: ghcr-secret
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  namespace: canteen-automation
+  annotations:
+    traefik.ingress.kubernetes.io/rewrite-target: /
+    traefik.ingress.kubernetes.io/rule-type: PathPrefix
+spec:
+  rules:
+    - host: cvrschnql021  # You can set your domain here if you have one
+      http:
+        paths:
+          - path: /  # This routes the home page to the frontend
+            pathType: Prefix
+            backend:
+              service:
+                name: cas-fe
+                port:
+                  number: 80
+          - path: /api  # Backend API path
+            pathType: Prefix
+            backend:
+              service:
+                name: cas-be
+                port:
+                  number: 3000
+          - path: /submitOrder  # Order submission path
+            pathType: Prefix
+            backend:
+              service:
+                name: cas-be
+                port:
+                  number: 3000
+          - path: /daily-item  # Daily items path
+            pathType: Prefix
+            backend:
+              service:
+                name: cas-be
+                port:
+                  number: 3000
+          - path: /daily-wastage  # Daily wastage path
+            pathType: Prefix
+            backend:
+              service:
+                name: cas-be
+                port:
+                  number: 3000
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv
+  namespace: canteen-automation
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
+  hostPath:
+    path: /mnt/data/mysql  # For local storage (use cloud storage provider for cloud environments)
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+  namespace: canteen-automation
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: standard
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: canteen-automation
+spec:
+  replicas: 1
+  podManagementPolicy: OrderedReady
+  serviceName: "mysql"
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      terminationGracePeriodSeconds: 60  # Correct placement under template.spec
+      containers:
+        - name: mysql
+          image: ghcr.io/gowthamlakshman94/mysql:5.7
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "password"
+            - name: MYSQL_DATABASE
+              value: "canteen_automation"
+            - name: MYSQL_ALLOW_EMPTY_PASSWORD
+              value: "no"
+            - name: MYSQL_ROOT_HOST
+              value: "%"
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - -u
+                - root
+                - -ppassword
+                - ping
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - -u
+                - root
+                - -ppassword
+                - ping
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 3
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+      imagePullSecrets:
+        - name: ghcr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: canteen-automation
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: mysql
