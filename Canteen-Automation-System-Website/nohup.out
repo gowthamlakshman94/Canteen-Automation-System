@@ -1068,3 +1068,28 @@ Keyboard interrupt received, exiting.
 204.76.203.15 - - [16/Mar/2025 08:33:49] "GET / HTTP/1.1" 200 -
 117.193.230.12 - - [16/Mar/2025 08:36:33] "GET /order_status.html HTTP/1.1" 304 -
 117.193.230.12 - - [16/Mar/2025 08:37:27] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 12:44:51] "GET /login.html HTTP/1.1" 200 -
+127.0.0.1 - - [16/Mar/2025 12:44:51] code 404, message File not found
+127.0.0.1 - - [16/Mar/2025 12:44:51] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [16/Mar/2025 12:45:06] "GET /login.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 12:45:40] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [16/Mar/2025 12:45:45] "GET /sign%20up.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 12:58:22] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [16/Mar/2025 13:30:34] code 404, message File not found
+127.0.0.1 - - [16/Mar/2025 13:30:34] "GET /signup.html HTTP/1.1" 404 -
+127.0.0.1 - - [16/Mar/2025 13:31:15] "GET /sign%20up.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 13:32:55] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [16/Mar/2025 14:14:36] "GET /order_status.html HTTP/1.1" 200 -
+127.0.0.1 - - [16/Mar/2025 14:14:41] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 14:15:59] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 14:16:00] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 14:24:00] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 14:24:20] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 14:34:52] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 14:34:53] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 14:34:54] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 14:34:55] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 14:34:56] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 14:34:57] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 14:35:04] "GET /order_status.html HTTP/1.1" 304 -
+127.0.0.1 - - [16/Mar/2025 14:35:09] "GET /order_status.html HTTP/1.1" 304 -

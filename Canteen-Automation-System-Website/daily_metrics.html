@@ -70,7 +70,7 @@
     <script>
         // Fetch daily metrics from the backend
         function fetchDailyMetrics() {
-            fetch('http://34.45.242.132:3000/api/dailyMetrics')  // Assuming this is your API endpoint
+            fetch('http://localhost:3000/api/dailyMetrics')  // Assuming this is your API endpoint
                 .then(response => response.json())
                 .then(data => {
                     // Update the UI with the fetched data

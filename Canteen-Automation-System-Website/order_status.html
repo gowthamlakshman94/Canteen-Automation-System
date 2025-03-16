@@ -48,7 +48,7 @@
 
     <script>
         // Fetch the orders from the API
-        fetch('http://34.45.242.132:3000/api/orders')
+        fetch('http://localhost:3000/api/orders')
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.getElementById('orderTable').getElementsByTagName('tbody')[0];
@@ -78,7 +78,7 @@
 
         // Update the delivery status of a specific item in the order
         function markDelivered(orderId, itemName) {
-            fetch('http://34.45.242.132:3000/api/updateDeliveryStatus', {
+            fetch('http://localhost:3000/api/updateDeliveryStatus', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

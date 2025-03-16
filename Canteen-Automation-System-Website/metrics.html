@@ -59,7 +59,7 @@
         function fetchMetrics() {
             const fromDate = document.getElementById('fromDate').value;
             const toDate = document.getElementById('toDate').value;
-            const apiUrl = `http://34.45.242.132:3000/api/itemMetrics?from=${fromDate}&to=${toDate}`;
+            const apiUrl = `http://localhost:3000/api/itemMetrics?from=${fromDate}&to=${toDate}`;
 
             console.log('Fetching metrics from:', apiUrl); // Log the URL for debugging
 

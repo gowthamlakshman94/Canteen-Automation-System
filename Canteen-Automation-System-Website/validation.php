@@ -1,7 +1,7 @@
 <?php
 session_start(); 
 
-$con = mysqli_connect('34.45.242.132','root'); 
+$con = mysqli_connect('localhost','root'); 
 mysqli_select_db($con, 'adesh');  
 $name = $_POST['user']; 
 $pass = $_POST['password']; 

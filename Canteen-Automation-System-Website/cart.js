@@ -156,7 +156,7 @@ function prepareOrderData() {
 
 function submitOrder(orderData) {
     console.log("Submitting order:", orderData); // Debugging line
-    fetch('http://34.45.242.132:3000/submitOrder', {
+    fetch('http://localhost:3000/submitOrder', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

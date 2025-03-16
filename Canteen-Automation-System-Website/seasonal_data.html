@@ -38,7 +38,7 @@
   <script>
     async function fetchSeasonalData() {
       try {
-        const response = await fetch('http://34.45.242.132:3000/api/seasonalData');
+        const response = await fetch('http://localhost:3000/api/seasonalData');
         const data = await response.json();
 
         const { selectedSeasons, seasonData } = data;
