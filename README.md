@@ -135,6 +135,18 @@ VALUES
 (49, 1732542494006, 'Chicken Shawarma', 70.00, 1, 0, '2024-11-25 13:48:02'),
 (50, 1732542494006, 'Tangdi Kabab', 160.00, 1, 0, '2024-11-25 13:48:02');
 
+# user data table
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    contact VARCHAR(15) NOT NULL,
+    city VARCHAR(50) NOT NULL,
+    address TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 ```
 

