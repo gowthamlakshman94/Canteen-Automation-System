@@ -41,28 +41,32 @@ function handleDBConnection() {
 // Ensure that the MySQL connection is healthy at the start
 handleDBConnection();
 
-// API to handle order submission
-app.post('/submitOrder', (req, res) => {
-    const { orderId, items } = req.body;
-    
-    // Generate current timestamp in YYYY-MM-DD HH:MM:SS format
-    const createdAt = new Date().toISOString().slice(0, 19).replace("T", " ");  // '2024-11-25 11:46:48'
 
-    if (!orderId || !items || !Array.isArray(items)) {
+app.post('/submitOrder', (req, res) => {
+    const { orderId, userEmail, items } = req.body;
+
+    // Generate current timestamp in 'YYYY-MM-DD HH:MM:SS' format
+    const createdAt = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+    // Basic validation
+    if (!orderId || !userEmail || !items || !Array.isArray(items)) {
         return res.status(400).send({ message: 'Invalid order data' });
     }
 
+    // Prepare values for bulk insert
     const values = items.map(item => [
         orderId,
+        userEmail,
         item.itemName,
         item.price,
         item.quantity,
         item.delivered ? 1 : 0,
-        createdAt  // Add createdAt in correct format
+        createdAt
     ]);
 
+    // Updated SQL to include user_email
     const sql = `
-        INSERT INTO orders (order_id, item_name, price, quantity, delivered, createdAt)
+        INSERT INTO orders (order_id, user_email, item_name, price, quantity, delivered, createdAt)
         VALUES ?
     `;
 
@@ -71,9 +75,10 @@ app.post('/submitOrder', (req, res) => {
             console.error('Error inserting order:', err);
             return res.status(500).send({ message: 'Error submitting order' });
         }
-        res.status(200).send({ message: 'Order submitted successfully' });
+        res.status(200).send({ message: 'Order submitted successfully', orderId: orderId });
     });
 });
+
 
 // API to fetch orders
 app.get('/api/orders', (req, res) => {

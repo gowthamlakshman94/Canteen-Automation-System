@@ -122,40 +122,57 @@ function updateCartTotal() {
     document.getElementsByClassName('cart-total-price')[0].innerHTML = "&#8377;" + total;
 }
 
+
 function prepareOrderData() {
     var cartItems = document.getElementsByClassName("cartItems")[0];
     var cartRows = cartItems.getElementsByClassName("cart-row");
     var items = [];
     var createdAt = new Date().toISOString(); // Current timestamp in ISO format
 
+    // Get userEmail from cookie
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+    }
+
+    var userEmail = getCookie("userEmail");
+
     for (var i = 0; i < cartRows.length; i++) {
         var cartRow = cartRows[i];
         var itemName = cartRow.getElementsByClassName("cart-item-title")[0].innerText;
         var price = cartRow.getElementsByClassName("cart-price")[0].innerText;
         price = parseFloat(price.slice(1));
-
         var quantity = cartRow.getElementsByClassName("cart-quantity-input")[0].value;
 
         items.push({
             itemName: itemName,
             price: price,
             quantity: quantity,
-            createdAt: createdAt // Add the createdAt field
+            createdAt: createdAt
         });
     }
 
     if (items.length > 0) {
         var orderId = new Date().getTime(); // Generate order ID
         localStorage.setItem('orderId', orderId); // Store the orderId in localStorage
-        return { orderId: orderId, items: items };
+
+        return {
+            orderId: orderId,
+            userEmail: userEmail || "unknown", // fallback in case cookie isn't found
+            items: items
+        };
     } else {
         alert("Your cart is empty!");
         return null;
     }
 }
 
+
+
 function submitOrder(orderData) {
-    console.log("Submitting order:", orderData); // Debugging line
+    console.log("Submitting order:", orderData);
+
     fetch('http://localhost:3000/submitOrder', {
         method: 'POST',
         headers: {
@@ -167,11 +184,18 @@ function submitOrder(orderData) {
     .then(data => {
         console.log('Order submitted successfully:', data);
         alert('Order submitted successfully!');
+
+        // Save confirmation info for use elsewhere
+        localStorage.setItem('orderSubmitted', 'true');
+        localStorage.setItem('orderId', data.orderId || 'N/A');
+
+        // Optional: show order info in current page (if you want)
+        // document.getElementById("someElement").innerText = "Order ID: " + data.orderId;
     })
     .catch(error => {
         console.error('Error submitting order:', error);
         alert('Error submitting order');
     });
-	
-
 }
+
+

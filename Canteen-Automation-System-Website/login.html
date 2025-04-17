@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +12,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-		    <a class="navbar-brand">Canteen Automation System</a>
+		        <a class="navbar-brand">Canteen Automation System</a>
             </div>
         </div>
     </nav>
@@ -41,19 +42,30 @@
     </div>
 
     <script>
+        // Helper function to set a cookie
+        function setCookie(name, value, days) {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+        }
+
+        // Submit handler for login form
         $("#loginForm").submit(function(event) {
             event.preventDefault();
+            const email = $("input[name='email']").val();
+            const password = $("input[name='password']").val();
+
             $.ajax({
                 url: "http://localhost:3000/login", // Ensure this matches your backend URL
                 type: "POST",
                 contentType: "application/json",
-                data: JSON.stringify({
-                    email: $("input[name='email']").val(),
-                    password: $("input[name='password']").val()
-                }),
+                data: JSON.stringify({ email, password }),
                 success: function(response) {
                     if (response.success) {
-                        window.location.href = "/First%20Page.html"; // Change as per your main page
+                        // Store email in cookie for 7 days
+                        setCookie('userEmail', email, 7);
+
+                        // Redirect on success
+                        window.location.href = "/First%20Page.html"; // Change as needed
                     } else {
                         $("#loginError").show();
                     }
