@@ -169,8 +169,22 @@ function prepareOrderData() {
 }
 
 
+function getCookieValue(name) {
+    const value = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return value ? value.pop() : '';
+}
 
 function submitOrder(orderData) {
+    const userEmail = getCookieValue('userEmail');
+
+    if (!userEmail) {
+        alert('User email not found. Please log in before submitting an order.');
+        return;
+    }
+
+    // Attach userEmail to the order data
+    orderData.user_email = userEmail;
+
     console.log("Submitting order:", orderData);
 
     fetch('http://localhost:3000/submitOrder', {
@@ -185,12 +199,8 @@ function submitOrder(orderData) {
         console.log('Order submitted successfully:', data);
         alert('Order submitted successfully!');
 
-        // Save confirmation info for use elsewhere
         localStorage.setItem('orderSubmitted', 'true');
         localStorage.setItem('orderId', data.orderId || 'N/A');
-
-        // Optional: show order info in current page (if you want)
-        // document.getElementById("someElement").innerText = "Order ID: " + data.orderId;
     })
     .catch(error => {
         console.error('Error submitting order:', error);

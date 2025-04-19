@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,11 +36,12 @@
         <thead>
             <tr>
                 <th>Order ID</th>
+                <th>User Email</th> <!-- New column for User Email -->
                 <th>Item Name</th>
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Delivered</th>
-                <th>Date and Time</th> <!-- New column for Date and Time -->
+                <th>Date and Time</th>
             </tr>
         </thead>
         <tbody>
@@ -54,20 +57,20 @@
                 const tableBody = document.getElementById('orderTable').getElementsByTagName('tbody')[0];
                 data.forEach(order => {
                     const row = document.createElement('tr');
-                    const deliveredStatus = order.delivered ? 'Yes' : 'No'; // Check if delivered is true
+                    const deliveredStatus = order.delivered ? 'Yes' : 'No';
                     const button = order.delivered ? '' : `<button onclick="markDelivered('${order.order_id}', '${order.item_name}')">Mark as Delivered</button>`;
-                    
-                    // Use createdAt field to get the date and time
-                    const createdAt = new Date(order.createdAt);  // Assuming createdAt is a valid date/time string
-                    const formattedDate = createdAt.toLocaleString();  // Format the createdAt date and time
+
+                    const createdAt = new Date(order.createdAt);
+                    const formattedDate = createdAt.toLocaleString();
 
                     row.innerHTML = `
                         <td>${order.order_id}</td>
+                        <td>${order.user_email}</td> <!-- Display user email -->
                         <td>${order.item_name}</td>
                         <td>${order.price}</td>
                         <td>${order.quantity}</td>
                         <td>${deliveredStatus} ${button}</td>
-                        <td>${formattedDate}</td> <!-- Display formatted createdAt date and time -->
+                        <td>${formattedDate}</td>
                     `;
                     tableBody.appendChild(row);
                 });
@@ -76,7 +79,7 @@
                 console.error('Error fetching orders:', error);
             });
 
-        // Update the delivery status of a specific item in the order
+        // Update delivery status
         function markDelivered(orderId, itemName) {
             fetch('http://localhost:3000/api/updateDeliveryStatus', {
                 method: 'POST',
@@ -89,7 +92,7 @@
             .then(result => {
                 if (result.success) {
                     alert('Item marked as delivered');
-                    location.reload();  // Reload the page to update the table
+                    location.reload();
                 } else {
                     alert('Failed to mark item as delivered');
                 }
