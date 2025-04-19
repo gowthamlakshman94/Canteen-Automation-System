@@ -65,7 +65,7 @@ USE canteen_automation;
 CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id BIGINT NOT NULL,
-	user_email VARCHAR(255) NOT NULL,
+    user_email VARCHAR(255) NOT NULL,
     item_name VARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     quantity INT NOT NULL,
