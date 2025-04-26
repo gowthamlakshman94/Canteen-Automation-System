@@ -100,7 +100,7 @@ metadata:
     traefik.ingress.kubernetes.io/rule-type: PathPrefix
 spec:
   rules:
-    - host: cvrschnql021  # You can set your domain here if you have one
+    - host: localhost  # You can set your domain here if you have one
       http:
         paths:
           - path: /  # This routes the home page to the frontend
