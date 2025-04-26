@@ -1390,3 +1390,10 @@ Keyboard interrupt received, exiting.
 127.0.0.1 - - [19/Apr/2025 11:09:50] "GET /Dinner.html HTTP/1.1" 304 -
 127.0.0.1 - - [19/Apr/2025 11:09:50] "GET /SEPM%20145.jpg HTTP/1.1" 304 -
 127.0.0.1 - - [19/Apr/2025 11:09:51] "GET /Garlic-Butter-Naan.jpg HTTP/1.1" 304 -
+127.0.0.1 - - [26/Apr/2025 11:34:13] "GET /metrics.html HTTP/1.1" 200 -
+127.0.0.1 - - [26/Apr/2025 11:34:15] code 404, message File not found
+127.0.0.1 - - [26/Apr/2025 11:34:15] "GET /favicon.ico HTTP/1.1" 404 -
+127.0.0.1 - - [26/Apr/2025 11:34:41] "GET /metrics.html HTTP/1.1" 304 -
+127.0.0.1 - - [26/Apr/2025 11:35:37] "GET /metrics.html HTTP/1.1" 200 -
+127.0.0.1 - - [26/Apr/2025 11:41:38] "GET /metrics.html HTTP/1.1" 200 -
+127.0.0.1 - - [26/Apr/2025 11:49:18] "GET /metrics.html HTTP/1.1" 304 -

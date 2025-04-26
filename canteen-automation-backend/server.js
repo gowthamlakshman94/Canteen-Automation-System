@@ -142,13 +142,10 @@ app.get('/api/dailyMetrics', (req, res) => {
   });
 });
 
+
 // API to fetch item-wise metrics
 app.get('/api/itemMetrics', (req, res) => {
-  const { date } = req.query;
-
-  // Parse the provided date into start and end timestamps
-  const startDate = date ? new Date(date + 'T00:00:00Z').getTime() : null;
-  const endDate = date ? new Date(date + 'T23:59:59Z').getTime() : null;
+  const { from, to } = req.query;
 
   let sql = `
     SELECT
@@ -160,11 +157,11 @@ app.get('/api/itemMetrics', (req, res) => {
   `;
   const params = [];
 
-  if (startDate && endDate) {
+  if (from && to) {
     sql += `
-      WHERE UNIX_TIMESTAMP(createdAt) BETWEEN ? AND ?
+      WHERE createdAt BETWEEN ? AND ?
     `;
-    params.push(startDate / 1000, endDate / 1000);
+    params.push(from + ' 00:00:00', to + ' 23:59:59');
   }
 
   sql += `
@@ -180,6 +177,7 @@ app.get('/api/itemMetrics', (req, res) => {
     res.send({ metrics: results });
   });
 });
+
 
 // Route to handle data insertion
 app.post('/daily-item', (req, res) => {
