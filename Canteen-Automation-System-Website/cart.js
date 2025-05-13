@@ -1,3 +1,4 @@
+
 if (document.readyState == "loading") {
     document.addEventListener("DOMContentLoaded", ready);
 } else {
@@ -40,10 +41,10 @@ function purchaseClicked() {
     if (orderData) {
         submitOrder(orderData);
     }
-	
+
 	while (cartItems.hasChildNodes()) {
         cartItems.removeChild(cartItems.firstChild);
-    }	
+    }
 
 }
 
@@ -187,24 +188,12 @@ function submitOrder(orderData) {
 
     console.log("Submitting order:", orderData);
 
-    fetch('http://localhost:3000/submitOrder', {
+    fetch(`${BASE_URL}/submitOrder`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(orderData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Order submitted successfully:', data);
-        alert('Order submitted successfully!');
-
-        localStorage.setItem('orderSubmitted', 'true');
-        localStorage.setItem('orderId', data.orderId || 'N/A');
-    })
-    .catch(error => {
-        console.error('Error submitting order:', error);
-        alert('Error submitting order');
     });
 }
 

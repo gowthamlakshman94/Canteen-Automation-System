@@ -138,6 +138,27 @@ spec:
                 name: cas-be
                 port:
                   number: 3000
+          - path: /register  
+            pathType: Prefix
+            backend:
+              service:
+                name: cas-be
+                port:
+                  number: 3000
+          - path: /login
+            pathType: Prefix
+            backend:
+              service:
+                name: cas-be
+                port:
+                  number: 3000
+          - path: /checkOrder
+            pathType: Prefix
+            backend:
+              service:
+                name: cas-be
+                port:
+                  number: 3000
 ---
 apiVersion: v1
 kind: PersistentVolume

@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order List</title>
@@ -51,7 +52,7 @@
 
     <script>
         // Fetch the orders from the API
-        fetch('http://localhost:3000/api/orders')
+        fetch(`${BASE_URL}/api/orders`)
             .then(response => response.json())
             .then(data => {
                 const tableBody = document.getElementById('orderTable').getElementsByTagName('tbody')[0];
@@ -81,7 +82,7 @@
 
         // Update delivery status
         function markDelivered(orderId, itemName) {
-            fetch('http://localhost:3000/api/updateDeliveryStatus', {
+            fetch(`${BASE_URL}/api/updateDeliveryStatus`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

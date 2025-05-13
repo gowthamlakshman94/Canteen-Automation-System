@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Metrics</title>
@@ -70,7 +71,7 @@
     <script>
         // Fetch daily metrics from the backend
         function fetchDailyMetrics() {
-            fetch('http://localhost:3000/api/dailyMetrics')  // Assuming this is your API endpoint
+            fetch(`${BASE_URL}/api/dailyMetrics`)  // Assuming this is your API endpoint
                 .then(response => response.json())
                 .then(data => {
                     // Update the UI with the fetched data

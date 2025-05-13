@@ -36,7 +36,7 @@ sh ~/Canteen-Automation-System/'Canteen Automation System Website'/replace_local
 docker build -t cas-fe:1 .
 # make sure to run it in docker network
 docker network create app-network
-docker run -d   --name cas-fe   --network app-network  -p 80:80   cas-fe:1
+docker run -d  -e BASE_URL="http://your.api.url"  --name cas-fe   --network app-network  -p 80:80   cas-fe:1
 ```
 
 #### 2. **Setting up MySQL Database in Docker**

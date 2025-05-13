@@ -1,6 +1,8 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Navigation</title>
@@ -38,13 +40,23 @@
 <body>
     <h1>Access Your Pages</h1>
     <div class="link-container">
-        <a href="http://localhost/daily_wastage_report.html" target="_blank">Daily Wastage Report</a>
-        <a href="http://localhost/order_status.html" target="_blank">Order Status</a>
-        <a href="http://localhost/daily_item_quantity.html" target="_blank">Daily Item Quantity</a>
-        <a href="http://localhost/metrics.html" target="_blank">Metrics</a>
-        <a href="http://localhost/daily_metrics.html" target="_blank">Daily Metrics</a>
-	<a href="http://localhost/seasonal_data.html" target="_blank">Seasonal Data</a>
+        <a id="link1" target="_blank">Daily Wastage Report</a>
+        <a id="link2" target="_blank">Order Status</a>
+        <a id="link3" target="_blank">Daily Item Quantity</a>
+        <a id="link4" target="_blank">Metrics</a>
+        <a id="link5" target="_blank">Daily Metrics</a>
+        <a id="link6" target="_blank">Seasonal Data</a>
     </div>
+
+    <script>
+        const baseUrl = window.location.origin;
+        document.getElementById("link1").href = `${baseUrl}/daily_wastage_report.html`;
+        document.getElementById("link2").href = `${baseUrl}/order_status.html`;
+        document.getElementById("link3").href = `${baseUrl}/daily_item_quantity.html`;
+        document.getElementById("link4").href = `${baseUrl}/metrics.html`;
+        document.getElementById("link5").href = `${baseUrl}/daily_metrics.html`;
+        document.getElementById("link6").href = `${baseUrl}/seasonal_data.html`;
+    </script>
 </body>
 </html>
 

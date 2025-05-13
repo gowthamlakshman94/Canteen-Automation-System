@@ -337,6 +337,30 @@ app.post('/login', (req, res) => {
     });
 });
 
+// Endpoint to check order by orderId
+app.get('/checkOrder/:orderId', (req, res) => {
+    const orderId = req.params.orderId;
+
+    // Query to check if the order exists in the database
+    const query = 'SELECT * FROM orders WHERE order_id = ?';
+
+    dbPool.query(query, [orderId], (err, results) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+
+        if (results.length > 0) {
+            // Order exists
+            res.json({ exists: true });
+        } else {
+            // Order does not exist
+            res.json({ exists: false });
+        }
+    });
+});
+
+
 
 // Start the server
 app.listen(port, () => {

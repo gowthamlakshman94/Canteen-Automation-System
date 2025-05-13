@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feed Daily Item Data</title>
@@ -71,7 +72,7 @@
             };
 
             try {
-                const response = await fetch('http://localhost:3000/daily-item', {
+                const response = await fetch(`${BASE_URL}/daily-item`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

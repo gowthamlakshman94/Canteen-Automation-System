@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="config.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -52,7 +53,7 @@
         $("#signupForm").submit(function(event) {
             event.preventDefault();
             $.ajax({
-                url: "http://localhost:3000/register", // Ensure this matches your backend URL
+                url: "" + BASE_URL + "/register", // Ensure this matches your backend URL
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({

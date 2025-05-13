@@ -1397,3 +1397,1234 @@ Keyboard interrupt received, exiting.
 127.0.0.1 - - [26/Apr/2025 11:35:37] "GET /metrics.html HTTP/1.1" 200 -
 127.0.0.1 - - [26/Apr/2025 11:41:38] "GET /metrics.html HTTP/1.1" 200 -
 127.0.0.1 - - [26/Apr/2025 11:49:18] "GET /metrics.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:10:03] "GET /login.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:10:03] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:10:03] "GET /config.js HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:10:07] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:10:07] "GET /favicon.ico HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:10:08] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:10:08] "GET /config.js HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:10:13] "GET /admin.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:10:13] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:10:13] "GET /config.js HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:10:15] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:10:15] "GET /$%7BBASE_URL%7D/daily_wastage_report.html HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:11:42] "GET /login.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:11:42] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:11:57] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:11:58] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:11:58] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:11:58] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:11:58] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:11:58] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:11:58] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:11:58] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:11:58] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:11:58] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:11:58] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:12:07] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:12:07] "GET /$%7BBASE_URL%7D/daily_wastage_report.html HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:12:18] "GET /admin.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:12:18] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:14:30] "GET /admin.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:14:30] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:14:32] "GET /daily_wastage_report.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:14:36] "GET /order_status.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:14:36] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:14:36] "GET /%22%20+%20BASE_URL%20+%20%22/api/orders HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:14:38] "GET /daily_item_quantity.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:14:40] "GET /metrics.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:14:42] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:14:42] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:14:43] "GET /daily_metrics.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:14:43] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:14:43] "GET /%22%20+%20BASE_URL%20+%20%22/api/dailyMetrics HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:14:44] "GET /seasonal_data.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:14:45] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:14:45] "GET /%22%20+%20BASE_URL%20+%20%22/api/seasonalData HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:14:49] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:14:49] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:14:49] "GET /%22%20+%20BASE_URL%20+%20%22/api/seasonalData HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:15:00] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:15:00] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:15:00] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:15:00] "GET /%22%20+%20BASE_URL%20+%20%22/api/orders HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:15:01] "GET /daily_wastage_report.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:15:01] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:15:02] "GET /admin.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:15:05] "GET /admin.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:15:10] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:15:10] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:15:11] "GET /order_status.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:15:11] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:15:12] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:15:12] "GET /%22%20+%20BASE_URL%20+%20%22/api/orders HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:15:12] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:15:12] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:16:02] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:18:43] "GET /order_status.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:18:44] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:18:44] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:18:44] "GET /%22%20+%20BASE_URL%20+%20%22/api/orders HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:18:44] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:18:44] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:18:45] "GET /order_status.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:18:45] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:18:45] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:18:45] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:18:45] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:18:45] "GET /%22%20+%20BASE_URL%20+%20%22/api/orders HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:18:51] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:18:51] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:18:53] "GET /order_status.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:18:53] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:18:53] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:18:53] "GET /%22%20+%20BASE_URL%20+%20%22/api/orders HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:18:53] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:18:53] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:23:29] "GET /admin.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:23:29] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:23:30] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:23:30] "GET /%22%20+%20BASE_URL%20+%20%22/api/orders HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:26:55] "GET /order_status.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:26:55] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:27:13] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:27:21] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:27:24] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:27:24] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:27:26] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:27:26] "GET /%22%20+%20BASE_URL%20+%20%22/api/dailyMetrics HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:27:27] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:27:27] "GET /%22%20+%20BASE_URL%20+%20%22/api/seasonalData HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:27:34] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:27:34] "GET /%22%20+%20BASE_URL%20+%20%22/daily-wastage?date=2025-05-11 HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:27:50] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [11/May/2025 15:27:50] "POST /%22%20+%20BASE_URL%20+%20%22/daily-item HTTP/1.1" 501 -
+172.31.192.1 - - [11/May/2025 15:27:54] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [11/May/2025 15:27:54] "POST /%22%20+%20BASE_URL%20+%20%22/daily-item HTTP/1.1" 501 -
+172.31.192.1 - - [11/May/2025 15:28:34] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:28:34] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics?from=2024-06-01&to=2025-05-11 HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:28:36] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:28:36] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics?from=2024-06-01&to=2025-05-11 HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:29:41] "GET /seasonal_data.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:29:41] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:31:09] "GET /login.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:10] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:10] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:31:10] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:31:21] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:21] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:21] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:21] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:21] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:21] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:21] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:21] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:21] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:21] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:23] "GET /Lunch.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:23] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:23] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:23] "GET /SEPM%20146.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:23] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:23] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:23] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:23] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:24] "GET /SEPM%20147.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:24] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:24] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:24] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:24] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:24] "GET /Chicken-Biryani3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:24] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:27] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:27] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [11/May/2025 15:31:27] "POST /%22%20+%20BASE_URL%20+%20%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [11/May/2025 15:31:28] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:40] "GET /admin.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:42] "GET /daily_wastage_report.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:31:46] "GET /order_status.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:32:04] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:32:04] "GET /%22%20+%20BASE_URL%20+%20%22/daily-wastage?date=2025-05-11 HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:32:10] "GET /daily_item_quantity.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:32:22] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:32:22] "GET /%22%20+%20BASE_URL%20+%20%22/daily-wastage?date=2025-05-11 HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:33:39] "GET /daily_wastage_report.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:33:39] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:33:49] "GET /First%20Page.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:33:49] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:33:50] "GET /Lunch.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:33:58] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:33:58] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:34:12] "GET /login.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:34:19] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:34:19] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:34:27] "GET /Dinner.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /SEPM%20145.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /Garlic-Butter-Naan.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:28] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:29] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:29] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:34:29] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:34:31] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:36] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [11/May/2025 15:34:36] "POST /%22%20+%20BASE_URL%20+%20%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [11/May/2025 15:34:36] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:38] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:38] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:38] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:38] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:38] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:34:38] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:34:38] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:37:43] "GET /First%20Page.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:37:43] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:37:43] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:37:43] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:37:46] "GET /Dinner.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:37:46] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:37:46] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:37:52] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:37:52] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [11/May/2025 15:37:52] "POST /%22%20+%20BASE_URL%20+%20%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [11/May/2025 15:37:52] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:37:52] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:40:49] "GET /First%20Page.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:40:49] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:40:49] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:40:49] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:40:51] "GET /Breakfast.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:40:52] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:40:52] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:40:52] "GET /Aloo%20Paratha.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:40:52] "GET /SEPM%2025.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:40:52] "GET /SEPM%20117.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:40:52] "GET /tea.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:40:52] "GET /SEPM%20118.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:40:52] "GET /SEPM%2023.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:40:53] "GET /SEPM%20138.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:40:53] "GET /Dosa.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:40:53] "GET /idly.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 15:40:53] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:40:53] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:40:58] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:40:58] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [11/May/2025 15:40:58] "POST /%22%20+%20BASE_URL%20+%20%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [11/May/2025 15:40:58] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:40:58] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:41:31] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:41:31] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:41:34] "GET /Dinner.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:41:34] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:41:34] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:41:41] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [11/May/2025 15:41:41] "POST /%22%20+%20BASE_URL%20+%20%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [11/May/2025 15:41:41] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:41:41] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:55:59] "GET /First%20Page.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 15:55:59] code 404, message File not found
+172.31.192.1 - - [11/May/2025 15:55:59] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 15:56:00] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 16:11:36] "GET /daily_wastage_report.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 16:11:36] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 16:11:50] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 16:11:56] "GET /seasonal_data.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 16:12:05] "GET /metrics.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 16:12:14] code 404, message File not found
+172.31.192.1 - - [11/May/2025 16:12:14] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 16:12:23] code 404, message File not found
+172.31.192.1 - - [11/May/2025 16:12:23] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 16:12:25] code 404, message File not found
+172.31.192.1 - - [11/May/2025 16:12:25] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics?from=2025-01-01&to=2025-05-11 HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 16:12:29] code 404, message File not found
+172.31.192.1 - - [11/May/2025 16:12:29] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics?from=2025-01-01&to=2025-05-11 HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 16:12:29] code 404, message File not found
+172.31.192.1 - - [11/May/2025 16:12:29] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 16:12:30] code 404, message File not found
+172.31.192.1 - - [11/May/2025 16:12:30] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics?from=2025-01-01&to=2025-05-11 HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 16:12:38] code 404, message File not found
+172.31.192.1 - - [11/May/2025 16:12:38] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics?from=2024-01-01&to=2025-05-11 HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 16:12:38] code 404, message File not found
+172.31.192.1 - - [11/May/2025 16:12:38] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics?from=2024-01-01&to=2025-05-11 HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 16:12:42] code 404, message File not found
+172.31.192.1 - - [11/May/2025 16:12:42] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics?from=2024-01-01&to=2025-05-11 HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 16:14:15] code 404, message File not found
+172.31.192.1 - - [11/May/2025 16:14:15] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics?from=2024-01-01&to=2025-05-11 HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 16:14:30] code 404, message File not found
+172.31.192.1 - - [11/May/2025 16:14:30] "GET /%22%20+%20BASE_URL%20+%20%22/api/itemMetrics HTTP/1.1" 404 -
+172.31.192.1 - - [11/May/2025 16:14:35] "GET /metrics.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 16:14:38] "GET /metrics.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 16:15:03] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 16:15:06] "GET /daily_item_quantity.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 16:15:27] "GET /metrics.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 16:15:33] "GET /daily_metrics.html HTTP/1.1" 200 -
+172.31.192.1 - - [11/May/2025 17:14:02] "GET /seasonal_data.html HTTP/1.1" 304 -
+172.31.192.1 - - [11/May/2025 17:14:02] "GET /config.js HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:10:01] "GET /login.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:02] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:05] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:10:05] "GET /favicon.ico HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:10:12] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:12] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:12] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:12] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:12] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:12] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:12] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:13] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:13] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:13] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:16] "GET /order_status.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:19] "GET /Lunch.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /SEPM%20146.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /SEPM%20147.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /Chicken-Biryani3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:20] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:25] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:25] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [12/May/2025 11:10:25] "POST /%22%20+%20BASE_URL%20+%20%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [12/May/2025 11:10:26] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:10:28] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:10:35] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:10:54] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [12/May/2025 11:10:54] "POST /%22%20+%20BASE_URL%20+%20%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [12/May/2025 11:10:56] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:11:01] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:11:01] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:11:13] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:11:13] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:11:16] "GET /Dinner.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:11:16] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:11:16] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:11:17] "GET /SEPM%20145.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:11:17] "GET /Garlic-Butter-Naan.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:11:21] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [12/May/2025 11:11:21] "POST /%22%20+%20BASE_URL%20+%20%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [12/May/2025 11:11:22] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:11:22] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:14:15] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:14:18] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:16:35] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:16:35] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:16:35] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:16:36] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:16:36] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:16:38] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:16:38] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:16:43] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [12/May/2025 11:16:43] "POST /%22%20+%20BASE_URL%20+%20%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [12/May/2025 11:16:44] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:16:44] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:16:46] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:16:47] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:16:47] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:16:47] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:16:51] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:16:51] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:16:53] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:16:53] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:16:58] "GET /Breakfast.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:16:58] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:16:58] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:16:59] "GET /SEPM%2025.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:16:59] "GET /Aloo%20Paratha.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:16:59] "GET /SEPM%20117.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:16:59] "GET /tea.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:16:59] "GET /SEPM%20118.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:16:59] "GET /SEPM%2023.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:16:59] "GET /SEPM%20138.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:16:59] "GET /Dosa.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:16:59] "GET /idly.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:16:59] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:16:59] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:17:05] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [12/May/2025 11:17:05] "POST /%22%20+%20BASE_URL%20+%20%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [12/May/2025 11:17:05] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:17:05] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:17:07] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:17:10] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:17:11] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:17:11] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:17:26] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:29] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:17:29] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:17:31] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:17:31] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:17:38] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [12/May/2025 11:17:38] "POST /%22%20+%20BASE_URL%20+%20%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [12/May/2025 11:17:38] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:17:38] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:17:45] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:46] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:46] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:46] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:46] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:46] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:17:46] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:17:46] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:46] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:46] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:46] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:46] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:46] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:47] "GET /Breakfast.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /Aloo%20Paratha.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /SEPM%2025.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /SEPM%20117.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /tea.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /SEPM%20118.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /SEPM%2023.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:48] "GET /SEPM%20138.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:49] "GET /Dosa.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:49] "GET /idly.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:49] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:53] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:54] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:54] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:54] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:54] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:17:54] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:17:54] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:54] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:55] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:56] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:56] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:56] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:56] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:56] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:17:56] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:17:56] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:56] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:56] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:56] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:56] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:56] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:57] "GET /Breakfast.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:57] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /Aloo%20Paratha.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /SEPM%2025.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /SEPM%20117.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /tea.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /SEPM%20118.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /SEPM%2023.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /SEPM%20138.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /Dosa.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:58] "GET /idly.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:59] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:17:59] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:03] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [12/May/2025 11:18:03] "POST /$%7BBASE_URL%7D%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [12/May/2025 11:18:03] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:04] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:04] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:04] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:18:04] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:18:04] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:04] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:04] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:07] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:18:11] "GET /cart.js HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:18:19] "GET /login.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:19] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:22] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:18:22] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:18:29] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:29] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:29] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:29] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:29] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:29] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:18:29] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:18:29] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:29] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:29] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:29] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:29] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:29] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:31] "GET /Breakfast.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:31] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:31] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:31] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:31] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:31] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:18:31] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:18:31] "GET /Aloo%20Paratha.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /SEPM%2025.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /SEPM%20117.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /tea.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /SEPM%20118.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /SEPM%2023.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /SEPM%20138.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /Dosa.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /idly.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:32] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:33] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:36] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [12/May/2025 11:18:36] "POST /$%7BBASE_URL%7D%22/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [12/May/2025 11:18:36] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:37] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:37] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:37] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:18:37] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:18:37] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:38] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:38] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:48] "GET /order_status.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:18:51] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:18:55] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:24:25] "GET /cart.js HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:24:54] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:24:59] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:24:59] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:24:59] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:24:59] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:24:59] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:24:59] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:24:59] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:25:00] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:00] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:00] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:00] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:00] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:00] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:01] "GET /Breakfast.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /Aloo%20Paratha.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /SEPM%2025.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /SEPM%20117.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /tea.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /SEPM%20118.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /SEPM%2023.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /SEPM%20138.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:02] "GET /Dosa.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:03] "GET /idly.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:03] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:04] "GET /tea.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:07] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:07] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:07] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [12/May/2025 11:25:07] "POST /$%7BBASE_URL%7D/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [12/May/2025 11:25:07] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:07] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:08] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:08] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:25:08] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:25:08] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:25:10] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:25:42] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:25:45] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:25:46] "GET /cart.js HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:26:25] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:27] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:27] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:27] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:27] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:27] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:27] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:26:27] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:26:29] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:29] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:29] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:29] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:29] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:29] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /Breakfast.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:30] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /Aloo%20Paratha.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /SEPM%2025.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /SEPM%20117.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:30] "GET /tea.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:31] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:31] "GET /SEPM%20118.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:31] "GET /SEPM%2023.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:31] "GET /SEPM%20138.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:31] "GET /Dosa.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:31] "GET /idly.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:31] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:31] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:35] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:35] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:35] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:35] code 404, message File not found
+172.31.192.1 - - [12/May/2025 11:26:35] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [12/May/2025 11:26:35] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:35] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:35] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [12/May/2025 11:26:37] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [12/May/2025 11:30:53] "GET /cart.js HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 10:53:26] "GET /login.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:26] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:30] code 404, message File not found
+172.31.192.1 - - [13/May/2025 10:53:30] "GET /favicon.ico HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 10:53:37] "GET /admin.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:39] "GET /order_status.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:49] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:49] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:49] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:49] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:49] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:49] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:49] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:50] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:50] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:50] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:53] "GET /Lunch.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:53] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:53] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:53] "GET /SEPM%20146.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:53] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:53] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:53] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:54] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:54] "GET /SEPM%20147.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:54] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:54] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:54] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:54] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:54] "GET /Chicken-Biryani3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:54] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:58] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:53:59] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:54:03] code 404, message File not found
+172.31.192.1 - - [13/May/2025 10:54:03] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 10:54:15] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 10:54:29] "GET /daily_wastage_report.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:54:30] "GET /daily_item_quantity.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:54:32] "GET /metrics.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:54:33] "GET /daily_metrics.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:54:34] "GET /seasonal_data.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:54:49] "GET /daily_wastage_report.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 10:55:12] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 10:56:01] code 404, message File not found
+172.31.192.1 - - [13/May/2025 10:56:01] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 10:56:04] "GET /Dinner.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:04] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] code 404, message File not found
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /SEPM%20145.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /Garlic-Butter-Naan.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:05] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:11] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:17] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:18] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:18] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:18] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:18] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:18] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:18] code 404, message File not found
+172.31.192.1 - - [13/May/2025 10:56:18] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 10:56:20] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:21] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:21] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:21] code 404, message File not found
+172.31.192.1 - - [13/May/2025 10:56:21] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 10:56:21] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:21] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:21] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 10:56:24] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:01:21] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:21] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:21] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:21] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:21] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:01:21] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:01:21] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:22] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:23] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:23] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:23] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:23] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:23] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:23] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:01:23] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:01:24] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:24] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:24] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:24] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:24] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:24] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:26] "GET /Lunch.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:26] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:26] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:26] "GET /SEPM%20146.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:26] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:26] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:01:26] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:01:26] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /SEPM%20147.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /Chicken-Biryani3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:27] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:29] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:32] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:32] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:32] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:32] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:01:32] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:01:33] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:33] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:33] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:44] "GET /cart.js HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:01:47] "GET /cart.js HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:01:49] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:50] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:50] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:50] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:01:50] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:01:50] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:50] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:50] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:57] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:58] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:58] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:58] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:58] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:58] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:01:58] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:01:58] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:58] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:58] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:58] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:58] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:01:58] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /Dinner.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /SEPM%20145.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:02] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:03] "GET /Garlic-Butter-Naan.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:03] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:03] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:03] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:02:03] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:02:08] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:09] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:02:09] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:02:10] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:10] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:10] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:10] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:10] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:12] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:12] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:12] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:12] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:02:12] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:02:12] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:12] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:12] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:14] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:02:18] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:02:38] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:02:38] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:02:41] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:02:41] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:02:50] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:50] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:50] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:50] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:50] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:50] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:02:50] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:02:51] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:51] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:51] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:51] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:51] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:51] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:52] "GET /Lunch.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:52] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:52] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:52] "GET /SEPM%20146.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:52] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:52] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:02:52] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:02:52] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:52] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:52] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:52] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:52] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:52] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:53] "GET /SEPM%20147.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:53] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:53] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:53] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:53] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:53] "GET /Chicken-Biryani3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:53] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:53] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:54] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:57] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:57] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:57] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:57] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:02:57] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:02:58] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:58] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:02:58] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:03:13] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:27:36] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:37] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:37] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:37] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:37] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:37] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:27:37] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:27:37] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:37] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:37] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:37] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:37] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:37] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:38] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:38] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:38] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:38] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:38] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:38] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:27:38] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:27:38] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:39] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:39] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:39] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:39] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:39] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:40] "GET /Breakfast.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:41] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:27:41] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:27:41] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:41] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:41] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:41] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:41] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:41] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:41] "GET /Aloo%20Paratha.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:41] "GET /SEPM%2025.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:41] "GET /SEPM%20117.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:41] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:42] "GET /tea.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:42] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:42] "GET /SEPM%20118.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:42] "GET /SEPM%2023.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:42] "GET /SEPM%20138.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:42] "GET /Dosa.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:42] "GET /idly.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:42] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:43] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:47] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [13/May/2025 11:27:47] "POST /$%7BBASE_URL%7D/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [13/May/2025 11:27:47] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:48] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:48] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:48] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:27:48] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:27:48] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:48] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:48] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:50] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:50] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:50] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:50] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:27:50] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:27:50] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:50] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:50] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:51] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:52] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:52] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:52] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:27:52] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:27:52] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:52] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:27:52] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:03] "GET /login.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:03] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:11] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:12] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:12] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:12] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:12] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:12] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:12] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:12] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:12] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:12] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:14] "GET /Lunch.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:14] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:14] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:14] "GET /SEPM%20146.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:14] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:14] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:14] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:14] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:14] "GET /SEPM%20147.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:14] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:15] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:15] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:15] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:15] "GET /Chicken-Biryani3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:15] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:18] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:18] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [13/May/2025 11:28:18] "POST /$%7BBASE_URL%7D/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [13/May/2025 11:28:19] "GET /cart.js HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:28:19] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:29] "GET /admin.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:32] "GET /order_status.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:33] "GET /daily_wastage_report.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:28:41] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:28:43] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:28:47] "GET /cart.js HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:28:51] code 501, message Unsupported method ('POST')
+172.31.192.1 - - [13/May/2025 11:28:51] "POST /$%7BBASE_URL%7D/submitOrder HTTP/1.1" 501 -
+172.31.192.1 - - [13/May/2025 11:28:59] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:29:16] "GET /cart.js HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:30:03] "GET /Lunch.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:30:03] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:30:09] "GET /cart.js HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:30:13] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:30:22] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:36:11] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:13] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:36:14] "GET /cart.js HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:36:20] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:36:34] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:36:34] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:36:34] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:34] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:34] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:34] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:36:34] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:36:35] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:35] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:35] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:36] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:37] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:37] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:37] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:37] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:37] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:36:37] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:36:37] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:37] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:37] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:37] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:37] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:37] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:41] "GET /Lunch.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:41] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:41] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:41] "GET /SEPM%20146.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:41] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:41] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:36:41] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:36:41] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /SEPM%20147.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /Chicken-Biryani3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:42] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:46] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:47] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:48] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:48] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:48] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:36:48] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:36:48] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:48] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:48] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:36:51] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:37:52] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:40:58] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:40:58] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:40:58] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:40:58] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:40:58] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:40:59] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:40:59] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:40:59] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:00] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:01] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:01] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:01] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:01] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:01] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:41:01] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:41:01] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:01] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:01] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:01] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:01] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:01] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:02] "GET /Breakfast.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /Aloo%20Paratha.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /SEPM%2025.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /SEPM%20117.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /tea.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /SEPM%20118.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:03] "GET /SEPM%2023.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:04] "GET /SEPM%20138.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:04] "GET /Dosa.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:04] "GET /idly.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:04] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:05] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:09] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:10] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:10] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:10] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:41:10] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:41:10] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:10] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:10] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:13] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:13] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:13] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:13] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:13] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:13] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:41:13] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:41:13] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:13] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:13] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:13] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:13] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:13] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:18] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:41:18] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:41:19] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:23] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:24] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:24] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:24] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:24] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:41:24] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:41:24] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:24] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:29] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:41:58] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:58] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:58] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:58] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:58] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:41:58] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:41:59] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:41:59] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:43] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:43] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:43] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:43] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:42:43] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:42:43] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:43] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:43] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:45] "GET /Lunch.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:46] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:46] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:46] "GET /SEPM%20146.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:46] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:46] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:42:46] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:42:46] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:46] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:46] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:46] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:46] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:46] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /SEPM%20147.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:47] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:48] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:48] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:48] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:42:48] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:42:49] "GET /Dinner.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:50] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:42:50] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:42:50] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:50] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:50] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:50] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:50] "GET /Mutton%20Biryani.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:50] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:50] "GET /Noorth%20Indian%20Thali2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:50] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:51] "GET /SEPM%20145.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:51] "GET /Roti1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:51] "GET /Jeera%20Rice3.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:51] "GET /Paneer%20Tikka1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:51] "GET /Garlic-Butter-Naan.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:51] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:51] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:52] "GET /panner2.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:53] "GET /SEPM%20145.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:57] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:57] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:57] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:57] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:57] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:42:57] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:42:58] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:42:58] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:43:01] "GET /Order%20Confirmation.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:54:24] "GET /order_status.html HTTP/1.1" 304 -
+172.31.192.1 - - [13/May/2025 11:54:31] "GET /First%20Page.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:32] "GET /First%20Page.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:32] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:32] "GET /SEPM%20108.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:32] "GET /SEPM%20103.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:32] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:54:32] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:54:32] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:32] "GET /SEPM%2028.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:32] "GET /SEPM%20127.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:32] "GET /SEPM%20131.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:32] "GET /SEPM%20137.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:32] "GET /SEPM%20148.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:33] "GET /Breakfast.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /Aloo%20Paratha.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /SEPM%20143.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /Navbar.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /SEPM%2025.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /SEPM%20117.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /tea.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /SEPM%2022.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /SEPM%20118.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /SEPM%2023.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /SEPM%20138.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /Dosa.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:34] "GET /idly.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:35] "GET /SEPM%20123.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:37] "GET /Paratha5.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:44] "GET /Vada1.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:48] "GET /Order%20Confirmation.html HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:48] "GET /order.css HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:49] "GET /config.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:49] "GET /cart.js HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:49] code 404, message File not found
+172.31.192.1 - - [13/May/2025 11:54:49] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 -
+172.31.192.1 - - [13/May/2025 11:54:49] "GET /SEPM%20150.jpg HTTP/1.1" 200 -
+172.31.192.1 - - [13/May/2025 11:54:49] "GET /Navbar.jpg HTTP/1.1" 200 -
