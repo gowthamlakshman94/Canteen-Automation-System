@@ -1,18 +1,26 @@
+# To create this secret ghcr-secret using kubectl, run:
+# kubectl create secret docker-registry ghcr-secret \
+#   --docker-server=ghcr.io \
+#   --docker-username=<your-username> \
+#   --docker-password=<your-personal-access-token> \
+#   --docker-email=<your-email> \
+#   --namespace=canteen-automation
 
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: canteen-automation
----
 apiVersion: v1
 kind: Secret
 metadata:
   name: ghcr-secret
   namespace: canteen-automation
+type: kubernetes.io/dockerconfigjson
 data:
   .dockerconfigjson: <docker_secret_here>
-type: kubernetes.io/dockerconfigjson
 
+
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: canteen-automation
 ---
 apiVersion: v1
 kind: Service
