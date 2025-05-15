@@ -48,8 +48,12 @@ spec:
           image: ghcr.io/gowthamlakshman94/cas-fe:1.5
           ports:
             - containerPort: 80
+          env:
+            - name: BASE_URL
+              value: "http://your-backend-service.canteen-automation.svc.cluster.local"
       imagePullSecrets:
         - name: ghcr-secret
+
 
 ---
 apiVersion: v1
