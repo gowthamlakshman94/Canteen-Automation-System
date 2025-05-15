@@ -6,16 +6,6 @@
 #   --docker-email=<your-email> \
 #   --namespace=canteen-automation
 
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ghcr-secret
-  namespace: canteen-automation
-type: kubernetes.io/dockerconfigjson
-data:
-  .dockerconfigjson: <docker_secret_here>
-
-
 
 apiVersion: v1
 kind: Namespace
