@@ -48,7 +48,7 @@ spec:
             - containerPort: 80
           env:
             - name: BASE_URL
-              value: "http://localhost:3000"
+              value: "http://localhost"
       imagePullSecrets:
         - name: ghcr-secret
 
