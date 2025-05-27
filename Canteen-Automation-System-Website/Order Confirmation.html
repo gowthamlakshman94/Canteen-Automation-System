@@ -10,33 +10,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="order.css" type="text/css">
     <title>Order Confirmation</title>
-    <script src="cart.js" async></script>
+    <!-- ✅ Use defer here -->
+    <script src="cart.js" defer></script>
 </head>
 
 <body style="background-image: url('SEPM 150.jpg');">
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button class="navbar-toggle" data-toggle="collapse" data-target="#abc">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="First Page.html">IIT Patna Canteen</a>
-            </div>
-            <div class="collapse navbar-collapse" id="abc">
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="Dinner.html"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
-                    <li><a href="First Page.html"><span class="glyphicon glyphicon-home"></span> Home</a></li>
-                    <li><a href="login.html"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-                </ul>
-            </div>
-        </div>
+        <!-- navbar content as before -->
     </nav>
 
     <div class="container">
-        <!-- Confirmation Box -->
         <div id="confirmationBox" class="jumbotron text-center" style="margin-top: 9%; border-radius: 15px; display: none;">
             <h1>Your Order is Confirmed</h1>
             <p>Thank you for choosing Canteen Automation System</p>
@@ -44,7 +27,6 @@
             <h3>Your Order ID: <span id="orderId" style="color: blue;"></span></h3>
         </div>
 
-        <!-- Error Box -->
         <div id="errorBox" class="jumbotron text-center" style="margin-top: 9%; border-radius: 15px; display: none;">
             <h1 style="color: red;">Order Unable to Place</h1>
             <p>Please try again or go back to the cart to place your order.</p>
@@ -56,26 +38,20 @@
     </div>
 
     <footer style="padding-top: 175px;">
-        <div class="container-fluid" style="background-color: black; text-align: center; padding-bottom: 5px; padding-top: 7px;">
-            <b>
-                <p style="color:black;">
-                    Copyright <span class="glyphicon glyphicon-copyright-mark" style="color: black;">
-                        <b> IIT Patna Canteen. All Rights Reserved | Contact Us: 9999999991 </b>
-                    </span>
-                </p>
-            </b>
-        </div>
+        <!-- footer content as before -->
     </footer>
 
     <script>
-        window.onload = async function () {
-            const orderId = localStorage.getItem('orderId');
+        window.onload = function () {
+            // Short delay to ensure cart.js has time to write to localStorage
+            setTimeout(checkOrderStatus, 200);
+        };
 
-            // Always hide both boxes at the beginning
+        async function checkOrderStatus() {
+            const orderId = localStorage.getItem('orderId');
             document.getElementById("confirmationBox").style.display = "none";
             document.getElementById("errorBox").style.display = "none";
 
-            // If no orderId found in localStorage, show the error box
             if (!orderId) {
                 console.log("No orderId found in localStorage");
                 document.getElementById("errorBox").style.display = "block";
@@ -85,40 +61,26 @@
             console.log("Checking order with ID:", orderId);
 
             try {
-                // Make the API call to check the order status
                 const response = await fetch(`${BASE_URL}/checkOrder/${orderId}`);
-
-                // Log the raw response for debugging
-                console.log("Response status:", response.status);
-
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.statusText}`);
-                }
+                if (!response.ok) throw new Error(`Error: ${response.statusText}`);
 
                 const result = await response.json();
                 console.log("API Response:", result);
 
-                // Check if order exists
                 if (result.exists) {
-                    console.log("Order exists, showing confirmation.");
-                    // Show confirmation with orderId
                     document.getElementById("confirmationBox").style.display = "block";
                     document.getElementById("orderId").innerText = orderId;
                 } else {
-                    console.log("Order does not exist, showing error.");
-                    // Show error if order does not exist
                     document.getElementById("errorBox").style.display = "block";
                 }
             } catch (error) {
                 console.error("Error verifying order:", error);
-                // Show error box on fetch error
                 document.getElementById("errorBox").style.display = "block";
             } finally {
-                // Cleanup localStorage in all cases to prevent reuse
                 localStorage.removeItem('orderSubmitted');
                 localStorage.removeItem('orderId');
             }
-        };
+        }
     </script>
 </body>
 

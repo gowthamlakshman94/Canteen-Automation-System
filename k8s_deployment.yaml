@@ -43,7 +43,7 @@ spec:
     spec:
       containers:
         - name: cas-fe
-          image: ghcr.io/gowthamlakshman94/cas-fe:1.5
+          image: ghcr.io/gowthamlakshman94/cas-fe:1.6
           ports:
             - containerPort: 80
           env:

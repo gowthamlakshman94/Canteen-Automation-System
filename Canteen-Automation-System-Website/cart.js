@@ -6,7 +6,6 @@ if (document.readyState == "loading") {
 }
 
 function ready() {
-    // Ensure remove button event listeners are attached only if the elements exist
     var removeCartItemButtons = document.getElementsByClassName("removeBtn");
     if (removeCartItemButtons.length > 0) {
         for (var i = 0; i < removeCartItemButtons.length; i++) {
@@ -15,7 +14,6 @@ function ready() {
         }
     }
 
-    // Ensure add to cart button event listeners are attached
     var addToCartButtons = document.getElementsByClassName("addToCartbutton");
     if (addToCartButtons.length > 0) {
         for (var i = 0; i < addToCartButtons.length; i++) {
@@ -24,7 +22,6 @@ function ready() {
         }
     }
 
-    // Ensure purchase button exists before attaching event listener
     var purchaseBtn = document.getElementsByClassName("purchaseBtn")[0];
     if (purchaseBtn) {
         purchaseBtn.addEventListener("click", purchaseClicked);
@@ -33,19 +30,18 @@ function ready() {
 
 function purchaseClicked() {
     alert("Thank you for Shopping here!!");
+
     var cartItems = document.getElementsByClassName("cartItems")[0];
     updateCartTotal();
 
-    // Prepare order data and submit the order
     var orderData = prepareOrderData();
     if (orderData) {
         submitOrder(orderData);
     }
 
-	while (cartItems.hasChildNodes()) {
+    while (cartItems.hasChildNodes()) {
         cartItems.removeChild(cartItems.firstChild);
     }
-
 }
 
 function removeCartItem(event) {
@@ -108,10 +104,8 @@ function updateCartTotal() {
         var priceElement = cartRow.getElementsByClassName('cart-price')[0];
         var quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0];
 
-        // Extract the price and clean it up by removing non-numeric characters
-        var priceText = priceElement.innerText.replace(/[^\d.-]/g, ''); // Removes ₹ and other non-numeric characters
+        var priceText = priceElement.innerText.replace(/[^\d.-]/g, '');
         var price = parseFloat(priceText);
-
         var quantity = parseInt(quantityElement.value);
 
         if (!isNaN(price) && !isNaN(quantity)) {
@@ -119,18 +113,16 @@ function updateCartTotal() {
         }
     }
 
-    total = Math.round(total * 100) / 100; // Round to 2 decimal place
+    total = Math.round(total * 100) / 100;
     document.getElementsByClassName('cart-total-price')[0].innerHTML = "&#8377;" + total;
 }
-
 
 function prepareOrderData() {
     var cartItems = document.getElementsByClassName("cartItems")[0];
     var cartRows = cartItems.getElementsByClassName("cart-row");
     var items = [];
-    var createdAt = new Date().toISOString(); // Current timestamp in ISO format
+    var createdAt = new Date().toISOString();
 
-    // Get userEmail from cookie
     function getCookie(name) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -143,7 +135,7 @@ function prepareOrderData() {
         var cartRow = cartRows[i];
         var itemName = cartRow.getElementsByClassName("cart-item-title")[0].innerText;
         var price = cartRow.getElementsByClassName("cart-price")[0].innerText;
-        price = parseFloat(price.slice(1));
+        price = parseFloat(price.replace(/[^\d.-]/g, ''));
         var quantity = cartRow.getElementsByClassName("cart-quantity-input")[0].value;
 
         items.push({
@@ -155,12 +147,12 @@ function prepareOrderData() {
     }
 
     if (items.length > 0) {
-        var orderId = new Date().getTime(); // Generate order ID
-        localStorage.setItem('orderId', orderId); // Store the orderId in localStorage
+        var orderId = new Date().getTime();
+        localStorage.setItem('orderId', orderId);
 
         return {
             orderId: orderId,
-            userEmail: userEmail || "unknown", // fallback in case cookie isn't found
+            userEmail: userEmail || "unknown",
             items: items
         };
     } else {
@@ -168,7 +160,6 @@ function prepareOrderData() {
         return null;
     }
 }
-
 
 function getCookieValue(name) {
     const value = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
@@ -183,7 +174,6 @@ function submitOrder(orderData) {
         return;
     }
 
-    // Attach userEmail to the order data
     orderData.user_email = userEmail;
 
     console.log("Submitting order:", orderData);
@@ -196,5 +186,4 @@ function submitOrder(orderData) {
         body: JSON.stringify(orderData)
     });
 }
-
 
