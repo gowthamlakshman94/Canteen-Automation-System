@@ -41,47 +41,52 @@
         <!-- footer content as before -->
     </footer>
 
-    <script>
-        window.onload = function () {
-            // Short delay to ensure cart.js has time to write to localStorage
-            setTimeout(checkOrderStatus, 200);
-        };
+<script>
+    window.onload = function () {
+        checkOrderStatus();
+    };
 
-        async function checkOrderStatus() {
-            const orderId = localStorage.getItem('orderId');
-            document.getElementById("confirmationBox").style.display = "none";
-            document.getElementById("errorBox").style.display = "none";
+    async function checkOrderStatus() {
+        const orderId = localStorage.getItem('orderId');
+        document.getElementById("confirmationBox").style.display = "none";
+        document.getElementById("errorBox").style.display = "none";
 
-            if (!orderId) {
-                console.log("No orderId found in localStorage");
-                document.getElementById("errorBox").style.display = "block";
-                return;
-            }
-
-            console.log("Checking order with ID:", orderId);
-
-            try {
-                const response = await fetch(`${BASE_URL}/checkOrder/${orderId}`);
-                if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-
-                const result = await response.json();
-                console.log("API Response:", result);
-
-                if (result.exists) {
-                    document.getElementById("confirmationBox").style.display = "block";
-                    document.getElementById("orderId").innerText = orderId;
-                } else {
-                    document.getElementById("errorBox").style.display = "block";
-                }
-            } catch (error) {
-                console.error("Error verifying order:", error);
-                document.getElementById("errorBox").style.display = "block";
-            } finally {
-                localStorage.removeItem('orderSubmitted');
-                localStorage.removeItem('orderId');
-            }
+        if (!orderId) {
+            console.warn("No orderId found in localStorage");
+            document.getElementById("errorBox").style.display = "block";
+            return;
         }
-    </script>
+
+        console.log("Checking order with ID:", orderId);
+
+        try {
+            const response = await fetch(`${BASE_URL}/checkOrder/${orderId}`);
+            if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+
+            const result = await response.json();
+            console.log("API Response:", result);
+
+            if (result.exists) {
+                document.getElementById("confirmationBox").style.display = "block";
+                document.getElementById("orderId").innerText = orderId;
+
+                // ✅ Clear localStorage AFTER confirmation shown
+                setTimeout(() => {
+                    localStorage.removeItem('orderSubmitted');
+                    localStorage.removeItem('orderId');
+                }, 3000); // wait 3 seconds
+            } else {
+                console.warn("Order not found on server.");
+                document.getElementById("errorBox").style.display = "block";
+            }
+        } catch (error) {
+            console.error("Error verifying order:", error);
+            document.getElementById("errorBox").style.display = "block";
+        }
+    }
+</script>
+
+
 </body>
 
 </html>
