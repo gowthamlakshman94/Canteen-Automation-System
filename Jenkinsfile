@@ -10,7 +10,10 @@ spec:
     - name: kaniko
       image: gcr.io/kaniko-project/executor:latest
       command:
-        - cat
+        - sh
+        - -c
+      args:
+        - sleep 999d
       tty: true
       volumeMounts:
         - name: docker-config
@@ -18,7 +21,10 @@ spec:
     - name: kubectl
       image: bitnami/kubectl:latest
       command:
-        - cat
+        - sh
+        - -c
+      args:
+        - sleep 999d
       tty: true
   volumes:
     - name: docker-config
