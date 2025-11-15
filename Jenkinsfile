@@ -8,7 +8,7 @@ kind: Pod
 spec:
   containers:
     - name: kaniko
-      # debug image includes a shell / busybox utilities
+      # debug version includes /bin/sh
       image: gcr.io/kaniko-project/executor:debug
       command:
         - sh
@@ -41,6 +41,7 @@ spec:
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/gowthamlakshman94/Canteen-Automation-System.git'
@@ -52,8 +53,28 @@ spec:
                 withCredentials([usernamePassword(credentialsId: 'ghcr-token', usernameVariable: 'GHCR_USER', passwordVariable: 'GHCR_PASS')]) {
                     container('kaniko') {
                         sh '''
+                        echo "📝 Creating Docker config.json for GHCR auth..."
+
                         mkdir -p /kaniko/.docker
-                        echo "{\"auths\":{\"ghcr.io\":{\"username\":\"${GHCR_USER}\",\"password\":\"${GHCR_PASS}\"}}}" > /kaniko/.docker/config.json
+
+                        # Create template JSON with placeholder
+cat > /kaniko/.docker/config.json <<'EOF'
+{
+  "auths": {
+    "ghcr.io": {
+      "auth": "__AUTH_PLACEHOLDER__"
+    }
+  }
+}
+EOF
+
+                        # Create base64-encoded auth string
+                        AUTH_B64=$(echo -n "${GHCR_USER}:${GHCR_PASS}" | base64 | tr -d '\\n')
+
+                        # Replace placeholder
+                        sed -i "s/__AUTH_PLACEHOLDER__/${AUTH_B64}/" /kaniko/.docker/config.json
+
+                        echo "✔ Docker config.json created successfully."
                         '''
                     }
                 }
@@ -66,7 +87,8 @@ spec:
                     dir('Canteen-Automation-System-Website') {
                         sh '''
                         echo "🚀 Building and pushing Frontend image..."
-                        /kaniko/executor --context . \
+                        /kaniko/executor \
+                          --context . \
                           --dockerfile Dockerfile \
                           --destination=${FRONTEND_IMAGE} \
                           --verbosity info
@@ -82,7 +104,8 @@ spec:
                     dir('canteen-automation-backend') {
                         sh '''
                         echo "🚀 Building and pushing Backend image..."
-                        /kaniko/executor --context . \
+                        /kaniko/executor \
+                          --context . \
                           --dockerfile Dockerfile \
                           --destination=${BACKEND_IMAGE} \
                           --verbosity info
