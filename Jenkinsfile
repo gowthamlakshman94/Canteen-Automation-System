@@ -6,9 +6,10 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
+  serviceAccountName: jenkins-deployer
   containers:
     - name: kaniko
-      # debug version includes /bin/sh
+      # debug image includes /bin/sh and utilities
       image: gcr.io/kaniko-project/executor:debug
       command:
         - sh
@@ -57,7 +58,7 @@ spec:
 
                         mkdir -p /kaniko/.docker
 
-                        # Create template JSON with placeholder
+                        # Create template JSON with placeholder (use single-quoted heredoc to avoid interpolation)
 cat > /kaniko/.docker/config.json <<'EOF'
 {
   "auths": {
@@ -71,10 +72,10 @@ EOF
                         # Create base64-encoded auth string
                         AUTH_B64=$(echo -n "${GHCR_USER}:${GHCR_PASS}" | base64 | tr -d '\\n')
 
-                        # Replace placeholder
+                        # Replace placeholder atomically
                         sed -i "s/__AUTH_PLACEHOLDER__/${AUTH_B64}/" /kaniko/.docker/config.json
 
-                        echo "✔ Docker config.json created successfully."
+                        echo "✔ Docker config.json created."
                         '''
                     }
                 }
