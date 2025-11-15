@@ -8,7 +8,8 @@ kind: Pod
 spec:
   containers:
     - name: kaniko
-      image: gcr.io/kaniko-project/executor:latest
+      # debug image includes a shell / busybox utilities
+      image: gcr.io/kaniko-project/executor:debug
       command:
         - sh
         - -c
