@@ -121,8 +121,8 @@ EOF
                 container('kubectl') {
                     sh '''
                     echo "🚀 Deploying to Kubernetes..."
-                    kubectl apply -f canteen-automation-backend/deployment.yaml || true
-                    kubectl apply -f Canteen-Automation-System-Website/deployment.yaml || true
+                    kubectl apply -f backend-deployment.yaml || true
+                    kubectl apply -f frontend-deployment.yaml || true
                     '''
                 }
             }
