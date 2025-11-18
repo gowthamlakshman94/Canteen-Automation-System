@@ -2,8 +2,7 @@ pipeline {
   agent {
     kubernetes {
       defaultContainer 'jnlp'
-      yaml """
-apiVersion: v1
+      yaml '''apiVersion: v1
 kind: Pod
 spec:
   serviceAccountName: jenkins-deployer
@@ -30,7 +29,7 @@ spec:
   volumes:
     - name: workspace-volume
       emptyDir: {}
-"""
+'''
     }
   }
 
@@ -38,8 +37,6 @@ spec:
     REGISTRY = "ghcr.io/gowthamlakshman94"
     FRONTEND_IMAGE = "${REGISTRY}/canteen-frontend:latest"
     BACKEND_IMAGE  = "${REGISTRY}/canteen-backend:latest"
-
-    # set your namespaces (or keep 'default' if both apps run in default)
     FRONTEND_NS = "default"
     BACKEND_NS  = "default"
   }
@@ -53,35 +50,27 @@ spec:
 
     stage('Prepare Credentials (kubeconfig + GHCR)') {
       steps {
-        // copy the kubeconfig secret file from Jenkins credentials into agent
-        // and create a Kaniko docker config from the ghcr username/password credential
         withCredentials([
           file(credentialsId: 'k3s-config', variable: 'KUBECONFIG_FILE'),
           usernamePassword(credentialsId: 'ghcr-token', usernameVariable: 'GHCR_USER', passwordVariable: 'GHCR_PASS')
         ]) {
-          // run in the kubectl container (it has sh and kubectl)
           container('kubectl') {
             sh '''
               set -euo pipefail
 
-              echo "-> Ensuring ~/.kube and placing kubeconfig"
+              echo "-> Placing kubeconfig"
               mkdir -p /home/jenkins/.kube
-              # copy the Jenkins-provided secret file (KUBECONFIG_FILE) to the standard path
               cp "${KUBECONFIG_FILE}" /home/jenkins/.kube/config
               chmod 0600 /home/jenkins/.kube/config || true
-
-              echo "-> Verifying kubeconfig (first lines):"
               head -n 5 /home/jenkins/.kube/config || true
 
-              # create Kaniko docker config so Kaniko can push to GHCR
-              echo "-> Creating /kaniko/.docker/config.json for GHCR auth (will be used by kaniko container)"
+              echo "-> Creating /kaniko/.docker/config.json for GHCR auth"
               mkdir -p /kaniko/.docker
               AUTH_B64=$(echo -n "${GHCR_USER}:${GHCR_PASS}" | base64 | tr -d '\\n')
               cat > /kaniko/.docker/config.json <<'EOF'
 {"auths":{"ghcr.io":{"auth":"__AUTH__"}}}
 EOF
               sed -i "s/__AUTH__/${AUTH_B64}/" /kaniko/.docker/config.json || true
-              echo "-> Created /kaniko/.docker/config.json (head):"
               head -n 5 /kaniko/.docker/config.json || true
             '''
           }
@@ -96,11 +85,7 @@ EOF
             sh '''
               set -euo pipefail
               echo "Building frontend image: ${FRONTEND_IMAGE}"
-              /kaniko/executor \
-                --context . \
-                --dockerfile Dockerfile \
-                --destination=${FRONTEND_IMAGE} \
-                --verbosity info
+              /kaniko/executor --context . --dockerfile Dockerfile --destination=${FRONTEND_IMAGE} --verbosity info
             '''
           }
         }
@@ -114,11 +99,7 @@ EOF
             sh '''
               set -euo pipefail
               echo "Building backend image: ${BACKEND_IMAGE}"
-              /kaniko/executor \
-                --context . \
-                --dockerfile Dockerfile \
-                --destination=${BACKEND_IMAGE} \
-                --verbosity info
+              /kaniko/executor --context . --dockerfile Dockerfile --destination=${BACKEND_IMAGE} --verbosity info
             '''
           }
         }
