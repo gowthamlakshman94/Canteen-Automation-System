@@ -63,11 +63,6 @@ spec:
     BACKEND_NS  = "default"
   }
 
-  options {
-    timestamps()
-    ansiColor('xterm')
-  }
-
   stages {
 
     stage('Checkout') {
