@@ -8,48 +8,28 @@ kind: Pod
 spec:
   serviceAccountName: jenkins-deployer
   containers:
-    - name: kaniko
-      image: gcr.io/kaniko-project/executor:debug
-      command: ['sh','-c']
-      args: ['sleep 999d']
-      tty: true
-      volumeMounts:
-        - name: docker-config
-          mountPath: /kaniko/.docker
-    - name: kubectl
-      image: bitnami/kubectl:latest
-      command: ['sh','-c']
-      args: ['sleep 999d']
-      tty: true
-      env:
-        - name: KUBECONFIG
-          value: /home/jenkins/.kube/config
-      volumeMounts:
-        - name: kubeconfig-jenkins
-          mountPath: /home/jenkins/.kube
-          readOnly: true
-        - name: kubeconfig-root
-          mountPath: /root/.kube
-          readOnly: true
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:debug
+    command: ['sh','-c']
+    args: ['sleep 999d']
+    tty: true
+    volumeMounts:
+      - name: workspace-volume
+        mountPath: /home/jenkins/agent
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command: ['sh','-c']
+    args: ['sleep 999d']
+    tty: true
+    volumeMounts:
+      - name: workspace-volume
+        mountPath: /home/jenkins/agent
+  - name: jnlp
+    image: jenkins/inbound-agent:3345.v03dee9b_f88fc-1
+    args: ['$(JENKINS_SECRET)']
   volumes:
-    - name: docker-config
-      secret:
-        secretName: ghcr-secret
-        items:
-          - key: .dockerconfigjson
-            path: config.json
-    - name: kubeconfig-jenkins
-      secret:
-        secretName: k3s-config
-        items:
-          - key: config
-            path: config
-    - name: kubeconfig-root
-      secret:
-        secretName: k3s-config
-        items:
-          - key: config
-            path: config
+    - name: workspace-volume
+      emptyDir: {}
 """
     }
   }
@@ -59,64 +39,53 @@ spec:
     FRONTEND_IMAGE = "${REGISTRY}/canteen-frontend:latest"
     BACKEND_IMAGE  = "${REGISTRY}/canteen-backend:latest"
 
+    # set your namespaces (or keep 'default' if both apps run in default)
     FRONTEND_NS = "default"
     BACKEND_NS  = "default"
   }
 
   stages {
-
     stage('Checkout') {
       steps {
         git branch: 'main', url: 'https://github.com/gowthamlakshman94/Canteen-Automation-System.git'
       }
     }
 
-    stage('Agent Debug & Sanity') {
+    stage('Prepare Credentials (kubeconfig + GHCR)') {
       steps {
-        container('kubectl') {
-          sh '''
-            set -euo pipefail || true
+        // copy the kubeconfig secret file from Jenkins credentials into agent
+        // and create a Kaniko docker config from the ghcr username/password credential
+        withCredentials([
+          file(credentialsId: 'k3s-config', variable: 'KUBECONFIG_FILE'),
+          usernamePassword(credentialsId: 'ghcr-token', usernameVariable: 'GHCR_USER', passwordVariable: 'GHCR_PASS')
+        ]) {
+          // run in the kubectl container (it has sh and kubectl)
+          container('kubectl') {
+            sh '''
+              set -euo pipefail
 
-            echo "=== ENV & KUBECONFIG ==="
-            echo "KUBECONFIG=${KUBECONFIG:-<not-set>}"
-            ls -la /home/jenkins/.kube || true
-            ls -la /root/.kube || true
+              echo "-> Ensuring ~/.kube and placing kubeconfig"
+              mkdir -p /home/jenkins/.kube
+              # copy the Jenkins-provided secret file (KUBECONFIG_FILE) to the standard path
+              cp "${KUBECONFIG_FILE}" /home/jenkins/.kube/config
+              chmod 0600 /home/jenkins/.kube/config || true
 
-            echo "=== kubeconfig first 200 bytes (if present) ==="
-            if [ -f /home/jenkins/.kube/config ]; then
-              head -c 200 /home/jenkins/.kube/config || true
-              echo
-            fi
-            if [ -f /root/.kube/config ]; then
-              head -c 200 /root/.kube/config || true
-              echo
-            fi
+              echo "-> Verifying kubeconfig (first lines):"
+              head -n 5 /home/jenkins/.kube/config || true
 
-            echo "=== kubectl version & cluster reachability ==="
-            kubectl version --client || true
-
-            echo "---- kubeconfig-based kubectl get ns ----"
-            kubectl --kubeconfig=/home/jenkins/.kube/config get ns || kubectl --kubeconfig=/root/.kube/config get ns || true
-
-            echo "=== in-cluster serviceaccount files (if any) ==="
-            ls -l /var/run/secrets/kubernetes.io/serviceaccount || true
-            head -c 160 /var/run/secrets/kubernetes.io/serviceaccount/token || true || true
-
-            echo "=== test API with kubeconfig ==="
-            kubectl --kubeconfig=/home/jenkins/.kube/config get pods -A --no-headers -o wide | head -n 10 || true
-
-            echo "=== auth can-i for jenkins-deployer (using kubeconfig) ==="
-            kubectl --kubeconfig=/home/jenkins/.kube/config auth can-i create deployments -n ${BACKEND_NS} || true
-
-            echo "=== end of agent debug stage ==="
-          '''
+              # create Kaniko docker config so Kaniko can push to GHCR
+              echo "-> Creating /kaniko/.docker/config.json for GHCR auth (will be used by kaniko container)"
+              mkdir -p /kaniko/.docker
+              AUTH_B64=$(echo -n "${GHCR_USER}:${GHCR_PASS}" | base64 | tr -d '\\n')
+              cat > /kaniko/.docker/config.json <<'EOF'
+{"auths":{"ghcr.io":{"auth":"__AUTH__"}}}
+EOF
+              sed -i "s/__AUTH__/${AUTH_B64}/" /kaniko/.docker/config.json || true
+              echo "-> Created /kaniko/.docker/config.json (head):"
+              head -n 5 /kaniko/.docker/config.json || true
+            '''
+          }
         }
-      }
-    }
-
-    stage('Setup Docker Auth (use ghcr-secret)') {
-      steps {
-        echo "Using ghcr-secret mounted at /kaniko/.docker/config.json for Kaniko auth"
       }
     }
 
@@ -126,8 +95,12 @@ spec:
           dir('Canteen-Automation-System-Website') {
             sh '''
               set -euo pipefail
-              echo "Building frontend -> ${FRONTEND_IMAGE}"
-              /kaniko/executor --context . --dockerfile Dockerfile --destination=${FRONTEND_IMAGE} --verbosity info
+              echo "Building frontend image: ${FRONTEND_IMAGE}"
+              /kaniko/executor \
+                --context . \
+                --dockerfile Dockerfile \
+                --destination=${FRONTEND_IMAGE} \
+                --verbosity info
             '''
           }
         }
@@ -140,48 +113,42 @@ spec:
           dir('canteen-automation-backend') {
             sh '''
               set -euo pipefail
-              echo "Building backend -> ${BACKEND_IMAGE}"
-              /kaniko/executor --context . --dockerfile Dockerfile --destination=${BACKEND_IMAGE} --verbosity info
+              echo "Building backend image: ${BACKEND_IMAGE}"
+              /kaniko/executor \
+                --context . \
+                --dockerfile Dockerfile \
+                --destination=${BACKEND_IMAGE} \
+                --verbosity info
             '''
           }
         }
       }
     }
 
-    stage('Deploy Backend') {
+    stage('Deploy to Kubernetes') {
       steps {
         container('kubectl') {
           sh '''
             set -euo pipefail
-            echo "Applying backend manifests to namespace ${BACKEND_NS}..."
-            kubectl --kubeconfig=/home/jenkins/.kube/config apply -n ${BACKEND_NS} -f backend-deployment.yaml
-            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status deployment/canteen-backend -n ${BACKEND_NS} --timeout=120s || (kubectl --kubeconfig=/home/jenkins/.kube/config describe deployment/canteen-backend -n ${BACKEND_NS} && kubectl --kubeconfig=/home/jenkins/.kube/config get pods -n ${BACKEND_NS} -o wide && exit 1)
+            echo "Deploying backend to namespace ${BACKEND_NS}"
+            kubectl --kubeconfig=/home/jenkins/.kube/config apply -n ${BACKEND_NS} -f canteen-automation-backend/deployment.yaml
+            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status deployment/canteen-backend -n ${BACKEND_NS} --timeout=120s || true
+
+            echo "Deploying frontend to namespace ${FRONTEND_NS}"
+            kubectl --kubeconfig=/home/jenkins/.kube/config apply -n ${FRONTEND_NS} -f Canteen-Automation-System-Website/deployment.yaml
+            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status deployment/canteen-frontend -n ${FRONTEND_NS} --timeout=120s || true
           '''
         }
       }
     }
-
-    stage('Deploy Frontend') {
-      steps {
-        container('kubectl') {
-          sh '''
-            set -euo pipefail
-            echo "Applying frontend manifests to namespace ${FRONTEND_NS}..."
-            kubectl --kubeconfig=/home/jenkins/.kube/config apply -n ${FRONTEND_NS} -f frontend-deployment.yaml
-            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status deployment/canteen-frontend -n ${FRONTEND_NS} --timeout=120s || (kubectl --kubeconfig=/home/jenkins/.kube/config describe deployment/canteen-frontend -n ${FRONTEND_NS} && kubectl --kubeconfig=/home/jenkins/.kube/config get pods -n ${FRONTEND_NS} -o wide && exit 1)
-          '''
-        }
-      }
-    }
-
-  } // stages
+  }
 
   post {
     success {
-      echo "✅ Build & Deploy pipeline completed successfully."
+      echo "✅ Build & deploy completed."
     }
     failure {
-      echo "❌ Pipeline failed — see logs above for debugging."
+      echo "❌ Build or deploy failed — check logs above."
     }
   }
 }
