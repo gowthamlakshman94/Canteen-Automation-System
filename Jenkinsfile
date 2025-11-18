@@ -23,9 +23,6 @@ spec:
     volumeMounts:
       - name: workspace-volume
         mountPath: /home/jenkins/agent
-  - name: jnlp
-    image: jenkins/inbound-agent:3345.v03dee9b_f88fc-1
-    args: ['$(JENKINS_SECRET)']
   volumes:
     - name: workspace-volume
       emptyDir: {}
@@ -37,8 +34,12 @@ spec:
     REGISTRY = "ghcr.io/gowthamlakshman94"
     FRONTEND_IMAGE = "${REGISTRY}/canteen-frontend:latest"
     BACKEND_IMAGE  = "${REGISTRY}/canteen-backend:latest"
-    FRONTEND_NS = "default"
-    BACKEND_NS  = "default"
+
+    FRONTEND_DIR = "Canteen-Automation-System-Website"
+    BACKEND_DIR  = "canteen-automation-backend"
+
+    FRONTEND_MANIFEST = "Canteen-Automation-System-Website/deployment.yaml"
+    BACKEND_MANIFEST  = "canteen-automation-backend/deployment.yaml"
   }
 
   stages {
@@ -48,7 +49,7 @@ spec:
       }
     }
 
-    stage('Prepare Credentials (kubeconfig + GHCR)') {
+    stage('Prepare credentials') {
       steps {
         withCredentials([
           file(credentialsId: 'k3s-config', variable: 'KUBECONFIG_FILE'),
@@ -58,19 +59,21 @@ spec:
             sh '''
               set -euo pipefail
 
-              echo "-> Placing kubeconfig"
+              echo "== placing kubeconfig to /home/jenkins/.kube/config =="
               mkdir -p /home/jenkins/.kube
               cp "${KUBECONFIG_FILE}" /home/jenkins/.kube/config
               chmod 0600 /home/jenkins/.kube/config || true
-              head -n 5 /home/jenkins/.kube/config || true
+              echo "--- kubeconfig head ---"
+              head -n 10 /home/jenkins/.kube/config || true
 
-              echo "-> Creating /kaniko/.docker/config.json for GHCR auth"
+              echo "== creating /kaniko/.docker/config.json for GHCR =="
               mkdir -p /kaniko/.docker
               AUTH_B64=$(echo -n "${GHCR_USER}:${GHCR_PASS}" | base64 | tr -d '\\n')
               cat > /kaniko/.docker/config.json <<'EOF'
 {"auths":{"ghcr.io":{"auth":"__AUTH__"}}}
 EOF
               sed -i "s/__AUTH__/${AUTH_B64}/" /kaniko/.docker/config.json || true
+              echo "--- /kaniko/.docker/config.json head ---"
               head -n 5 /kaniko/.docker/config.json || true
             '''
           }
@@ -78,13 +81,13 @@ EOF
       }
     }
 
-    stage('Build Frontend Image') {
+    stage('Build & push Frontend (latest)') {
       steps {
         container('kaniko') {
-          dir('Canteen-Automation-System-Website') {
+          dir("${env.FRONTEND_DIR}") {
             sh '''
               set -euo pipefail
-              echo "Building frontend image: ${FRONTEND_IMAGE}"
+              echo "Building & pushing frontend -> ${FRONTEND_IMAGE}"
               /kaniko/executor --context . --dockerfile Dockerfile --destination=${FRONTEND_IMAGE} --verbosity info
             '''
           }
@@ -92,13 +95,13 @@ EOF
       }
     }
 
-    stage('Build Backend Image') {
+    stage('Build & push Backend (latest)') {
       steps {
         container('kaniko') {
-          dir('canteen-automation-backend') {
+          dir("${env.BACKEND_DIR}") {
             sh '''
               set -euo pipefail
-              echo "Building backend image: ${BACKEND_IMAGE}"
+              echo "Building & pushing backend -> ${BACKEND_IMAGE}"
               /kaniko/executor --context . --dockerfile Dockerfile --destination=${BACKEND_IMAGE} --verbosity info
             '''
           }
@@ -111,13 +114,13 @@ EOF
         container('kubectl') {
           sh '''
             set -euo pipefail
-            echo "Deploying backend to namespace ${BACKEND_NS}"
-            kubectl --kubeconfig=/home/jenkins/.kube/config apply -n ${BACKEND_NS} -f canteen-automation-backend/deployment.yaml
-            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status deployment/canteen-backend -n ${BACKEND_NS} --timeout=120s || true
+            echo "Applying backend manifest: ${BACKEND_MANIFEST}"
+            kubectl --kubeconfig=/home/jenkins/.kube/config apply -f ${BACKEND_MANIFEST} || true
+            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status -w -n default deployment/canteen-backend --timeout=120s || true
 
-            echo "Deploying frontend to namespace ${FRONTEND_NS}"
-            kubectl --kubeconfig=/home/jenkins/.kube/config apply -n ${FRONTEND_NS} -f Canteen-Automation-System-Website/deployment.yaml
-            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status deployment/canteen-frontend -n ${FRONTEND_NS} --timeout=120s || true
+            echo "Applying frontend manifest: ${FRONTEND_MANIFEST}"
+            kubectl --kubeconfig=/home/jenkins/.kube/config apply -f ${FRONTEND_MANIFEST} || true
+            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status -w -n default deployment/canteen-frontend --timeout=120s || true
           '''
         }
       }
@@ -125,11 +128,7 @@ EOF
   }
 
   post {
-    success {
-      echo "✅ Build & deploy completed."
-    }
-    failure {
-      echo "❌ Build or deploy failed — check logs above."
-    }
+    success { echo "✅ Pipeline completed — images pushed as :latest and deployed." }
+    failure { echo "❌ Pipeline failed — check above logs." }
   }
 }
