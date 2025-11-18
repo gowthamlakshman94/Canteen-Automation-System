@@ -9,7 +9,6 @@ spec:
   serviceAccountName: jenkins-deployer
   containers:
     - name: kaniko
-      # debug image includes /bin/sh and utilities
       image: gcr.io/kaniko-project/executor:debug
       command:
         - sh
@@ -58,7 +57,6 @@ spec:
 
                         mkdir -p /kaniko/.docker
 
-                        # Create template JSON with placeholder (use single-quoted heredoc to avoid interpolation)
 cat > /kaniko/.docker/config.json <<'EOF'
 {
   "auths": {
@@ -69,10 +67,7 @@ cat > /kaniko/.docker/config.json <<'EOF'
 }
 EOF
 
-                        # Create base64-encoded auth string
                         AUTH_B64=$(echo -n "${GHCR_USER}:${GHCR_PASS}" | base64 | tr -d '\\n')
-
-                        # Replace placeholder atomically
                         sed -i "s/__AUTH_PLACEHOLDER__/${AUTH_B64}/" /kaniko/.docker/config.json
 
                         echo "✔ Docker config.json created."
@@ -118,12 +113,27 @@ EOF
 
         stage('Deploy to Kubernetes') {
             steps {
-                container('kubectl') {
-                    sh '''
-                    echo "🚀 Deploying to Kubernetes..."
-                    kubectl apply -f canteen-automation-backend/deployment.yaml || true
-                    kubectl apply -f Canteen-Automation-System-Website/deployment.yaml || true
-                    '''
+                // Use the Jenkins "Secret file" credential (id: k3s-config)
+                withCredentials([file(credentialsId: 'k3s-config', variable: 'K3S_KUBECONFIG')]) {
+                    container('kubectl') {
+                        sh '''
+                        echo "🔐 Using Jenkins-provided kubeconfig from credential 'k3s-config'"
+
+                        # ensure kube dir exists and copy kubeconfig
+                        mkdir -p /root/.kube
+                        chmod 700 /root/.kube
+                        cp "${K3S_KUBECONFIG}" /root/.kube/config
+                        chmod 600 /root/.kube/config
+                        export KUBECONFIG=/root/.kube/config
+
+                        echo "== kubectl version =="
+                        kubectl version --client || true
+
+                        echo "🚀 Deploying to Kubernetes (using provided kubeconfig)..."
+                        kubectl apply -f canteen-automation-backend/deployment.yaml || true
+                        kubectl apply -f Canteen-Automation-System-Website/deployment.yaml || true
+                        '''
+                    }
                 }
             }
         }
