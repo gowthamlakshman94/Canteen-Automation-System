@@ -111,18 +111,20 @@ EOF
             }
         }
 
- stage('Deploy to Kubernetes') {
-    steps {
-        withKubeConfig(credentialsId: 'k3s-config') {
-            sh '''
-            echo "🚀 Deploying using Kubernetes CLI Plugin..."
-            kubectl apply -f canteen-automation-backend/deployment.yaml
-            kubectl apply -f Canteen-Automation-System-Website/deployment.yaml
-            '''
+        stage('Deploy to Kubernetes') {
+            steps {
+                withKubeConfig(credentialsId: 'k3s-config') {
+                    sh '''
+                    echo "🚀 Deploying using Kubernetes CLI Plugin..."
+                    kubectl apply -f canteen-automation-backend/deployment.yaml
+                    kubectl apply -f Canteen-Automation-System-Website/deployment.yaml
+                    '''
+                }
+            }
         }
-    }
-}
- 
+
+    } // end stages
+
     post {
         success {
             echo "✅ Build and deployment completed successfully!"
