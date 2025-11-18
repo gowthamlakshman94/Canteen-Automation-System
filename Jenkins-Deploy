@@ -1,0 +1,79 @@
+// Jenkinsfile.deploy
+pipeline {
+  agent {
+    kubernetes {
+      defaultContainer 'jnlp'
+      yaml '''apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command: ['sh','-c']
+    args: ['sleep 999d']
+    tty: true
+  volumes:
+    - name: workspace
+      emptyDir: {}
+'''
+    }
+  }
+
+  environment {
+    FRONTEND_MANIFEST = "Canteen-Automation-System-Website/deployment.yaml"
+    BACKEND_MANIFEST  = "canteen-automation-backend/deployment.yaml"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Prepare kubeconfig') {
+      steps {
+        withCredentials([file(credentialsId: 'k3s-config', variable: 'KUBECONFIG_FILE')]) {
+          container('kubectl') {
+            sh '''
+              set -euo pipefail
+              mkdir -p /home/jenkins/.kube
+              cp "${KUBECONFIG_FILE}" /home/jenkins/.kube/config
+              chmod 0600 /home/jenkins/.kube/config || true
+              echo "[deploy] kubeconfig ready"
+            '''
+          }
+        }
+      }
+    }
+
+    stage('Apply backend manifest') {
+      steps {
+        container('kubectl') {
+          sh '''
+            set -euo pipefail
+            kubectl --kubeconfig=/home/jenkins/.kube/config apply -f ${BACKEND_MANIFEST} || true
+            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status -w -n default deployment/canteen-backend --timeout=120s || true
+          '''
+        }
+      }
+    }
+
+    stage('Apply frontend manifest') {
+      steps {
+        container('kubectl') {
+          sh '''
+            set -euo pipefail
+            kubectl --kubeconfig=/home/jenkins/.kube/config apply -f ${FRONTEND_MANIFEST} || true
+            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status -w -n default deployment/canteen-frontend --timeout=120s || true
+          '''
+        }
+      }
+    }
+  }
+
+  post {
+    success { echo "✅ Deploy job finished." }
+    failure { echo "❌ Deploy job failed." }
+  }
+}
