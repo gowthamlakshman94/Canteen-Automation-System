@@ -1,4 +1,3 @@
-// Jenkinsfile.deploy
 pipeline {
   agent {
     kubernetes {
@@ -19,61 +18,47 @@ spec:
     }
   }
 
-  environment {
-    FRONTEND_MANIFEST = "Canteen-Automation-System-Website/deployment.yaml"
-    BACKEND_MANIFEST  = "canteen-automation-backend/deployment.yaml"
-  }
-
   stages {
     stage('Checkout') {
       steps {
-        checkout scm
+        checkout([$class: 'GitSCM',
+          branches: [[name: '*/main']],
+          userRemoteConfigs: [[url: 'https://github.com/gowthamlakshman94/Canteen-Automation-System.git']]
+        ])
       }
     }
 
-    stage('Prepare kubeconfig') {
+    stage('Deploy to Kubernetes') {
       steps {
-        withCredentials([file(credentialsId: 'k3s-config', variable: 'KUBECONFIG_FILE')]) {
+        withKubeConfig([credentialsId: 'k3s-config']) {
           container('kubectl') {
             sh '''
+              #!/bin/sh
               set -euo pipefail
-              mkdir -p /home/jenkins/.kube
-              cp "${KUBECONFIG_FILE}" /home/jenkins/.kube/config
-              chmod 0600 /home/jenkins/.kube/config || true
-              echo "[deploy] kubeconfig ready"
+
+              echo "🚀 Deploying Backend"
+              kubectl apply -f backend-deployment.yaml
+              kubectl rollout status deployment/canteen-be -n canteen-automation --timeout=120s || true
+
+              echo "🚀 Deploying Frontend"
+              kubectl apply -f frontend-deployment.yaml
+              kubectl rollout status deployment/canteen-fe -n canteen-automation --timeout=120s || true
+
+              echo "📌 Current Pods:"
+              kubectl get pods -n default -o wide || true
             '''
           }
-        }
-      }
-    }
-
-    stage('Apply backend manifest') {
-      steps {
-        container('kubectl') {
-          sh '''
-            set -euo pipefail
-            kubectl --kubeconfig=/home/jenkins/.kube/config apply -f ${BACKEND_MANIFEST} || true
-            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status -w -n default deployment/canteen-backend --timeout=120s || true
-          '''
-        }
-      }
-    }
-
-    stage('Apply frontend manifest') {
-      steps {
-        container('kubectl') {
-          sh '''
-            set -euo pipefail
-            kubectl --kubeconfig=/home/jenkins/.kube/config apply -f ${FRONTEND_MANIFEST} || true
-            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status -w -n default deployment/canteen-frontend --timeout=120s || true
-          '''
         }
       }
     }
   }
 
   post {
-    success { echo "✅ Deploy job finished." }
-    failure { echo "❌ Deploy job failed." }
+    success {
+      echo "✅ Deploy completed."
+    }
+    failure {
+      echo "❌ Deploy failed — check the logs above."
+    }
   }
 }
