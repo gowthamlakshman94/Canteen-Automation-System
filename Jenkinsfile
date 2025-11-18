@@ -111,19 +111,17 @@ EOF
             }
         }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                // Use the Jenkins "Secret file" credential (id: k3s-config)
-                withCredentials([file(credentialsId: 'k3s-config') {
-                        sh '''
-                        echo "🚀 Deploying using Kubernetes CLI Plugin..."
-                        echo "🚀 Deploying to Kubernetes (using provided kubeconfig)..."
-                        kubectl apply -f frontend-deployment.yaml || true
-                        kubectl apply -f backend-deployment.yaml || true
-                        '''
-                    }
-                }
-            }
+ stage('Deploy to Kubernetes') {
+    steps {
+        withKubeConfig(credentialsId: 'k3s-config') {
+            sh '''
+            echo "🚀 Deploying using Kubernetes CLI Plugin..."
+            kubectl apply -f canteen-automation-backend/deployment.yaml
+            kubectl apply -f Canteen-Automation-System-Website/deployment.yaml
+            '''
+        }
+    }
+}
  
     post {
         success {
