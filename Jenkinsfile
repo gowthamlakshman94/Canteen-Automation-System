@@ -130,8 +130,8 @@ EOF
                         kubectl version --client || true
 
                         echo "🚀 Deploying to Kubernetes (using provided kubeconfig)..."
-                        kubectl apply -f canteen-automation-backend/deployment.yaml || true
-                        kubectl apply -f Canteen-Automation-System-Website/deployment.yaml || true
+                        kubectl apply -f frontend-deployment.yaml || true
+                        kubectl apply -f backend-deployment.yaml || true
                         '''
                     }
                 }
