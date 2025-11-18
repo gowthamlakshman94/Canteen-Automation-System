@@ -21,7 +21,6 @@ spec:
       command: ['sh','-c']
       args: ['sleep 999d']
       tty: true
-      # Provide KUBECONFIG and mount to both common home locations (root and jenkins)
       env:
         - name: KUBECONFIG
           value: /home/jenkins/.kube/config
@@ -60,7 +59,6 @@ spec:
     FRONTEND_IMAGE = "${REGISTRY}/canteen-frontend:latest"
     BACKEND_IMAGE  = "${REGISTRY}/canteen-backend:latest"
 
-    # explicit namespaces (change if needed)
     FRONTEND_NS = "default"
     BACKEND_NS  = "default"
   }
@@ -86,19 +84,15 @@ spec:
 
             echo "=== ENV & KUBECONFIG ==="
             echo "KUBECONFIG=${KUBECONFIG:-<not-set>}"
-            echo "ls -la /home/jenkins/.kube || true"
             ls -la /home/jenkins/.kube || true
-            echo "ls -la /root/.kube || true"
             ls -la /root/.kube || true
 
             echo "=== kubeconfig first 200 bytes (if present) ==="
             if [ -f /home/jenkins/.kube/config ]; then
-              echo "---- /home/jenkins/.kube/config (head) ----"
               head -c 200 /home/jenkins/.kube/config || true
               echo
             fi
             if [ -f /root/.kube/config ]; then
-              echo "---- /root/.kube/config (head) ----"
               head -c 200 /root/.kube/config || true
               echo
             fi
@@ -106,7 +100,6 @@ spec:
             echo "=== kubectl version & cluster reachability ==="
             kubectl version --client || true
 
-            # Try using the mounted kubeconfig explicitly (so errors are visible)
             echo "---- kubeconfig-based kubectl get ns ----"
             kubectl --kubeconfig=/home/jenkins/.kube/config get ns || kubectl --kubeconfig=/root/.kube/config get ns || true
 
