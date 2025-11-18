@@ -1,134 +1,124 @@
-pipeline {
-  agent {
-    kubernetes {
-      defaultContainer 'jnlp'
-      yaml '''apiVersion: v1
-kind: Pod
-spec:
-  serviceAccountName: jenkins-deployer
-  containers:
-  - name: kaniko
-    image: gcr.io/kaniko-project/executor:debug
-    command: ['sh','-c']
-    args: ['sleep 999d']
-    tty: true
-    volumeMounts:
-      - name: workspace-volume
-        mountPath: /home/jenkins/agent
-  - name: kubectl
-    image: bitnami/kubectl:latest
-    command: ['sh','-c']
-    args: ['sleep 999d']
-    tty: true
-    volumeMounts:
-      - name: workspace-volume
-        mountPath: /home/jenkins/agent
-  volumes:
-    - name: workspace-volume
-      emptyDir: {}
-'''
-    }
-  }
+#!/usr/bin/env bash
+set -euo pipefail
 
-  environment {
-    REGISTRY = "ghcr.io/gowthamlakshman94"
-    FRONTEND_IMAGE = "${REGISTRY}/canteen-frontend:latest"
-    BACKEND_IMAGE  = "${REGISTRY}/canteen-backend:latest"
+# -------------------------
+# Usage:
+#   KUBECONFIG_FILE=/tmp/kubeconfig GHCR_USER=me GHCR_PASS=token ./ci-build-and-deploy.sh
+# Or from Jenkins use withCredentials to provide those envs/files.
+# -------------------------
 
-    FRONTEND_DIR = "Canteen-Automation-System-Website"
-    BACKEND_DIR  = "canteen-automation-backend"
+# Configurable paths / names (edit if yours differ)
+FRONTEND_DIR="${FRONTEND_DIR:-Canteen-Automation-System-Website}"
+BACKEND_DIR="${BACKEND_DIR:-canteen-automation-backend}"
+REGISTRY="${REGISTRY:-ghcr.io/gowthamlakshman94}"
+FRONTEND_IMAGE="${REGISTRY}/canteen-frontend:latest"
+BACKEND_IMAGE="${REGISTRY}/canteen-backend:latest"
+KUBECONFIG_FILE="${KUBECONFIG_FILE:-}"
+KUBECONFIG_DST="${KUBECONFIG_DST:-/home/jenkins/.kube/config}"
+KANIKO_EXEC="${KANIKO_EXEC:-/kaniko/executor}"   # path to kaniko executor if present
 
-    FRONTEND_MANIFEST = "Canteen-Automation-System-Website/deployment.yaml"
-    BACKEND_MANIFEST  = "canteen-automation-backend/deployment.yaml"
-  }
+# Helper: fatal
+fail(){ echo "ERROR: $*" >&2; exit 1; }
 
-  stages {
-    stage('Checkout') {
-      steps {
-        git branch: 'main', url: 'https://github.com/gowthamlakshman94/Canteen-Automation-System.git'
-      }
-    }
+# Validate GHCR creds in env
+: "${GHCR_USER:?need GHCR_USER (username)}"
+: "${GHCR_PASS:?need GHCR_PASS (password/token)}"
 
-    stage('Prepare credentials') {
-      steps {
-        withCredentials([
-          file(credentialsId: 'k3s-config', variable: 'KUBECONFIG_FILE'),
-          usernamePassword(credentialsId: 'ghcr-token', usernameVariable: 'GHCR_USER', passwordVariable: 'GHCR_PASS')
-        ]) {
-          container('kubectl') {
-            sh '''
-              set -euo pipefail
+# Place kubeconfig if provided
+if [[ -n "${KUBECONFIG_FILE:-}" && -f "${KUBECONFIG_FILE}" ]]; then
+  echo "Placing kubeconfig from ${KUBECONFIG_FILE} -> ${KUBECONFIG_DST}"
+  mkdir -p "$(dirname "${KUBECONFIG_DST}")"
+  cp "${KUBECONFIG_FILE}" "${KUBECONFIG_DST}"
+  chmod 0600 "${KUBECONFIG_DST}" || true
+  export KUBECONFIG="${KUBECONFIG_DST}"
+else
+  echo "No KUBECONFIG_FILE provided; expecting in-cluster config (service account) or KUBECONFIG env set."
+fi
 
-              echo "== placing kubeconfig to /home/jenkins/.kube/config =="
-              mkdir -p /home/jenkins/.kube
-              cp "${KUBECONFIG_FILE}" /home/jenkins/.kube/config
-              chmod 0600 /home/jenkins/.kube/config || true
-              echo "--- kubeconfig head ---"
-              head -n 10 /home/jenkins/.kube/config || true
-
-              echo "== creating /kaniko/.docker/config.json for GHCR =="
-              mkdir -p /kaniko/.docker
-              AUTH_B64=$(echo -n "${GHCR_USER}:${GHCR_PASS}" | base64 | tr -d '\\n')
-              cat > /kaniko/.docker/config.json <<'EOF'
+# Create Kaniko docker config for GHCR (if using kaniko)
+create_kaniko_config() {
+  echo "Creating /kaniko/.docker/config.json for GHCR..."
+  mkdir -p /kaniko/.docker || true
+  AUTH_B64="$(printf "%s:%s" "${GHCR_USER}" "${GHCR_PASS}" | base64 | tr -d '\n')"
+  cat > /kaniko/.docker/config.json <<'EOF'
 {"auths":{"ghcr.io":{"auth":"__AUTH__"}}}
 EOF
-              sed -i "s/__AUTH__/${AUTH_B64}/" /kaniko/.docker/config.json || true
-              echo "--- /kaniko/.docker/config.json head ---"
-              head -n 5 /kaniko/.docker/config.json || true
-            '''
-          }
-        }
-      }
-    }
-
-    stage('Build & push Frontend (latest)') {
-      steps {
-        container('kaniko') {
-          dir("${env.FRONTEND_DIR}") {
-            sh '''
-              set -euo pipefail
-              echo "Building & pushing frontend -> ${FRONTEND_IMAGE}"
-              /kaniko/executor --context . --dockerfile Dockerfile --destination=${FRONTEND_IMAGE} --verbosity info
-            '''
-          }
-        }
-      }
-    }
-
-    stage('Build & push Backend (latest)') {
-      steps {
-        container('kaniko') {
-          dir("${env.BACKEND_DIR}") {
-            sh '''
-              set -euo pipefail
-              echo "Building & pushing backend -> ${BACKEND_IMAGE}"
-              /kaniko/executor --context . --dockerfile Dockerfile --destination=${BACKEND_IMAGE} --verbosity info
-            '''
-          }
-        }
-      }
-    }
-
-    stage('Deploy to Kubernetes') {
-      steps {
-        container('kubectl') {
-          sh '''
-            set -euo pipefail
-            echo "Applying backend manifest: ${BACKEND_MANIFEST}"
-            kubectl --kubeconfig=/home/jenkins/.kube/config apply -f ${BACKEND_MANIFEST} || true
-            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status -w -n default deployment/canteen-backend --timeout=120s || true
-
-            echo "Applying frontend manifest: ${FRONTEND_MANIFEST}"
-            kubectl --kubeconfig=/home/jenkins/.kube/config apply -f ${FRONTEND_MANIFEST} || true
-            kubectl --kubeconfig=/home/jenkins/.kube/config rollout status -w -n default deployment/canteen-frontend --timeout=120s || true
-          '''
-        }
-      }
-    }
-  }
-
-  post {
-    success { echo "✅ Pipeline completed — images pushed as :latest and deployed." }
-    failure { echo "❌ Pipeline failed — check above logs." }
-  }
+  sed -i "s/__AUTH__/${AUTH_B64}/" /kaniko/.docker/config.json || true
+  echo "Wrote /kaniko/.docker/config.json (head):"
+  head -n 5 /kaniko/.docker/config.json || true
 }
+
+# Build & push with Kaniko (preferred inside k8s pod)
+kaniko_build_and_push() {
+  local srcdir="$1"
+  local dockerfile="${2:-Dockerfile}"
+  local destination="$3"
+
+  echo "Kaniko: building ${srcdir} -> ${destination}"
+  "${KANIKO_EXEC}" --context "${srcdir}" --dockerfile "${dockerfile}" --destination="${destination}" --verbosity info
+}
+
+# Fallback: Docker local build & push (if Docker daemon is available)
+docker_build_and_push() {
+  local srcdir="$1"
+  local dockerfile="${2:-Dockerfile}"
+  local destination="$3"
+
+  echo "Docker: build ${srcdir} -> ${destination}"
+  docker build -t "${destination}" -f "${srcdir}/${dockerfile}" "${srcdir}"
+  echo "Docker: login to ghcr"
+  echo "${GHCR_PASS}" | docker login ghcr.io -u "${GHCR_USER}" --password-stdin
+  docker push "${destination}"
+}
+
+# Attempt build+push: prefer Kaniko if available
+build_and_push() {
+  local dir="$1"
+  local image="$2"
+  if [[ -x "${KANIKO_EXEC}" ]]; then
+    create_kaniko_config
+    kaniko_build_and_push "${dir}" "Dockerfile" "${image}"
+  elif command -v docker >/dev/null 2>&1; then
+    docker_build_and_push "${dir}" "Dockerfile" "${image}"
+  else
+    fail "Neither Kaniko executor (${KANIKO_EXEC}) nor docker CLI is available in PATH."
+  fi
+}
+
+# Deploy manifests (kubectl must be available)
+deploy_manifest() {
+  local manifest="$1"
+  if ! command -v kubectl >/dev/null 2>&1; then
+    fail "kubectl not found in PATH"
+  fi
+  echo "Applying manifest ${manifest}"
+  kubectl apply -f "${manifest}" || true
+}
+
+# -------------
+# Main flow
+# -------------
+echo "Starting CI build-and-deploy script"
+echo "Frontend dir: ${FRONTEND_DIR} -> ${FRONTEND_IMAGE}"
+echo "Backend dir : ${BACKEND_DIR} -> ${BACKEND_IMAGE}"
+
+# Build & push frontend
+build_and_push "${FRONTEND_DIR}" "${FRONTEND_IMAGE}"
+
+# Build & push backend
+build_and_push "${BACKEND_DIR}" "${BACKEND_IMAGE}"
+
+# Deploy
+if [[ -f "${BACKEND_DIR}/deployment.yaml" ]]; then
+  deploy_manifest "${BACKEND_DIR}/deployment.yaml"
+else
+  echo "WARNING: backend deployment manifest not found at ${BACKEND_DIR}/deployment.yaml"
+fi
+
+if [[ -f "${FRONTEND_DIR}/deployment.yaml" ]]; then
+  deploy_manifest "${FRONTEND_DIR}/deployment.yaml"
+else
+  echo "WARNING: frontend deployment manifest not found at ${FRONTEND_DIR}/deployment.yaml"
+fi
+
+echo "Done"
