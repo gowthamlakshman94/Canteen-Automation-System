@@ -28,9 +28,22 @@ spec:
       args:
         - sleep 999d
       tty: true
+      env:
+        - name: KUBECONFIG
+          value: /home/jenkins/.kube/config
+      volumeMounts:
+        - name: kubeconfig
+          mountPath: /home/jenkins/.kube
+          readOnly: true
   volumes:
     - name: docker-config
       emptyDir: {}
+    - name: kubeconfig
+      secret:
+        secretName: k3s-config
+        items:
+          - key: config
+            path: config
 """
         }
     }
@@ -121,8 +134,9 @@ EOF
                 container('kubectl') {
                     sh '''
                     echo "🚀 Deploying to Kubernetes..."
-                    kubectl apply -f backend-deployment.yaml || true
-                    kubectl apply -f frontend-deployment.yaml || true
+                    # using KUBECONFIG mounted at /home/jenkins/.kube/config (provided by k3s-config secret)
+                    kubectl --kubeconfig=/home/jenkins/.kube/config apply -f backend-deployment.yaml || true
+                    kubectl --kubeconfig=/home/jenkins/.kube/config apply -f frontend-deployment.yaml || true
                     '''
                 }
             }
