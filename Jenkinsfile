@@ -114,21 +114,9 @@ EOF
         stage('Deploy to Kubernetes') {
             steps {
                 // Use the Jenkins "Secret file" credential (id: k3s-config)
-                withCredentials([file(credentialsId: 'k3s-config', variable: 'K3S_KUBECONFIG')]) {
-                    container('kubectl') {
+                withCredentials([file(credentialsId: 'k3s-config') {
                         sh '''
-                        echo "🔐 Using Jenkins-provided kubeconfig from credential 'k3s-config'"
-
-                        # ensure kube dir exists and copy kubeconfig
-                        mkdir -p /root/.kube
-                        chmod 700 /root/.kube
-                        cp "${K3S_KUBECONFIG}" /root/.kube/config
-                        chmod 600 /root/.kube/config
-                        export KUBECONFIG=/root/.kube/config
-
-                        echo "== kubectl version =="
-                        kubectl version --client || true
-
+                        echo "🚀 Deploying using Kubernetes CLI Plugin..."
                         echo "🚀 Deploying to Kubernetes (using provided kubeconfig)..."
                         kubectl apply -f frontend-deployment.yaml || true
                         kubectl apply -f backend-deployment.yaml || true
@@ -136,9 +124,7 @@ EOF
                     }
                 }
             }
-        }
-    }
-
+ 
     post {
         success {
             echo "✅ Build and deployment completed successfully!"
