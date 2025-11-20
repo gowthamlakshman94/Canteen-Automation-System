@@ -200,3 +200,199 @@ Feel free to open an issue if you encounter any problems, or contribute to the p
 80/TCP --> Inbound/Outbound
 443/TCP --> Inbound/Outbound
 3000/TCP --> Inbound
+
+
+
+
+# 📦 Install Jenkins on Kubernetes (K3s + Traefik Ingress)
+
+
+
+This guide explains how to install **Jenkins** inside a Kubernetes cluster using **Helm**, configure persistent storage, and expose Jenkins through the **Traefik Ingress** included with K3s.
+
+This setup is ideal for learning CI/CD and demonstrating concepts — not for production.
+
+---
+
+# ✅ Prerequisites
+
+* Kubernetes cluster running (ex: **K3s**)
+* Traefik ingress controller (built-in in K3s)
+* Helm installed:
+
+  ```bash
+  helm version
+  ```
+* kubectl configured:
+
+  ```bash
+  kubectl get nodes
+  ```
+
+---
+
+# 🚀 1. Install Jenkins with Helm (Simple Academic Setup)
+
+Use this command exactly:
+
+```bash
+helm install jenkins jenkins/jenkins -n jenkins \
+  --create-namespace \
+  --set controller.admin.username=admin \
+  --set controller.admin.password=admin123 \
+  --set persistence.storageClass=local-path \
+  --set persistence.size=10Gi
+```
+
+✔ Creates namespace
+✔ Installs Jenkins
+✔ Sets simple username + password
+✔ Uses K3s `local-path` StorageClass
+✔ Adds 10Gi PVC for Jenkins home
+
+---
+
+# 📌 2. Wait for Jenkins to be ready
+
+```bash
+kubectl get pods -n jenkins
+kubectl get svc -n jenkins
+```
+
+When the pod shows:
+
+```
+jenkins-xxxxx   Running
+```
+
+you are ready to expose it.
+
+---
+
+# 🌐 3. Create Traefik Ingress for Jenkins
+
+Create a file named:
+
+`jenkins-ingress.yaml`
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jenkins-ingress
+  namespace: jenkins
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+    - host: jenkins.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jenkins
+                port:
+                  number: 8080
+```
+
+Apply it:
+
+```bash
+kubectl apply -f jenkins-ingress.yaml
+kubectl get ingress -n jenkins
+```
+
+Expected:
+
+```
+jenkins.local   <traefik-ip>   80
+```
+
+---
+
+# 💻 4. Access Jenkins from Browser
+
+## Step 1 → Get your WSL or cluster IP
+
+(For Windows + WSL2)
+
+```bash
+hostname -I
+```
+
+Example:
+
+```
+172.22.176.1
+```
+
+## Step 2 → Add hosts entry
+
+### Windows (Run Notepad as Administrator)
+
+Edit:
+
+```
+C:\Windows\System32\drivers\etc\hosts
+```
+
+Add a line:
+
+```
+172.22.176.1   jenkins.local
+```
+
+## Step 3 → Open Jenkins
+
+```
+http://jenkins.local
+```
+
+---
+
+# 🔑 5. Login Credentials
+
+Since we set them during installation:
+
+```
+Username: admin
+Password: admin123
+```
+
+---
+
+# 🧪 6. (Optional) Quick Port-Forward Method
+
+If you don't want to configure ingress:
+
+```bash
+kubectl port-forward svc/jenkins -n jenkins 8080:8080
+```
+
+Then open:
+
+```
+http://localhost:8080
+```
+
+---
+
+# 🛠 7. Uninstall Jenkins
+
+```bash
+helm uninstall jenkins -n jenkins
+kubectl delete namespace jenkins
+```
+
+---
+
+# 📝 Notes
+
+* This setup is **not for production** (default passwords, no TLS, no RBAC hardening).
+* Perfect for **MTech/CSE semester projects**, demonstrations, CI/CD learning.
+* Works beautifully with a local K3s cluster and Jenkins pipelines.
+
+---
+
