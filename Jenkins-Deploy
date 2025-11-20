@@ -43,6 +43,7 @@ spec:
             echo "Kubefile in jnlp: ${KUBEFILE}"
             mkdir -p /shared
             cp "${KUBEFILE}" /shared/kubeconfig
+            chmod 644 /shared/kubeconfig
             ls -la /shared || true
           '''
         }
