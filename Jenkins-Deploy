@@ -54,12 +54,11 @@ spec:
         container('kubectl') {
           sh '''
             set -euo pipefail
-            export KUBECONFIG=/shared/kubeconfig
             echo "Using kubeconfig at $KUBECONFIG"
-            kubectl --kubeconfig="$KUBECONFIG" apply -f backend-deployment.yaml
-            kubectl --kubeconfig="$KUBECONFIG" rollout status deployment/canteen-be -n canteen-automation --timeout=120s || true
-            kubectl --kubeconfig="$KUBECONFIG" apply -f frontend-deployment.yaml
-            kubectl --kubeconfig="$KUBECONFIG" rollout status deployment/canteen-fe -n canteen-automation --timeout=120s || true
+            kubectl --kubeconfig=/shared/kubeconfig apply -f backend-deployment.yaml
+            kubectl --kubeconfig=/shared/kubeconfig rollout status deployment/canteen-be -n canteen-automation --timeout=120s || true
+            kubectl --kubeconfig=/shared/kubeconfig apply -f frontend-deployment.yaml
+            kubectl --kubeconfig=/shared/kubeconfig rollout status deployment/canteen-fe -n canteen-automation --timeout=120s || true
           '''
         }
       }
