@@ -2,7 +2,7 @@ pipeline {
   agent {
     kubernetes {
       defaultContainer 'jnlp'
-      yaml '''
+      yaml """
 apiVersion: v1
 kind: Pod
 spec:
@@ -12,60 +12,66 @@ spec:
     command: ['sh','-c']
     args: ['sleep 999d']
     tty: true
+    volumeMounts:
+    - name: shared-work
+      mountPath: /shared
+  - name: jnlp
+    image: jenkins/inbound-agent:latest
+    volumeMounts:
+    - name: shared-work
+      mountPath: /shared
   volumes:
-  - name: workspace
+  - name: shared-work
     emptyDir: {}
-'''
+"""
     }
   }
 
   stages {
     stage('Checkout') {
       steps {
-        checkout([$class: 'GitSCM',
-          branches: [[name: '*/main']],
-          userRemoteConfigs: [[url: 'https://github.com/gowthamlakshman94/Canteen-Automation-System.git']]
-        ])
+        checkout scm
       }
     }
 
-    stage('Deploy to Kubernetes (using Jenkins file credential)') {
+    stage('Inject kubeconfig into shared volume') {
       steps {
-        // NOTE: withCredentials must run inside the same container that will use the file.
+        // This runs in jnlp container (defaultContainer), injects the credential file and copies it to /shared/kubeconfig
+        withCredentials([file(credentialsId: 'k3s-config', variable: 'KUBEFILE')]) {
+          sh '''
+            set -euo pipefail
+            echo "Kubefile in jnlp: ${KUBEFILE}"
+            mkdir -p /shared
+            cp "${KUBEFILE}" /shared/kubeconfig
+            ls -la /shared || true
+          '''
+        }
+      }
+    }
+
+    stage('Deploy using kubectl container (reads /shared/kubeconfig)') {
+      steps {
         container('kubectl') {
-          // 'k3s-config' must be stored in Jenkins as a Secret file (file credential)
-          withCredentials([file(credentialsId: 'k3s-config', variable: 'KUBEFILE')]) {
-            sh '''
-              #!/bin/sh
-              set -euo pipefail
-
-              # Safe debug: show where the temporary kubeconfig file lives (do NOT print content)
-              echo "Using kubefile at: ${KUBEFILE}"
-              ls -la "$(dirname "${KUBEFILE}")" || true
-
-              echo "🚀 Deploying Backend"
-              kubectl --kubeconfig="${KUBEFILE}" apply -f backend-deployment.yaml
-              kubectl --kubeconfig="${KUBEFILE}" rollout status deployment/canteen-be -n canteen-automation --timeout=120s || true
-
-              echo "🚀 Deploying Frontend"
-              kubectl --kubeconfig="${KUBEFILE}" apply -f frontend-deployment.yaml
-              kubectl --kubeconfig="${KUBEFILE}" rollout status deployment/canteen-fe -n canteen-automation --timeout=120s || true
-
-              echo "📌 Current Pods (namespace: canteen-automation):"
-              kubectl --kubeconfig="${KUBEFILE}" get pods -n canteen-automation -o wide || true
-            '''
-          }
+          sh '''
+            set -euo pipefail
+            export KUBECONFIG=/shared/kubeconfig
+            echo "Using kubeconfig at $KUBECONFIG"
+            kubectl --kubeconfig="$KUBECONFIG" apply -f backend-deployment.yaml
+            kubectl --kubeconfig="$KUBECONFIG" rollout status deployment/canteen-be -n canteen-automation --timeout=120s || true
+            kubectl --kubeconfig="$KUBECONFIG" apply -f frontend-deployment.yaml
+            kubectl --kubeconfig="$KUBECONFIG" rollout status deployment/canteen-fe -n canteen-automation --timeout=120s || true
+          '''
         }
       }
     }
   }
 
   post {
-    success {
-      echo "✅ Deploy completed."
-    }
-    failure {
-      echo "❌ Deploy failed — check the logs above."
+    always {
+      // clean up shared file just in case
+      container('jnlp') {
+        sh 'rm -f /shared/kubeconfig || true'
+      }
     }
   }
 }
