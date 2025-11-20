@@ -38,7 +38,7 @@ spec:
       steps {
         sh '''
           set -euo pipefail
-          cp -a ${WORKSPACE}/. /shared/
+          cp -r ${WORKSPACE}/. /shared/
           echo "Copied repo into /shared"
           ls -la /shared || true
         '''
