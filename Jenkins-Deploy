@@ -2,7 +2,8 @@ pipeline {
   agent {
     kubernetes {
       defaultContainer 'jnlp'
-      yaml '''apiVersion: v1
+      yaml '''
+apiVersion: v1
 kind: Pod
 spec:
   containers:
@@ -12,8 +13,8 @@ spec:
     args: ['sleep 999d']
     tty: true
   volumes:
-    - name: workspace
-      emptyDir: {}
+  - name: workspace
+    emptyDir: {}
 '''
     }
   }
@@ -28,24 +29,29 @@ spec:
       }
     }
 
-    stage('Deploy to Kubernetes') {
+    stage('Deploy to Kubernetes (using Jenkins file credential)') {
       steps {
-        withKubeConfig([credentialsId: 'k3s-config']) {
+        // 'k3s-config' must be stored in Jenkins as a Secret file (file credential)
+        withCredentials([file(credentialsId: 'k3s-config', variable: 'KUBEFILE')]) {
           container('kubectl') {
             sh '''
               #!/bin/sh
               set -euo pipefail
 
+              # Safe debug: show where the temporary kubeconfig file lives (do NOT print content)
+              echo "Using kubefile at: ${KUBEFILE}"
+              ls -la "$(dirname "${KUBEFILE}")" || true
+
               echo "🚀 Deploying Backend"
-              kubectl apply -f backend-deployment.yaml
-              kubectl rollout status deployment/canteen-be -n canteen-automation --timeout=120s || true
+              kubectl --kubeconfig="${KUBEFILE}" apply -f backend-deployment.yaml
+              kubectl --kubeconfig="${KUBEFILE}" rollout status deployment/canteen-be -n canteen-automation --timeout=120s || true
 
               echo "🚀 Deploying Frontend"
-              kubectl apply -f frontend-deployment.yaml
-              kubectl rollout status deployment/canteen-fe -n canteen-automation --timeout=120s || true
+              kubectl --kubeconfig="${KUBEFILE}" apply -f frontend-deployment.yaml
+              kubectl --kubeconfig="${KUBEFILE}" rollout status deployment/canteen-fe -n canteen-automation --timeout=120s || true
 
-              echo "📌 Current Pods:"
-              kubectl get pods -n default -o wide || true
+              echo "📌 Current Pods (namespace: canteen-automation):"
+              kubectl --kubeconfig="${KUBEFILE}" get pods -n canteen-automation -o wide || true
             '''
           }
         }
