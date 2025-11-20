@@ -30,20 +30,47 @@ spec:
   stages {
     stage('Checkout') {
       steps {
-        checkout scm
+        // checkout runs in the default 'jnlp' container
+        checkout([$class: 'GitSCM',
+          branches: [[name: '*/main']],
+          userRemoteConfigs: [[url: 'https://github.com/gowthamlakshman94/Canteen-Automation-System.git']]
+        ])
+      }
+    }
+
+    stage('Prepare deploy files in shared volume') {
+      steps {
+        // copy workspace contents into /shared so kubectl container can access them
+        // run in jnlp (default) so it sees ${WORKSPACE}
+        sh '''
+          set -euo pipefail
+          echo "Workspace: ${WORKSPACE}"
+          echo "Clearing /shared and copying workspace -> /shared"
+          rm -rf /shared/* || true
+          mkdir -p /shared
+          # copy repo content into /shared, preserving attributes; exclude /shared itself if nested
+          cp -a ${WORKSPACE}/. /shared/
+          # verify
+          echo "Contents of /shared (top-level):"
+          ls -la /shared | sed -n '1,200p' || true
+          # list yaml files found (for debugging)
+          echo "YAML files found in /shared:"
+          find /shared -type f \\( -iname '*.yaml' -o -iname '*.yml' \\) -print || true
+        '''
       }
     }
 
     stage('Inject kubeconfig into shared volume') {
       steps {
-        // This runs in jnlp container (defaultContainer), injects the credential file and copies it to /shared/kubeconfig
+        // This runs in jnlp container (default). Inject the credential file and copy it to /shared/kubeconfig
         withCredentials([file(credentialsId: 'k3s-config', variable: 'KUBEFILE')]) {
           sh '''
             set -euo pipefail
-            echo "Kubefile in jnlp: ${KUBEFILE}"
+            echo "Kubefile temporary path: ${KUBEFILE}"
             mkdir -p /shared
             cp "${KUBEFILE}" /shared/kubeconfig
-            chmod 644 /shared/kubeconfig
+            chmod 0644 /shared/kubeconfig
+            echo "/shared contents after copying kubeconfig:"
             ls -la /shared || true
           '''
         }
@@ -55,11 +82,29 @@ spec:
         container('kubectl') {
           sh '''
             set -euo pipefail
-            echo "Using kubeconfig at $KUBECONFIG"
-            kubectl --kubeconfig=/shared/kubeconfig apply -f backend-deployment.yaml
-            kubectl --kubeconfig=/shared/kubeconfig rollout status deployment/canteen-be -n canteen-automation --timeout=120s || true
-            kubectl --kubeconfig=/shared/kubeconfig apply -f frontend-deployment.yaml
-            kubectl --kubeconfig=/shared/kubeconfig rollout status deployment/canteen-fe -n canteen-automation --timeout=120s || true
+            KFILE=/shared/kubeconfig
+            echo "Using kubeconfig at $KFILE"
+            ls -la "$KFILE" || true
+
+            # show minimal non-sensitive verification
+            kubectl --kubeconfig="$KFILE" version --client || true
+            kubectl --kubeconfig="$KFILE" config view --minify || true
+
+            # Attempt to apply all manifests under /shared (recursively)
+            # kubectl supports --recursive for directories; fallback to find+xargs if not available
+            if kubectl --kubeconfig="$KFILE" apply -f /shared --recursive; then
+              echo "Applied manifests using --recursive from /shared"
+            else
+              echo "--recursive failed or unsupported; using find+xargs to apply YAML files"
+              find /shared -type f \\( -iname '*.yaml' -o -iname '*.yml' \\) -print0 | xargs -0 -r kubectl --kubeconfig="$KFILE" apply -f
+            fi
+
+            # wait for the two known deployments (non-fatal timeouts)
+            kubectl --kubeconfig="$KFILE" rollout status deployment/canteen-be -n canteen-automation --timeout=120s || true
+            kubectl --kubeconfig="$KFILE" rollout status deployment/canteen-fe -n canteen-automation --timeout=120s || true
+
+            echo "Pods in canteen-automation:"
+            kubectl --kubeconfig="$KFILE" get pods -n canteen-automation -o wide || true
           '''
         }
       }
@@ -68,10 +113,20 @@ spec:
 
   post {
     always {
-      // clean up shared file just in case
+      // clean up shared kubeconfig just in case. Run in jnlp so we can write to the shared mount.
       container('jnlp') {
-        sh 'rm -f /shared/kubeconfig || true'
+        sh '''
+          rm -f /shared/kubeconfig || true
+          # optionally remove copied workspace (uncomment if you want to avoid leaving files)
+          # rm -rf /shared/* || true
+        '''
       }
+    }
+    success {
+      echo "✅ Deploy completed."
+    }
+    failure {
+      echo "❌ Deploy failed — check the logs above."
     }
   }
 }
