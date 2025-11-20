@@ -8,7 +8,7 @@ kind: Pod
 spec:
   containers:
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: bitnami/kubectl:1.27.3
     command: ['sh','-c']
     args: ['sleep 999d']
     tty: true
@@ -63,6 +63,7 @@ spec:
       steps {
         container('kubectl') {
           sh '''
+            sleep 2
             set -euo pipefail
             kubectl --kubeconfig=/shared/kubeconfig apply -f /shared/backend-deployment.yaml
             kubectl --kubeconfig=/shared/kubeconfig rollout status deployment/canteen-be -n canteen-automation --timeout=120s || true
