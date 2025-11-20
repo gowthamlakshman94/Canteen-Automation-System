@@ -31,9 +31,10 @@ spec:
 
     stage('Deploy to Kubernetes (using Jenkins file credential)') {
       steps {
-        // 'k3s-config' must be stored in Jenkins as a Secret file (file credential)
-        withCredentials([file(credentialsId: 'k3s-config', variable: 'KUBEFILE')]) {
-          container('kubectl') {
+        // NOTE: withCredentials must run inside the same container that will use the file.
+        container('kubectl') {
+          // 'k3s-config' must be stored in Jenkins as a Secret file (file credential)
+          withCredentials([file(credentialsId: 'k3s-config', variable: 'KUBEFILE')]) {
             sh '''
               #!/bin/sh
               set -euo pipefail
