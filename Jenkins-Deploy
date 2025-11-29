@@ -66,8 +66,10 @@ spec:
             sleep 2
             set -euo pipefail
             kubectl --kubeconfig=/shared/kubeconfig apply -f /shared/k8s_deployment.yaml
-            kubectl --kubeconfig=/shared/kubeconfig rollout status deployment/canteen-be -n canteen-automation --timeout=120s || true
-            kubectl --kubeconfig=/shared/kubeconfig rollout status deployment/canteen-fe -n canteen-automation --timeout=120s || true
+            kubectl --kubeconfig=/shared/kubeconfig rollout restart deployment/cas-be -n canteen-automation --timeout=120s || true
+            kubectl --kubeconfig=/shared/kubeconfig rollout restart deployment/cas-fe -n canteen-automation --timeout=120s || true
+            kubectl --kubeconfig=/shared/kubeconfig rollout status deployment/cas-be -n canteen-automation --timeout=120s || true
+            kubectl --kubeconfig=/shared/kubeconfig rollout status deployment/cas-fe -n canteen-automation --timeout=120s || true
           '''
         }
       }
