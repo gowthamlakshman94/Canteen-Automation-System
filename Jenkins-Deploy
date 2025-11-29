@@ -65,10 +65,8 @@ spec:
           sh '''
             sleep 2
             set -euo pipefail
-            kubectl --kubeconfig=/shared/kubeconfig apply -f /shared/backend-deployment.yaml
+            kubectl --kubeconfig=/shared/kubeconfig apply -f /shared/k8s_deployment.yaml
             kubectl --kubeconfig=/shared/kubeconfig rollout status deployment/canteen-be -n canteen-automation --timeout=120s || true
-
-            kubectl --kubeconfig=/shared/kubeconfig apply -f /shared/frontend-deployment.yaml
             kubectl --kubeconfig=/shared/kubeconfig rollout status deployment/canteen-fe -n canteen-automation --timeout=120s || true
           '''
         }
