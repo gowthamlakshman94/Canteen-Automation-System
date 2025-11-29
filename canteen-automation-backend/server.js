@@ -360,6 +360,38 @@ app.get('/checkOrder/:orderId', (req, res) => {
     });
 });
 
+// GET /api/menu  -> list available menu items (supports ?category=Breakfast etc.)
+app.get('/api/menu', (req, res) => {
+  const { category } = req.query;
+
+  let sql = 'SELECT id, name, description, price, image_filename, category, available FROM menu_items WHERE available = 1';
+  const params = [];
+
+  if (category) {
+    // use case-insensitive match (MySQL default collation usually case-insensitive; use LOWER() if needed)
+    sql += ' AND category = ?';
+    params.push(category);
+  }
+
+  sql += ' ORDER BY id';
+
+  dbPool.query(sql, params, (err, results) => {
+    if (err) {
+      console.error('Error fetching menu:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+    const items = results.map(r => ({
+      id: r.id,
+      name: r.name,
+      description: r.description,
+      price: parseFloat(r.price),
+      category: r.category,
+      available: r.available,
+      image_url: `/api/menu/${r.id}/image`
+    }));
+    res.json({ success: true, data: items });
+  });
+});
 
 
 // Start the server
