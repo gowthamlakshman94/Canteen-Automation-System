@@ -1,283 +1,71 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-<script src="config.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <!--jQuery library-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!--Latest compiled and minified JavaScript-->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="order.css" type="text/css">
-    <title>Order</title>
-    <script src="cart.js" async></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lunch - IIT Patna Canteen</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="order.css" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script>
+  (function(){
+    const API_BASE = 'http://localhost:3000'; // adjust if different
+    const CATEGORY = 'Lunch'; // this page's category
 
+    async function loadMenu() {
+      try {
+        const res = await fetch(`${API_BASE}/api/menu?category=${encodeURIComponent(CATEGORY)}`);
+        const json = await res.json();
+        if (!json.success) { console.error('Menu fetch failed', json); return; }
+        const container = document.getElementById('menuContainer');
+        container.innerHTML = '';
+        json.data.forEach(item => {
+          const col = document.createElement('div'); col.className = 'col-sm-6 col-md-3';
+          const thumb = document.createElement('div'); thumb.className = 'thumbnail'; thumb.style.textAlign='center';
+          const img = document.createElement('img'); img.className='item-image'; img.style.width='100%'; img.style.height='170px'; img.style.objectFit='cover';
+          img.src = item.image_url ? (API_BASE + item.image_url) : 'placeholder.jpg';
+          img.alt = item.name;
+          const caption = document.createElement('div'); caption.className='caption';
+          const h4 = document.createElement('h4'); h4.className='item-title'; h4.textContent = item.name;
+          const p = document.createElement('p'); p.className='item-price'; p.innerHTML = '&#8377; ' + parseFloat(item.price).toFixed(2);
+          const addWrap = document.createElement('div'); addWrap.className='addToCartbutton';
+          const btn = document.createElement('button'); btn.className='btn btn-primary btn-block add-to-cart'; btn.textContent='ADD TO CART';
+          btn.dataset.id = item.id; btn.dataset.name = item.name; btn.dataset.price = item.price; btn.dataset.image = img.src;
+          btn.addEventListener('click', function(){
+            const itemData = { id: btn.dataset.id, name: btn.dataset.name, price: parseFloat(btn.dataset.price), image: btn.dataset.image, quantity: 1 };
+            if (typeof window.addItemToCart === 'function') { window.addItemToCart(itemData); return; }
+            window.dispatchEvent(new CustomEvent('canteen:addToCart', { detail: itemData }));
+          });
+          addWrap.appendChild(btn);
+          caption.appendChild(h4); caption.appendChild(p); caption.appendChild(addWrap);
+          thumb.appendChild(img); thumb.appendChild(caption); col.appendChild(thumb); container.appendChild(col);
+        });
+      } catch (e) { console.error('Menu load error', e); }
+    }
+    document.addEventListener('DOMContentLoaded', loadMenu);
+  })();
+  </script>
 </head>
-
 <body>
+  <!-- copy your navbar / header here -->
+  <nav class="navbar navbar-inverse navbar-fixed-top"> ... </nav>
 
-
-
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button class="navbar-toggle" data-toggle="collapse" data-target="#abc">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="First Page.html">IIT Patna Canteen</a>
-
-            </div>
-            <div class="collapse navbar-collapse" id="abc">
-                <ul class="nav navbar-nav navbar-right">
-
-                    <li><a href="First Page.html"><span class="glyphicon glyphicon-home"></span> Home</a>
-                    </li>
-                    <li><a href="login.html"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
-                    </li>
-                </ul>
-            </div>
-
-        </div>
-    </nav>
-    <nav>
-        <div class="container">
-            <div class="jumbotron"
-                style="margin-top: 9%; text-align: center; border-radius: 15px 15px 15px 15px;">
-                <h1>Welcome to Canteen Automation System</h1>
-                <p>Every meal is a happy meal</p>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-6 col-md-3">
-                    <div class="thumbnail" style="text-align: center; border-radius: 15px 15px 15px 15px;">
-                        <img class="item-image" src="SEPM 146.jpg" style="border-radius: 15px 15px 15px 15px;">
-                        <div class="caption">
-                            <h4 class="item-title">Chilli Paneer</h4>
-                            <p class="item-price">&#8377;120</p>
-                            <div class="addToCartbutton">
-                                <button class="btn btn-primary btn-block"
-                                    style="position: relative; background-color: rgb(27, 15, 27)">ADD TO
-                                    CART</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3">
-                    <div class="thumbnail" style="text-align: center; border-radius: 15px 15px 15px 15px;">
-                        <img class="item-image" src="SEPM 108.jpg" style="border-radius: 15px 15px 15px 15px;">
-                        <div class="caption">
-                            <h4 class="item-title"> Veg Pizza</h4>
-                            <p class="item-price">&#8377;150</p>
-                            <div class="addToCartbutton">
-                                <button class="btn btn-primary btn-block" style="position: relative;">ADD TO
-                                    CART</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-
-                <div class="col-sm-6 col-md-3">
-                    <div class="thumbnail" style="text-align: center; border-radius: 15px 15px 15px 15px;">
-                        <img class="item-image" src="Mutton Biryani.jpg" style="border-radius: 15px 15px 15px 15px;">
-                        <div class="caption">
-                            <h4 class="item-title"> Mutton Biryani</h4>
-                            <p class="item-price">&#8377;170</p>
-                            <div class="addToCartbutton">
-                                <button class="btn btn-primary btn-block" style="position: relative;">ADD TO
-                                    CART</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3">
-                    <div class="thumbnail" style="text-align: center; border-radius: 15px 15px 15px 15px;">
-                        <img class="item-image" src="panner2.jpg" style="border-radius: 15px 15px 15px 15px;">
-                        <div class="caption">
-                            <h4 class="item-title"> Paneer Butter Masala</h4>
-                            <p class="item-price">&#8377;140</p>
-                            <div class="addToCartbutton">
-                                <button class="btn btn-primary btn-block" style="position: relative;">ADD TO
-                                    CART</button>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-3">
-                <div class="thumbnail" style="text-align: center; border-radius: 15px 15px 15px 15px;">
-                    <img class="item-image" src="Noorth Indian Thali2.jpg" style="border-radius: 15px 15px 15px 15px;">
-                    <div class="caption">
-                        <h4 class="item-title"> North Indian Thali</h4>
-                        <p class="item-price">&#8377;120</p>
-                        <div class="addToCartbutton">
-                            <button class="btn btn-primary btn-block" style="position: relative;">ADD TO
-                                CART</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-3">
-                <div class="thumbnail" style="text-align: center; border-radius: 15px 15px 15px 15px;">
-                    <img class="item-image" src="SEPM 147.jpg" style="border-radius: 15px 15px 15px 15px;">
-                    <div class="caption">
-                        <h4 class="item-title">Maharashtrian Thali</h4>
-                        <p class="item-price">&#8377;150</p>
-                        <div class="addToCartbutton">
-                            <button class="btn btn-primary btn-block" style="position: relative;">ADD TO
-                                CART</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-3">
-                <div class="thumbnail" style="text-align: center; border-radius: 15px 15px 15px 15px;">
-                    <img class="item-image" src="SEPM 22.jpg" style="border-radius: 15px 15px 15px 15px;">
-                    <div class="caption">
-                        <h4 class="item-title"> Chicken Shawarma</h4>
-                        <p class="item-price">&#8377;70</p>
-                        <div class="addToCartbutton">
-                            <button class="btn btn-primary btn-block" style="position: relative;">ADD TO
-                                CART</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-3">
-                <div class="thumbnail" style="text-align: center; border-radius: 15px 15px 15px 15px;">
-                    <img class="item-image" src="Roti1.jpg" style="border-radius: 15px 15px 15px 15px;">
-                    <div class="caption">
-                        <h4 class="item-title"> Roti</h4>
-                        <p class="item-price">&#8377;8</p>
-                        <div class="addToCartbutton">
-                            <button class="btn btn-primary btn-block" style="position: relative;">ADD TO
-                                CART</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-3">
-                <div class="thumbnail" style="text-align: center; border-radius: 15px 15px 15px 15px;">
-                    <img class="item-image" src="Jeera Rice3.jpg" style="border-radius: 15px 15px 15px 15px;">
-                    <div class="caption">
-                        <h4 class="item-title"> Jeera Rice</h4>
-                        <p class="item-price">&#8377;100</p>
-                        <div class="addToCartbutton">
-                            <button class="btn btn-primary btn-block" style="position: relative;">ADD TO
-                                CART</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-3">
-                <div class="thumbnail" style="text-align: center; border-radius: 15px 15px 15px 15px;">
-                    <img class="item-image" src="Paneer Tikka1.jpg" style="border-radius: 15px 15px 15px 15px;">
-                    <div class="caption">
-                        <h4 class="item-title"> Paneer Tikka </h4>
-                        <p class="item-price">&#8377;150</p>
-                        <div class="addToCartbutton">
-                            <button class="btn btn-primary btn-block" style="position: relative;">ADD TO
-                                CART</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-3">
-                <div class="thumbnail" style="text-align: center; border-radius: 15px 15px 15px 15px;">
-                    <img class="item-image" src="Chicken-Biryani3.jpg" style="border-radius: 15px 15px 15px 15px;">
-                    <div class="caption">
-                        <h4 class="item-title"> Chicken Biryani</h4>
-                        <p class="item-price">&#8377;150</p>
-                        <div class="addToCartbutton">
-                            <button class="btn btn-primary btn-block" style="position: relative;">ADD TO
-                                CART</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-
-            <div class="col-sm-6 col-md-3">
-                <div class="thumbnail" style="text-align: center; border-radius: 15px 15px 15px 15px;">
-                    <img class="item-image" src="SEPM 103.jpg" style="border-radius: 15px 15px 15px 15px;">
-                    <div class="caption">
-                        <h4 class="item-title"> Tangdi Kabab</h4>
-                        <p class="item-price">&#8377;160</p>
-                        <div class="addToCartbutton">
-                            <button class="btn btn-primary btn-block"
-                                style="position: relative; border-radius: 15px 15px 15px 15px;">ADD TO
-                                CART</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-        </div>
-        </div>
-    </nav>
-
-    <div class="container">
-        <div class="jumbotron"
-            style="background-image: url('SEPM 123.jpg'); text-align: center; border-radius: 15px 15px 15px 15px;">
-            <section class="container content-section">
-                <h2 style="text-align: center; margin-top: 10px;text-decoration: underline;" class="section-header">
-                    <strong>CART</strong>
-                </h2>
-                <div class="cart-row">
-                    <span class="cart-item cart-header cart-column">ITEM</span>
-                    <span class="cart-price cart-header cart-column">PRICE</span>
-                    <span class="cart-quantity cart-header cart-column">QUANTITY</span>
-                </div>
-
-                <div class="cartItems"></div>
-                <div class="cart-total">
-                    <strong class="cart-total-title">Total</strong>
-                    <span class="cart-total-price">&#8377;0</span>
-                </div>
-
-                <a href="Order Confirmation.html">
-                    <div class="purchaseBtn"><button class="btn btn-primary btn-block" style="height: 50px;">CONFIRM
-                            ORDER</button>
-                    </div>
-                </a>
-            </section>
-        </div>
+  <div class="container" style="margin-top:90px;">
+    <div class="jumbotron" style="text-align:center;border-radius:15px;">
+      <h1>Breakfast Menu</h1>
+      <p>Start your day right</p>
     </div>
 
-    <footer>
-        <div class="container-fluid"
-            style="background-color: black; text-align: center; padding-bottom: 5px; padding-top: 7px;">
-            <b>
-                <p style="color:black;">
-                    Copyright <span class="glyphicon glyphicon-copyright-mark" style="color: black;"><b> IIT Patna Canteen.
-                            All Rights Reserved | Contact Us: 9999999991
-                        </b>
-                    </span>
-                </p>
-            </b>
+    <div class="row" id="menuContainer"></div>
 
-        </div>
-    </footer>
+    <!-- CART SECTION (same as before) -->
+    <div class="jumbotron" style="background-image: url('SEPM 123.jpg'); text-align: center; border-radius: 15px;">
+      <section class="container content-section"> ... same cart markup ... </section>
+    </div>
+  </div>
 
+  <footer> ... </footer>
 
+  <script src="cart.js"></script>
 </body>
-
 </html>
