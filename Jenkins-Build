@@ -23,8 +23,8 @@ spec:
     REGISTRY = "ghcr.io/gowthamlakshman94"
     FRONTEND_DIR = "Canteen-Automation-System-Website"
     BACKEND_DIR  = "canteen-automation-backend"
-    FRONTEND_IMAGE = "${REGISTRY}/canteen-frontend:latest"
-    BACKEND_IMAGE  = "${REGISTRY}/canteen-backend:latest"
+    FRONTEND_IMAGE = "${REGISTRY}/canteen-fe:latest"
+    BACKEND_IMAGE  = "${REGISTRY}/canteen-be:latest"
   }
 
   stages {
