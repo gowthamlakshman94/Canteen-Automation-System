@@ -7,6 +7,14 @@ const app = express();
 const port = 3000;
 const bcrypt = require('bcrypt');
 
+// Add near top with other requires
+const multer = require('multer');
+
+// Multer memory storage so we can store Buffer into MySQL BLOB
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 } // 5 MB max; adjust as needed
+});
 
 
 // Middleware
@@ -360,36 +368,124 @@ app.get('/checkOrder/:orderId', (req, res) => {
     });
 });
 
-// GET /api/menu  -> list available menu items (supports ?category=Breakfast etc.)
+/********************************************************
+ * Menu endpoints for menu_addition.html
+ * - POST /api/menu           : accepts multipart/form-data (image) and stores into DB (image_blob + image_mime)
+ * - GET  /api/menu           : returns menu items metadata (image_url points to next endpoint)
+ * - GET  /api/menu/:id/image : serves image blob with proper Content-Type
+ ********************************************************/
+
+// NOTE: ensure your `menu_items` table has image_blob LONGBLOB and image_mime VARCHAR column.
+// If not present, run:
+// ALTER TABLE menu_items ADD COLUMN image_blob LONGBLOB;
+// ALTER TABLE menu_items ADD COLUMN image_mime VARCHAR(100);
+
+// POST /api/menu -> receive form data and image file
+// Expects multipart/form-data with fields: name, description, price, category, available and image file field named 'image'
+
+app.post('/api/menu', upload.single('image'), (req, res) => {
+  try {
+    const { name, description, price, category, available } = req.body;
+
+    if (!name || !price) {
+      return res.status(400).json({ success: false, message: 'name and price are required' });
+    }
+
+    let image_blob = null;
+    let image_mime = null;
+    let image_filename = null;
+
+    if (req.file) {
+      image_blob = req.file.buffer;          // Buffer
+      image_mime = req.file.mimetype;        // e.g., image/jpeg
+      image_filename = req.file.originalname;
+    }
+
+    const sql = `
+      INSERT INTO menu_items
+        (name, description, price, category, available, image_blob, image_mime, image_filename)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const availableFlag = (available === undefined || available === '' ? 1 : (available == '0' ? 0 : 1));
+
+    dbPool.query(
+      sql,
+      [
+        name,
+        description || null,
+        parseFloat(price),
+        category || null,
+        availableFlag,
+        image_blob,
+        image_mime,
+        image_filename || null
+      ],
+      (err, result) => {
+        if (err) {
+          console.error('Error inserting menu item:', err);
+          return res.status(500).json({ success: false, message: 'DB insert error' });
+        }
+        return res.status(201).json({ success: true, data: { id: result.insertId } });
+      }
+    );
+  } catch (err) {
+    console.error('POST /api/menu error:', err);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// GET /api/menu -> list menu items (no blob in response)
+// supports optional ?category=Breakfast|Lunch|Dinner
 app.get('/api/menu', (req, res) => {
   const { category } = req.query;
-
-  let sql = 'SELECT id, name, description, price, image_filename, category, available FROM menu_items WHERE available = 1';
+  let sql = 'SELECT id, name, description, price, category, available FROM menu_items WHERE available = 1';
   const params = [];
-
   if (category) {
-    // use case-insensitive match (MySQL default collation usually case-insensitive; use LOWER() if needed)
     sql += ' AND category = ?';
     params.push(category);
   }
-
   sql += ' ORDER BY id';
 
-  dbPool.query(sql, params, (err, results) => {
+  dbPool.query(sql, params, (err, rows) => {
     if (err) {
       console.error('Error fetching menu:', err);
-      return res.status(500).json({ success: false, message: 'Database error' });
+      return res.status(500).json({ success: false, message: 'DB error' });
     }
-    const items = results.map(r => ({
+    // Add image_url that frontend will use to fetch the image blob
+    const host = req.protocol + '://' + req.get('host');
+    const items = rows.map(r => ({
       id: r.id,
       name: r.name,
       description: r.description,
       price: parseFloat(r.price),
       category: r.category,
       available: r.available,
-      image_url: `/api/menu/${r.id}/image`
+      image_url: `/api/menu/${r.id}/image` // relative path; frontend can prepend API_BASE if required
     }));
     res.json({ success: true, data: items });
+  });
+});
+
+// GET /api/menu/:id/image -> serve image blob with correct content-type
+app.get('/api/menu/:id/image', (req, res) => {
+  const id = req.params.id;
+  const sql = 'SELECT image_blob, image_mime, image_filename FROM menu_items WHERE id = ? LIMIT 1';
+  dbPool.query(sql, [id], (err, rows) => {
+    if (err) {
+      console.error('Error fetching image blob:', err);
+      return res.status(500).send('Server error');
+    }
+    if (!rows || rows.length === 0) return res.status(404).send('Not found');
+    const row = rows[0];
+    if (!row.image_blob) return res.status(404).send('No image');
+
+    const mime = row.image_mime || 'application/octet-stream';
+    res.setHeader('Content-Type', mime);
+    // optional caching:
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    // send buffer
+    return res.send(row.image_blob);
   });
 });
 
