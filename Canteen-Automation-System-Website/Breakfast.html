@@ -58,13 +58,57 @@
 
     <div class="row" id="menuContainer"></div>
 
-    <!-- CART SECTION (same as before) -->
-    <div class="jumbotron" style="background-image: url('SEPM 123.jpg'); text-align: center; border-radius: 15px;">
-      <section class="container content-section"> ... same cart markup ... </section>
-    </div>
-  </div>
 
-  <footer> ... </footer>
+
+
+     <div class="container">
+        <div class="jumbotron"
+            style="background-image: url('SEPM 123.jpg'); text-align: center; border-radius: 15px 15px 15px 15px;">
+            <section class="container content-section">
+                <h2 style="text-align: center; margin-top: 10px;text-decoration: underline;" class="section-header">
+                    <strong>CART</strong>
+                </h2>
+                <div class="cart-row">
+                    <span class="cart-item cart-header cart-column">ITEM</span>
+                    <span class="cart-price cart-header cart-column">PRICE</span>
+                    <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+
+
+                </div>
+
+
+                <div class="cartItems"></div>
+                <div class="cart-total">
+                    <strong class="cart-total-title">Total</strong>
+                    <span class="cart-total-price">&#8377;0</span>
+                </div>
+
+                <a href="Order Confirmation.html">
+                    <div class="purchaseBtn"><button class="btn btn-primary btn-block" style="height: 50px;">CONFIRM
+                            ORDER</button></div>
+                </a>
+
+            </section>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="container-fluid"
+            style="background-color: black; text-align: center; padding-bottom: 5px; padding-top: 7px;">
+            <b>
+                <p style="color:black;">
+                    Copyright <span class="glyphicon glyphicon-copyright-mark" style="color: black;"><b> IIT Patna Canteen.
+                            
+                            All Rights Reserved | Contact Us: 9999999991
+                        </b>
+                    </span>
+                </p>
+            </b>
+
+        </div>
+    </footer>
+
 
   <script src="cart.js"></script>
 </body>
