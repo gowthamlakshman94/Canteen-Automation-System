@@ -1,189 +1,424 @@
+// cart.js - improved, backward-compatible cart script
+(function () {
+  'use strict';
 
-if (document.readyState == "loading") {
-    document.addEventListener("DOMContentLoaded", ready);
-} else {
-    ready();
-}
+  const STORAGE_KEY = 'canteenCart';
+  const CART_CONTAINER_SEL = '.cartItems';
+  const TOTAL_PRICE_SEL = '.cart-total-price';
+  const PURCHASE_BTN_SEL = '.purchaseBtn';
+  const DEFAULT_API_BASE = 'http://localhost';
 
-function ready() {
-    var removeCartItemButtons = document.getElementsByClassName("removeBtn");
-    if (removeCartItemButtons.length > 0) {
-        for (var i = 0; i < removeCartItemButtons.length; i++) {
-            var button = removeCartItemButtons[i];
-            button.addEventListener("click", removeCartItem);
-        }
+  // Resolve base URL for order submission (use existing globals if present)
+  const BASE_URL = (function () {
+    if (typeof window.BASE_URL !== 'undefined') return window.BASE_URL;
+    if (typeof window.API_BASE !== 'undefined') return window.API_BASE;
+    if (typeof window.config !== 'undefined' && window.config.BASE_URL) return window.config.BASE_URL;
+    return DEFAULT_API_BASE;
+  })();
+
+  // In-memory cart: array of { id, title, price, imageSrc, quantity }
+  let cart = [];
+
+  // ---------- Utilities ----------
+  function qs(sel, root = document) { return root.querySelector(sel); }
+  function qsa(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
+  function formatPrice(num) {
+    // always two decimals
+    return (Math.round(num * 100) / 100).toFixed(2);
+  }
+  function parsePriceText(text) {
+    if (!text) return 0;
+    const cleaned = String(text).replace(/[^\d.-]/g, '');
+    const p = parseFloat(cleaned);
+    return isNaN(p) ? 0 : p;
+  }
+  function escapeHtml(s) {
+    if (!s) return '';
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // ---------- Storage ----------
+  function saveCart() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+    } catch (e) {
+      console.error('Failed to save cart', e);
+    }
+  }
+  function loadCart() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      cart = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(cart)) cart = [];
+    } catch (e) {
+      console.error('Failed to load cart', e);
+      cart = [];
+    }
+  }
+  function clearCart() {
+    cart = [];
+    saveCart();
+    renderCart();
+  }
+
+  // ---------- Cart model operations ----------
+  function findCartIndexById(idOrTitle) {
+    if (!idOrTitle) return -1;
+    return cart.findIndex(it => (it.id && String(it.id) === String(idOrTitle)) || String(it.title) === String(idOrTitle));
+  }
+
+  function addOrIncrementItem(item) {
+    // item: { id?, title, price, imageSrc?, quantity? }
+    const qty = Math.max(1, parseInt(item.quantity || 1, 10));
+    const idKey = item.id ?? item.title;
+    const idx = findCartIndexById(idKey);
+    if (idx !== -1) {
+      cart[idx].quantity = (parseInt(cart[idx].quantity, 10) || 0) + qty;
+    } else {
+      cart.push({
+        id: item.id ?? item.title,
+        title: item.title,
+        price: Number(item.price) || 0,
+        imageSrc: item.imageSrc || '',
+        quantity: qty
+      });
+    }
+    saveCart();
+    renderCart();
+  }
+
+  function updateItemQuantity(idOrTitle, quantity) {
+    const idx = findCartIndexById(idOrTitle);
+    if (idx === -1) return;
+    cart[idx].quantity = Math.max(1, parseInt(quantity, 10) || 1);
+    saveCart();
+    renderCart();
+  }
+
+  function removeItem(idOrTitle) {
+    const idx = findCartIndexById(idOrTitle);
+    if (idx === -1) return;
+    cart.splice(idx, 1);
+    saveCart();
+    renderCart();
+  }
+
+  // ---------- Rendering ----------
+  function renderCart() {
+    const container = qs(CART_CONTAINER_SEL);
+    const totalEl = qs(TOTAL_PRICE_SEL);
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (cart.length === 0) {
+      container.innerHTML = '<p style="padding:12px">Your cart is empty.</p>';
+      if (totalEl) totalEl.innerHTML = '&#8377;0.00';
+      return;
     }
 
-    var addToCartButtons = document.getElementsByClassName("addToCartbutton");
-    if (addToCartButtons.length > 0) {
-        for (var i = 0; i < addToCartButtons.length; i++) {
-            var button = addToCartButtons[i];
-            button.addEventListener("click", addToCartClicked);
-        }
-    }
+    cart.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'cart-row';
+      row.dataset.id = item.id ?? item.title;
 
-    var purchaseBtn = document.getElementsByClassName("purchaseBtn")[0];
-    if (purchaseBtn) {
-        purchaseBtn.addEventListener("click", purchaseClicked);
-    }
-}
+      const safeTitle = escapeHtml(item.title);
+      const safeImage = escapeHtml(item.imageSrc || 'placeholder.jpg');
+      const safePrice = formatPrice(Number(item.price || 0));
+      const qty = Number(item.quantity || 1);
 
-function purchaseClicked() {
-    alert("Thank you for Shopping here!!");
+      row.innerHTML = `
+        <div class="cart-item cart-column" style="display:flex;align-items:center">
+          <img class="cart-item-image" src="${safeImage}" alt="${safeTitle}" style="width:60px;height:60px;object-fit:cover;margin-right:10px">
+          <span class="cart-item-title">${safeTitle}</span>
+        </div>
+        <span class="cart-price cart-column">&#8377; ${safePrice}</span>
+        <div class="cart-quantity cart-column" style="display:flex;align-items:center">
+          <input class="cart-quantity-input form-control" type="number" min="1" value="${qty}" style="width:90px;margin-right:8px">
+          <button class="removeBtn btn btn-danger btn-sm" type="button">Remove</button>
+        </div>
+      `;
 
-    var cartItems = document.getElementsByClassName("cartItems")[0];
+      // attach listeners for this row
+      const qtyInput = row.querySelector('.cart-quantity-input');
+      const removeBtn = row.querySelector('.removeBtn');
+
+      qtyInput.addEventListener('change', function () {
+        let v = parseInt(this.value, 10);
+        if (isNaN(v) || v < 1) v = 1;
+        this.value = v;
+        updateItemQuantity(item.id ?? item.title, v);
+      });
+
+      removeBtn.addEventListener('click', function () {
+        removeItem(item.id ?? item.title);
+      });
+
+      container.appendChild(row);
+    });
+
     updateCartTotal();
+  }
 
-    var orderData = prepareOrderData();
-    if (orderData) {
-        submitOrder(orderData);
+  // ---------- Totals ----------
+  function updateCartTotal() {
+    const totalEl = qs(TOTAL_PRICE_SEL);
+    const container = qs(CART_CONTAINER_SEL);
+    if (!container) {
+      if (totalEl) totalEl.innerHTML = '&#8377;0.00';
+      return;
     }
-
-    while (cartItems.hasChildNodes()) {
-        cartItems.removeChild(cartItems.firstChild);
-    }
-}
-
-function removeCartItem(event) {
-    var buttonClicked = event.target;
-    buttonClicked.parentElement.parentElement.remove();
-    updateCartTotal();
-}
-
-function quantityChanged(event) {
-    var input = event.target;
-    if (isNaN(input.value) || input.value <= 0) {
-        input.value = 1;
-    }
-    updateCartTotal();
-}
-
-function addToCartClicked(event) {
-    var button = event.target;
-    var shopItem = button.parentElement.parentElement.parentElement;
-    var title = shopItem.getElementsByClassName("item-title")[0].innerText;
-    var price = shopItem.getElementsByClassName("item-price")[0].innerText;
-    var imageSrc = shopItem.getElementsByClassName("item-image")[0].src;
-    addItemToCart(title, price, imageSrc);
-    updateCartTotal();
-}
-
-function addItemToCart(title, price, imageSrc) {
-    var cartRow = document.createElement("div");
-    cartRow.classList.add("cart-row");
-    var cartItems = document.getElementsByClassName("cartItems")[0];
-    var cartItemNames = cartItems.getElementsByClassName("cart-item-title");
-    for (var i = 0; i < cartItemNames.length; i++) {
-        if (cartItemNames[i].innerText == title) {
-            alert("This item is already added to the cart");
-            return;
-        }
-    }
-    var cartRowContents = `
-          <div class="cart-item cart-column">
-              <img class="cart-item-image" src="${imageSrc}" width="100" height="100">
-              <span class="cart-item-title">${title}</span>
-          </div>
-          <span class="cart-price cart-column">${price}</span>
-          <div class="cart-quantity cart-column">
-              <input class="cart-quantity-input" type="number" value="1">
-              <button class="removeBtn btn btn-danger" type="button">Remove</button>
-          </div>`;
-    cartRow.innerHTML = cartRowContents;
-    cartItems.append(cartRow);
-    cartRow.getElementsByClassName("removeBtn")[0].addEventListener("click", removeCartItem);
-    cartRow.getElementsByClassName("cart-quantity-input")[0].addEventListener("change", quantityChanged);
-}
-
-function updateCartTotal() {
-    var cartItemContainer = document.getElementsByClassName('cartItems')[0];
-    var cartRows = cartItemContainer.getElementsByClassName('cart-row');
-    var total = 0;
-    for (var i = 0; i < cartRows.length; i++) {
-        var cartRow = cartRows[i];
-        var priceElement = cartRow.getElementsByClassName('cart-price')[0];
-        var quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0];
-
-        var priceText = priceElement.innerText.replace(/[^\d.-]/g, '');
-        var price = parseFloat(priceText);
-        var quantity = parseInt(quantityElement.value);
-
-        if (!isNaN(price) && !isNaN(quantity)) {
-            total += price * quantity;
-        }
-    }
+    let total = 0;
+    const rows = qsa('.cart-row', container);
+    rows.forEach(row => {
+      const priceEl = row.querySelector('.cart-price');
+      const qtyEl = row.querySelector('.cart-quantity-input');
+      const price = parsePriceText(priceEl ? priceEl.innerText : '0');
+      const qty = parseInt(qtyEl ? qtyEl.value : '0', 10) || 0;
+      total += price * qty;
+    });
 
     total = Math.round(total * 100) / 100;
-    document.getElementsByClassName('cart-total-price')[0].innerHTML = "&#8377;" + total;
-}
+    if (totalEl) totalEl.innerHTML = '&#8377;' + formatPrice(total);
+  }
 
-function prepareOrderData() {
-    var cartItems = document.getElementsByClassName("cartItems")[0];
-    var cartRows = cartItems.getElementsByClassName("cart-row");
-    var items = [];
-    var createdAt = new Date().toISOString();
+  // ---------- DOM event handlers (legacy compatibility) ----------
+  function removeCartItem(event) {
+    const btn = event.target;
+    const row = btn && btn.closest('.cart-row');
+    if (!row) return;
+    const id = row.dataset.id || (row.querySelector('.cart-item-title') && row.querySelector('.cart-item-title').innerText);
+    removeItem(id);
+  }
 
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+  function quantityChanged(event) {
+    const input = event.target;
+    let val = parseInt(input.value, 10);
+    if (isNaN(val) || val <= 0) {
+      val = 1;
+      input.value = 1;
     }
+    const row = input && input.closest('.cart-row');
+    const id = row && (row.dataset.id || (row.querySelector('.cart-item-title') && row.querySelector('.cart-item-title').innerText));
+    if (id) updateItemQuantity(id, val);
+  }
 
-    var userEmail = getCookie("userEmail");
+  function addToCartClicked(event) {
+    // Compatible with your existing markup where click is on a wrapper addToCartbutton
+    const button = event.target.closest('.addToCartbutton, .add-to-cart, button');
+    if (!button) return;
+    // attempt to find containing shopItem
+    const shopItem = button.closest('.thumbnail') || button.closest('.col-sm-6') || button.closest('.col-md-3') || button.closest('.shop-item');
+    if (!shopItem) return;
+    const titleEl = shopItem.querySelector('.item-title');
+    const priceEl = shopItem.querySelector('.item-price');
+    const imgEl = shopItem.querySelector('.item-image');
 
-    for (var i = 0; i < cartRows.length; i++) {
-        var cartRow = cartRows[i];
-        var itemName = cartRow.getElementsByClassName("cart-item-title")[0].innerText;
-        var price = cartRow.getElementsByClassName("cart-price")[0].innerText;
-        price = parseFloat(price.replace(/[^\d.-]/g, ''));
-        var quantity = cartRow.getElementsByClassName("cart-quantity-input")[0].value;
+    const title = titleEl ? titleEl.innerText.trim() : 'Item';
+    const price = priceEl ? parsePriceText(priceEl.innerText) : 0;
+    const imageSrc = imgEl ? imgEl.src : '';
+    addItemToCart(title, price, imageSrc, 1);
+  }
 
-        items.push({
-            itemName: itemName,
-            price: price,
-            quantity: quantity,
-            createdAt: createdAt
-        });
-    }
-
-    if (items.length > 0) {
-        var orderId = new Date().getTime();
-        localStorage.setItem('orderId', orderId);
-
-        return {
-            orderId: orderId,
-            userEmail: userEmail || "unknown",
-            items: items
-        };
+  // ---------- Primary addItemToCart function (exposed globally) ----------
+  function addItemToCart(a, b, c, d) {
+    // Support both:
+    // addItemToCart(title, price, imageSrc, quantity)
+    // addItemToCart({ title, price, imageSrc, id, quantity })
+    let item;
+    if (typeof a === 'object' && a !== null) {
+      item = {
+        id: a.id,
+        title: a.title || a.name || a.itemName || 'Item',
+        price: Number(a.price || a.price_amount || a.cost || 0),
+        imageSrc: a.imageSrc || a.image || a.image_url || '',
+        quantity: a.quantity || 1
+      };
     } else {
-        alert("Your cart is empty!");
-        return null;
-    }
-}
-
-function getCookieValue(name) {
-    const value = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
-    return value ? value.pop() : '';
-}
-
-function submitOrder(orderData) {
-    const userEmail = getCookieValue('userEmail');
-
-    if (!userEmail) {
-        alert('User email not found. Please log in before submitting an order.');
-        return;
+      // positional arguments
+      item = {
+        id: undefined,
+        title: a || 'Item',
+        price: Number(b || 0),
+        imageSrc: c || '',
+        quantity: d || 1
+      };
     }
 
-    orderData.user_email = userEmail;
+    if (!item.title) item.title = 'Item';
+    item.price = Number(item.price) || 0;
+    item.quantity = Math.max(1, parseInt(item.quantity, 10) || 1);
 
-    console.log("Submitting order:", orderData);
+    // Prevent duplicate by exact title (legacy behavior), but if ID provided use ID match
+    const existsIdx = findCartIndexById(item.id ?? item.title);
+    if (existsIdx !== -1) {
+      // if exists, increment quantity (keeps backward alert-free behavior)
+      cart[existsIdx].quantity = (parseInt(cart[existsIdx].quantity, 10) || 0) + item.quantity;
+      saveCart();
+      renderCart();
+      return;
+    }
 
-    fetch(`${BASE_URL}/submitOrder`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(orderData)
+    addOrIncrementItem(item);
+  }
+
+  // Expose addItemToCart globally for the menu loader
+  window.addItemToCart = addItemToCart;
+
+  // Listen for custom event 'canteen:addToCart' (used by your HTML menu code)
+  window.addEventListener('canteen:addToCart', function (e) {
+    if (!e || !e.detail) return;
+    addItemToCart(e.detail);
+  });
+
+  // ---------- Prepare and submit order ----------
+  function getCookieValue(name) {
+    const match = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+    return match ? decodeURIComponent(match.pop()) : '';
+  }
+
+  function prepareOrderData() {
+    if (!cart || cart.length === 0) {
+      alert('Your cart is empty!');
+      return null;
+    }
+    const createdAt = new Date().toISOString();
+    const items = cart.map(it => ({
+      itemName: it.title,
+      price: Number(it.price),
+      quantity: Number(it.quantity),
+      createdAt
+    }));
+
+    const orderId = new Date().getTime();
+    localStorage.setItem('orderId', orderId);
+
+    const userEmail = getCookieValue('userEmail') || getCookieValue('user_email') || 'unknown';
+    const total = cart.reduce((s, it) => s + Number(it.price) * Number(it.quantity), 0);
+
+    return {
+      orderId,
+      userEmail,
+      items,
+      total: Math.round(total * 100) / 100,
+      createdAt
+    };
+  }
+
+  function submitOrder(orderData) {
+    if (!orderData) return;
+    const email = orderData.userEmail;
+    if (!email || email === 'unknown') {
+      alert('User email not found. Please log in before submitting an order.');
+      return;
+    }
+
+    const submitUrl = (BASE_URL || DEFAULT_API_BASE).replace(/\/$/, '') + '/submitOrder';
+    console.log('Submitting order to', submitUrl, orderData);
+
+    fetch(submitUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData)
+    }).then(resp => {
+      if (!resp.ok) throw new Error('Server returned ' + resp.status);
+      return resp.json().catch(() => ({}));
+    }).then(data => {
+      // Consider server's response; assume success if no error
+      alert('Order submitted successfully! Order ID: ' + orderData.orderId);
+      clearCart();
+      // After submission, optionally redirect to confirmation page
+      // If you want to redirect to Order Confirmation page, uncomment:
+      // window.location.href = 'Order Confirmation.html';
+    }).catch(err => {
+      console.error('Order submission failed', err);
+      alert('Failed to submit order. Please try again later.');
     });
-}
+  }
 
+  // ---------- Purchase click ----------
+  function purchaseClicked(event) {
+    // If the purchase button is a wrapper containing an anchor, prevent immediate navigation
+    event && event.preventDefault && event.preventDefault();
+
+    const orderData = prepareOrderData();
+    if (!orderData) return;
+
+    // Submit to backend
+    submitOrder(orderData);
+  }
+
+  // ---------- Initialization ----------
+  function wireStaticButtons() {
+    // Attach remove button listeners for any pre-existing rows (legacy)
+    qsa('.removeBtn').forEach(btn => {
+      btn.removeEventListener('click', removeCartItem); // avoid duplicate
+      btn.addEventListener('click', removeCartItem);
+    });
+
+    // Attach quantity change listeners for any pre-existing inputs (legacy)
+    qsa('.cart-quantity-input').forEach(inp => {
+      inp.removeEventListener('change', quantityChanged);
+      inp.addEventListener('change', quantityChanged);
+    });
+
+    // For legacy markup where the "add to cart" wrapper was clickable
+    qsa('.addToCartbutton').forEach(wrapper => {
+      wrapper.removeEventListener('click', addToCartClicked);
+      wrapper.addEventListener('click', addToCartClicked);
+    });
+
+    // Also support modern buttons with class 'add-to-cart' (from your dynamic menu script)
+    qsa('.add-to-cart').forEach(btn => {
+      btn.removeEventListener('click', addToCartClicked);
+      btn.addEventListener('click', addToCartClicked);
+    });
+
+    // Purchase button
+    const purchaseBtnWrapper = qs(PURCHASE_BTN_SEL);
+    if (purchaseBtnWrapper) {
+      // the button is inside wrapper; find button
+      const btn = purchaseBtnWrapper.querySelector('button') || purchaseBtnWrapper;
+      btn.removeEventListener('click', purchaseClicked);
+      btn.addEventListener('click', purchaseClicked);
+    }
+  }
+
+  function init() {
+    loadCart();
+    renderCart();
+    wireStaticButtons();
+
+    // Also observe for newly added .cart-row elements (if other scripts add them)
+    const cartContainer = qs(CART_CONTAINER_SEL);
+    if (cartContainer) {
+      const obs = new MutationObserver(() => {
+        // ensure listeners attached and total updated
+        wireStaticButtons();
+        updateCartTotal();
+      });
+      obs.observe(cartContainer, { childList: true, subtree: true });
+    }
+
+    // If page previously had click handlers wired on DOMContentLoaded, ensure compatibility:
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', wireStaticButtons);
+    } else {
+      // already ready
+      wireStaticButtons();
+    }
+  }
+
+  // Start
+  init();
+
+  // For debugging convenience
+  window.canteenCart = {
+    getCart: () => cart.slice(),
+    clearCart,
+    addOrIncrementItem,
+    removeItem,
+    updateItemQuantity
+  };
+
+})();
