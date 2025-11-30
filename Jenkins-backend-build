@@ -1,4 +1,4 @@
-// Jenkinsfile.build
+// Jenkinsfile.backend
 pipeline {
   agent {
     kubernetes {
@@ -21,9 +21,7 @@ spec:
 
   environment {
     REGISTRY = "ghcr.io/gowthamlakshman94"
-    FRONTEND_DIR = "Canteen-Automation-System-Website"
     BACKEND_DIR  = "canteen-automation-backend"
-    FRONTEND_IMAGE = "${REGISTRY}/cas-fe:latest"
     BACKEND_IMAGE  = "${REGISTRY}/cas-be:latest"
   }
 
@@ -33,7 +31,6 @@ spec:
         checkout scm
       }
     }
-
 
     stage('Build & Push Backend') {
       steps {
@@ -61,11 +58,10 @@ EOF
 
   post {
     success {
-      echo "✅ Build job finished — images pushed as :latest"
+      echo "✅ Backend build finished — image pushed as :latest"
     }
     failure {
-      echo "❌ Build job failed"
+      echo "❌ Backend build failed"
     }
   }
-}
 }
