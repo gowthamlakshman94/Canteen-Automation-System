@@ -327,9 +327,13 @@
       // Consider server's response; assume success if no error
       alert('Order submitted successfully! Order ID: ' + orderData.orderId);
       clearCart();
-      // After submission, optionally redirect to confirmation page
-      // If you want to redirect to Order Confirmation page, uncomment:
-      // window.location.href = 'Order Confirmation.html';
+
+      // --- NEW: redirect to Order Confirmation page after successful submission ---
+      // small timeout so alert is seen and state is cleared
+      setTimeout(function () {
+        window.location.href = 'Order Confirmation.html';
+      }, 700);
+      // --------------------------------------------------------------------------
     }).catch(err => {
       console.error('Order submission failed', err);
       alert('Failed to submit order. Please try again later.');
@@ -407,6 +411,20 @@
       // already ready
       wireStaticButtons();
     }
+
+    // --- NEW: prevent outer anchor from navigating immediately when purchase button is clicked ---
+    // This keeps your existing HTML <a href="Order Confirmation.html"> wrapper but prevents premature navigation.
+    document.querySelectorAll('.purchaseBtn').forEach(btn => {
+      const anchor = btn.closest('a');
+      if (anchor) {
+        // avoid adding duplicate listeners
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+        });
+      }
+    });
+    // --------------------------------------------------------------------------
+
   }
 
   // Start
