@@ -44,6 +44,7 @@ spec:
       containers:
         - name: cas-fe
           image: ghcr.io/gowthamlakshman94/cas-fe:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           env:
@@ -86,6 +87,7 @@ spec:
       containers:
         - name: cas-be
           image: ghcr.io/gowthamlakshman94/cas-be:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
       imagePullSecrets:
