@@ -5,6 +5,18 @@
 #   --docker-password=<your-personal-access-token> \
 #   --docker-email=<your-email> \
 #   --namespace=canteen-automation
+# Secrets for backend api 
+
+# kubectl create secret generic canteen-backend-secrets \
+#  --from-literal=MYSQL_HOST='mysql' \
+#  --from-literal=MYSQL_USER='root' \
+#  --from-literal=MYSQL_PASSWORD='password' \
+#  --from-literal=MYSQL_DATABASE='canteen_automation' \
+#  --from-literal=GOOGLE_CLIENT_ID='your-client-id' \
+#  --from-literal=GOOGLE_CLIENT_SECRET='your-client-secret' \
+#  --from-literal=GOOGLE_REFRESH_TOKEN='your-refresh-token' \
+#  --from-literal=GOOGLE_SENDER_EMAIL='your.sender@gmail.com' \
+#  -n canteen-automation
 
 
 apiVersion: v1
