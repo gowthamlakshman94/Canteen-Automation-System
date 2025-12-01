@@ -28,14 +28,14 @@ app.use(cors()); // Enable CORS for all domains (or restrict it to your frontend
 
 // MySQL Connection Pool Setup
 const dbPool = mysql.createPool({
-  connectionLimit: 10,  // Pool size, adjust based on your usage
-  host: 'mysql',  // Replace with your MySQL hostname if needed
-  user: 'root',  // Replace with your MySQL username
-  password: 'password',  // Replace with your MySQL password
-  database: 'canteen_automation',  // Replace with your database name
+  connectionLimit: 10,
+  host: process.env.MYSQL_HOST || 'mysql',
+  user: process.env.MYSQL_USER || 'root',
+  password: process.env.MYSQL_PASSWORD || 'password',
+  database: process.env.MYSQL_DATABASE || 'canteen_automation',
   waitForConnections: true,
-  queueLimit: 0,  // No limit for pending connections
-  connectTimeout: 10000,  // 10 seconds for a connection attempt
+  queueLimit: 0,
+  connectTimeout: 10000,
 });
 
 // Function to check MySQL connection and reconnect if lost
