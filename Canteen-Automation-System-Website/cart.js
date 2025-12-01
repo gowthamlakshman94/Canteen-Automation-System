@@ -1,4 +1,4 @@
-// cart.js - improved, backward-compatible cart script
+// cart.js - improved, backward-compatible cart script (delegated add-to-cart)
 (function () {
   'use strict';
 
@@ -23,7 +23,6 @@
   function qs(sel, root = document) { return root.querySelector(sel); }
   function qsa(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
   function formatPrice(num) {
-    // always two decimals
     return (Math.round(num * 100) / 100).toFixed(2);
   }
   function parsePriceText(text) {
@@ -68,7 +67,6 @@
   }
 
   function addOrIncrementItem(item) {
-    // item: { id?, title, price, imageSrc?, quantity? }
     const qty = Math.max(1, parseInt(item.quantity || 1, 10));
     const idKey = item.id ?? item.title;
     const idx = findCartIndexById(idKey);
@@ -222,9 +220,6 @@
 
   // ---------- Primary addItemToCart function (exposed globally) ----------
   function addItemToCart(a, b, c, d) {
-    // Support both:
-    // addItemToCart(title, price, imageSrc, quantity)
-    // addItemToCart({ title, price, imageSrc, id, quantity })
     let item;
     if (typeof a === 'object' && a !== null) {
       item = {
@@ -235,7 +230,6 @@
         quantity: a.quantity || 1
       };
     } else {
-      // positional arguments
       item = {
         id: undefined,
         title: a || 'Item',
@@ -249,10 +243,8 @@
     item.price = Number(item.price) || 0;
     item.quantity = Math.max(1, parseInt(item.quantity, 10) || 1);
 
-    // Prevent duplicate by exact title (legacy behavior), but if ID provided use ID match
     const existsIdx = findCartIndexById(item.id ?? item.title);
     if (existsIdx !== -1) {
-      // if exists, increment quantity (keeps backward alert-free behavior)
       cart[existsIdx].quantity = (parseInt(cart[existsIdx].quantity, 10) || 0) + item.quantity;
       saveCart();
       renderCart();
@@ -307,9 +299,7 @@
 
   function submitOrder(orderData) {
     if (!orderData) return;
-    const email
-::contentReference[oaicite:0]{index=0}
- = orderData.userEmail;
+    const email = orderData.userEmail;
     if (!email || email === 'unknown') {
       alert('User email not found. Please log in before submitting an order.');
       return;
@@ -326,16 +316,12 @@
       if (!resp.ok) throw new Error('Server returned ' + resp.status);
       return resp.json().catch(() => ({}));
     }).then(data => {
-      // Consider server's response; assume success if no error
       alert('Order submitted successfully! Order ID: ' + orderData.orderId);
       clearCart();
 
-      // --- NEW: redirect to Order Confirmation page after successful submission ---
-      // small timeout so alert is seen and state is cleared
       setTimeout(function () {
         window.location.href = 'Order Confirmation.html';
       }, 700);
-      // --------------------------------------------------------------------------
     }).catch(err => {
       console.error('Order submission failed', err);
       alert('Failed to submit order. Please try again later.');
@@ -344,21 +330,19 @@
 
   // ---------- Purchase click ----------
   function purchaseClicked(event) {
-    // If the purchase button is a wrapper containing an anchor, prevent immediate navigation
     event && event.preventDefault && event.preventDefault();
 
     const orderData = prepareOrderData();
     if (!orderData) return;
 
-    // Submit to backend
     submitOrder(orderData);
   }
 
-  // ---------- Initialization ----------
+  // ---------- Initialization and wiring ----------
   function wireStaticButtons() {
     // Attach remove button listeners for any pre-existing rows (legacy)
     qsa('.removeBtn').forEach(btn => {
-      btn.removeEventListener('click', removeCartItem); // avoid duplicate
+      btn.removeEventListener('click', removeCartItem);
       btn.addEventListener('click', removeCartItem);
     });
 
@@ -368,46 +352,25 @@
       inp.addEventListener('change', quantityChanged);
     });
 
-    // For legacy markup where the "add to cart" wrapper was clickable
-    // Only add wrapper-level listener when there is NO explicit inner .add-to-cart button.
-    qsa('.addToCartbutton').forEach(wrapper => {
-      // if wrapper contains a real .add-to-cart button, skip wrapper-level listener
-      if (wrapper.querySelector('.add-to-cart')) {
-        wrapper.removeEventListener('click', addToCartClicked);
-        return;
-      }
-      wrapper.removeEventListener('click', addToCartClicked);
-      wrapper.addEventListener('click', addToCartClicked);
-    });
-
-    // Also support modern buttons with class 'add-to-cart' (from your dynamic menu script)
-    // Attach a handler that stops propagation so clicks don't bubble to wrapper handlers.
-    qsa('.add-to-cart').forEach(btn => {
-      // remove previously attached wrapper-safe handler if any
-      if (btn._addCartHandler) {
-        btn.removeEventListener('click', btn._addCartHandler);
-      }
-      const handler = function (ev) {
-        // prevent the click from bubbling up to any wrapper handlers
-        try { ev.stopPropagation(); } catch (e) {}
-        // also prevent default to avoid accidental form/anchor navigation
-        if (ev && typeof ev.preventDefault === 'function') ev.preventDefault();
-        // call existing click logic
-        addToCartClicked(ev);
-      };
-      // store handler reference so we can remove it later if needed
-      btn._addCartHandler = handler;
-      btn.addEventListener('click', handler);
-    });
-
     // Purchase button
     const purchaseBtnWrapper = qs(PURCHASE_BTN_SEL);
     if (purchaseBtnWrapper) {
-      // the button is inside wrapper; find button
       const btn = purchaseBtnWrapper.querySelector('button') || purchaseBtnWrapper;
       btn.removeEventListener('click', purchaseClicked);
       btn.addEventListener('click', purchaseClicked);
     }
+  }
+
+  // Delegated handler for add-to-cart clicks (works for dynamic menu items)
+  function delegatedAddToCartHandler(e) {
+    const target = e.target;
+    const btn = target.closest && (target.closest('.add-to-cart') || target.closest('.addToCartbutton'));
+    if (!btn) return;
+    // Prevent double handling / default navigation
+    try { e.stopPropagation(); } catch (err) {}
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    // call existing logic
+    addToCartClicked(e);
   }
 
   function init() {
@@ -415,44 +378,42 @@
     renderCart();
     wireStaticButtons();
 
-    // Also observe for newly added .cart-row elements (if other scripts add them)
+    // Delegate add-to-cart clicks at document level so dynamically-created items work
+    document.removeEventListener('click', delegatedAddToCartHandler);
+    document.addEventListener('click', delegatedAddToCartHandler, true); // use capture to catch early
+
+    // Also observe for newly added .cart-row elements so we can wire their remove/quantity inputs
     const cartContainer = qs(CART_CONTAINER_SEL);
     if (cartContainer) {
       const obs = new MutationObserver(() => {
-        // ensure listeners attached and total updated
         wireStaticButtons();
         updateCartTotal();
       });
       obs.observe(cartContainer, { childList: true, subtree: true });
     }
 
-    // If page previously had click handlers wired on DOMContentLoaded, ensure compatibility:
+    // Ensure legacy wiring runs when DOMContentLoaded fires
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', wireStaticButtons);
     } else {
-      // already ready
       wireStaticButtons();
     }
 
-    // --- NEW: prevent outer anchor from navigating immediately when purchase button is clicked ---
-    // This keeps your existing HTML <a href="Order Confirmation.html"> wrapper but prevents premature navigation.
+    // Prevent outer anchor from navigating when purchase button wrapper exists
     document.querySelectorAll('.purchaseBtn').forEach(btn => {
       const anchor = btn.closest('a');
       if (anchor) {
-        // avoid adding duplicate listeners
         anchor.addEventListener('click', function (e) {
           e.preventDefault();
         });
       }
     });
-    // --------------------------------------------------------------------------
-
   }
 
   // Start
   init();
 
-  // For debugging convenience
+  // Debug helper
   window.canteenCart = {
     getCart: () => cart.slice(),
     clearCart,
