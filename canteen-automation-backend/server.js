@@ -611,6 +611,11 @@ app.get('/api/menu/:id/image', (req, res) => {
   });
 });
 
+// Health check endpoint for Kubernetes
+app.get('/health', (req, res) => {
+    res.status(200).send('OK');
+});
+
 
 // Start the server
 app.listen(port, () => {
