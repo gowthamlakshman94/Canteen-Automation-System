@@ -1,3 +1,5 @@
+// server.js (modified: adds generic email API + sends confirmation email after /submitOrder)
+// Your original code preserved; only additions are marked and non-invasive.
 
 const express = require('express');
 const mysql = require('mysql');
@@ -10,12 +12,15 @@ const bcrypt = require('bcrypt');
 // Add near top with other requires
 const multer = require('multer');
 
+// *** NEW: email deps ***
+const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
+
 // Multer memory storage so we can store Buffer into MySQL BLOB
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 } // 5 MB max; adjust as needed
 });
-
 
 // Middleware
 app.use(bodyParser.json());
@@ -50,6 +55,125 @@ function handleDBConnection() {
 handleDBConnection();
 
 
+/**********************************************************
+ * ---------- EMAIL CONFIGURATION (non-destructive) ------
+ *
+ * Uses Gmail OAuth2 (recommended). All values read from
+ * environment variables. If not configured, email sending
+ * will be skipped but server and DB remain functional.
+ *
+ * Required env vars to enable email:
+ *  - GOOGLE_CLIENT_ID
+ *  - GOOGLE_CLIENT_SECRET
+ *  - GOOGLE_REFRESH_TOKEN
+ *  - GOOGLE_SENDER_EMAIL
+ *
+ **********************************************************/
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
+const GOOGLE_REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN || '';
+const GOOGLE_SENDER_EMAIL = process.env.GOOGLE_SENDER_EMAIL || '';
+
+function isEmailConfigured() {
+  return !!(GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && GOOGLE_REFRESH_TOKEN && GOOGLE_SENDER_EMAIL);
+}
+
+if (!isEmailConfigured()) {
+  console.warn('Email not configured: set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN, GOOGLE_SENDER_EMAIL to enable email sending.');
+}
+
+// create an oauth2 client (reused)
+const oauth2Client = new google.auth.OAuth2(
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  'https://developers.google.com/oauthplayground' // redirect URI not used here
+);
+if (GOOGLE_REFRESH_TOKEN) oauth2Client.setCredentials({ refresh_token: GOOGLE_REFRESH_TOKEN });
+
+// get access token helper
+async function getAccessToken() {
+  if (!isEmailConfigured()) return null;
+  try {
+    const atRes = await oauth2Client.getAccessToken();
+    // depending on googleapis version, returned value shape differs
+    return (atRes && (atRes.token || atRes)) || null;
+  } catch (err) {
+    console.error('Failed to get access token:', err);
+    return null;
+  }
+}
+
+async function createTransporter() {
+  if (!isEmailConfigured()) throw new Error('Email not configured');
+  const accessToken = await getAccessToken();
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      type: 'OAuth2',
+      user: GOOGLE_SENDER_EMAIL,
+      clientId: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+      refreshToken: GOOGLE_REFRESH_TOKEN,
+      accessToken: accessToken
+    }
+  });
+  return transporter;
+}
+
+async function sendEmail({ to, subject, text, html }) {
+  if (!isEmailConfigured()) {
+    const msg = 'Skipping email send: Gmail OAuth2 environment variables not set';
+    console.warn(msg);
+    throw new Error(msg);
+  }
+  if (!to || !subject) throw new Error('Missing "to" or "subject"');
+
+  const transporter = await createTransporter();
+  const mailOptions = {
+    from: `"IIT Patna Canteen" <${GOOGLE_SENDER_EMAIL}>`,
+    to,
+    subject,
+    text: text || '',
+    html: html || text || ''
+  };
+  const info = await transporter.sendMail(mailOptions);
+  return info;
+}
+
+/**********************************************************
+ * ----------------- ROUTES (existing + new) -------------
+ * Existing routes left unchanged; new route added:
+ *   POST /api/sendEmail  -> reusable generic email API
+ **********************************************************/
+
+// Generic email API - reusable anywhere in the app
+// POST /api/sendEmail
+// body: { to, subject, text?, html? }
+app.post('/api/sendEmail', async (req, res) => {
+  try {
+    const { to, subject, text, html } = req.body || {};
+    if (!to || !subject) return res.status(400).json({ success: false, message: 'Missing to or subject' });
+
+    if (!isEmailConfigured()) {
+      // respond success=false but do not break existing behavior for clients
+      console.warn('Attempted /api/sendEmail but email config missing');
+      return res.status(503).json({ success: false, message: 'Email service not configured on server' });
+    }
+
+    await sendEmail({ to, subject, text, html });
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('/api/sendEmail error:', err && err.message ? err.message : err);
+    return res.status(500).json({ success: false, message: 'Failed to send email', error: String(err && err.message ? err.message : err) });
+  }
+});
+
+
+/**********************************************************
+ * ----------------- Existing submitOrder ----------------
+ * Preserved your original logic; added an async background
+ * email send (non-blocking) AFTER insertion succeeds.
+ **********************************************************/
 app.post('/submitOrder', (req, res) => {
     const { orderId, userEmail, items } = req.body;
 
@@ -83,7 +207,46 @@ app.post('/submitOrder', (req, res) => {
             console.error('Error inserting order:', err);
             return res.status(500).send({ message: 'Error submitting order' });
         }
+
+        // --- DB insert succeeded, respond immediately ---
         res.status(200).send({ message: 'Order submitted successfully', orderId: orderId });
+
+        // --- NEW: send confirmation email in background (best-effort) ---
+        (async () => {
+          try {
+            if (!userEmail || userEmail === 'unknown' || !isEmailConfigured()) {
+              if (!isEmailConfigured()) console.warn('Email not configured; skipping confirmation email');
+              return;
+            }
+
+            // Build HTML for order email (simple)
+            const itemsHtml = items.map(it => {
+              const name = String(it.itemName || '').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+              const price = Number(it.price || 0).toFixed(2);
+              const qty = Number(it.quantity || 0);
+              return `<li>${name} — ₹${price} × ${qty}</li>`;
+            }).join('');
+
+            const html = `
+              <div style="font-family:Arial, sans-serif; line-height:1.4;">
+                <h2>Order Confirmation — #${orderId}</h2>
+                <p>Hi ${userEmail},</p>
+                <p>Thanks for your order. Here are the details:</p>
+                <ul>${itemsHtml}</ul>
+                <p><strong>Placed at:</strong> ${createdAt}</p>
+                <p>Regards,<br/>IIT Patna Canteen</p>
+              </div>
+            `;
+            const subject = `Order Confirmation — #${orderId}`;
+
+            await sendEmail({ to: userEmail, subject, html });
+            console.log(`Confirmation email sent to ${userEmail} for order ${orderId}`);
+          } catch (emailErr) {
+            // Log error but do not affect client response
+            console.error('Error sending confirmation email (non-fatal):', emailErr && emailErr.message ? emailErr.message : emailErr);
+          }
+        })();
+        // --- end background email ---
     });
 });
 
@@ -494,4 +657,3 @@ app.get('/api/menu/:id/image', (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
-
