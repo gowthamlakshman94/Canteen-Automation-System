@@ -56,7 +56,6 @@ handleDBConnection();
 
 
 // ---------------- Email (Gmail App Password only) ----------------
-const nodemailer = require('nodemailer');
 
 // Read config from env (Kubernetes Secrets or .env for local)
 const GOOGLE_SENDER_EMAIL = process.env.GOOGLE_SENDER_EMAIL || '';
