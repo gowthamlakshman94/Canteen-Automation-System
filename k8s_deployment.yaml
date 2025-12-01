@@ -12,9 +12,7 @@
 #  --from-literal=MYSQL_USER='root' \
 #  --from-literal=MYSQL_PASSWORD='password' \
 #  --from-literal=MYSQL_DATABASE='canteen_automation' \
-#  --from-literal=GOOGLE_CLIENT_ID='your-client-id' \
-#  --from-literal=GOOGLE_CLIENT_SECRET='your-client-secret' \
-#  --from-literal=GOOGLE_REFRESH_TOKEN='your-refresh-token' \
+#  --from-literal=GOOGLE_APP_PASSWORD='your-16-char-app-password' \
 #  --from-literal=GOOGLE_SENDER_EMAIL='your.sender@gmail.com' \
 #  -n canteen-automation
 
