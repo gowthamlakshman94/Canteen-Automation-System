@@ -617,6 +617,74 @@ app.get('/health', (req, res) => {
 });
 
 
+// GET /order/:orderId -> return full order details (items array, total, createdAt, userEmail)
+app.get('/order/:orderId', (req, res) => {
+  const orderId = req.params.orderId;
+  if (!orderId) return res.status(400).json({ success: false, message: 'orderId required' });
+
+  const sql = 'SELECT order_id, user_email, item_name, price, quantity, createdAt FROM orders WHERE order_id = ? ORDER BY createdAt ASC';
+  dbPool.query(sql, [orderId], (err, rows) => {
+    if (err) {
+      console.error('Error fetching order:', err);
+      return res.status(500).json({ success: false, message: 'DB error' });
+    }
+    if (!rows || rows.length === 0) return res.status(404).json({ success: false, message: 'Order not found' });
+
+    const order = {
+      orderId: rows[0].order_id,
+      userEmail: rows[0].user_email,
+      createdAt: rows[0].createdAt,
+      items: rows.map(r => ({ itemName: r.item_name, price: Number(r.price), quantity: Number(r.quantity) })),
+    };
+    order.total = order.items.reduce((s, it) => s + (Number(it.price) * Number(it.quantity || 0)), 0);
+    return res.json({ success: true, order });
+  });
+});
+
+// GET /orders/latest?email=... -> returns the latest order id (and optionally full order)
+app.get('/orders/latest', (req, res) => {
+  const email = req.query.email;
+  if (!email) return res.status(400).json({ success: false, message: 'email query param required' });
+
+  const sql = `SELECT order_id, MAX(createdAt) AS last_time
+               FROM orders
+               WHERE user_email = ?
+               GROUP BY order_id
+               ORDER BY last_time DESC
+               LIMIT 1`;
+  dbPool.query(sql, [email], (err, rows) => {
+    if (err) {
+      console.error('Error fetching latest order id:', err);
+      return res.status(500).json({ success: false, message: 'DB error' });
+    }
+    if (!rows || rows.length === 0) return res.status(404).json({ success: false, message: 'No orders found for this email' });
+
+    const latestOrderId = rows[0].order_id;
+    // Option A: return the id only
+    // return res.json({ success: true, orderId: latestOrderId });
+
+    // Option B (recommended): return full order by querying orders table
+    const sql2 = 'SELECT order_id, user_email, item_name, price, quantity, createdAt FROM orders WHERE order_id = ? ORDER BY createdAt ASC';
+    dbPool.query(sql2, [latestOrderId], (err2, rows2) => {
+      if (err2) {
+        console.error('Error fetching order details:', err2);
+        return res.status(500).json({ success: false, message: 'DB error' });
+      }
+      if (!rows2 || rows2.length === 0) return res.status(404).json({ success: false, message: 'Order not found' });
+
+      const order = {
+        orderId: rows2[0].order_id,
+        userEmail: rows2[0].user_email,
+        createdAt: rows2[0].createdAt,
+        items: rows2.map(r => ({ itemName: r.item_name, price: Number(r.price), quantity: Number(r.quantity) }))
+      };
+      order.total = order.items.reduce((s, it) => s + (Number(it.price) * Number(it.quantity || 0)), 0);
+      return res.json({ success: true, order });
+    });
+  });
+});
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
