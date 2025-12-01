@@ -108,7 +108,7 @@
   }
 
   async function fetchOrderById(orderId) {
-    const url = BACKEND_BASE + '/order/' + encodeURIComponent(orderId);
+    const url = BACKEND_BASE + '/api/order/' + encodeURIComponent(orderId);
     const resp = await fetch(url, { method: 'GET' });
     if (!resp.ok) throw new Error('Server returned ' + resp.status);
     const json = await resp.json();
@@ -117,7 +117,7 @@
   }
 
   async function fetchLatestOrderByEmail(email) {
-    const url = BACKEND_BASE + '/orders/latest?email=' + encodeURIComponent(email);
+    const url = BACKEND_BASE + '/api/orders/latest?email=' + encodeURIComponent(email);
     const resp = await fetch(url, { method: 'GET' });
     if (!resp.ok) throw new Error('Server returned ' + resp.status);
     const json = await resp.json();
