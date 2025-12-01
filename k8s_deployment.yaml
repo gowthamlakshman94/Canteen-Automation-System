@@ -90,8 +90,53 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
+          # Inject all keys from this secret as env vars (key names become variable names)
+          envFrom:
+            - secretRef:
+                name: canteen-backend-secrets
+          # Optional: explicit env mapping (if you want to rename secret keys to env names)
+          # env:
+          #   - name: MYSQL_HOST
+          #     valueFrom:
+          #       secretKeyRef:
+          #         name: canteen-backend-secrets
+          #         key: MYSQL_HOST
+          #   - name: MYSQL_USER
+          #     valueFrom:
+          #       secretKeyRef:
+          #         name: canteen-backend-secrets
+          #         key: MYSQL_USER
+
+          # Readiness and liveness probes (adjust paths/ports/timeouts as needed)
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            failureThreshold: 6
+            timeoutSeconds: 2
+
+          # Resource requests/limits (tune for your cluster)
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
       imagePullSecrets:
         - name: ghcr-secret
+
 
 ---
 apiVersion: networking.k8s.io/v1
