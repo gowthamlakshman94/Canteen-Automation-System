@@ -1,93 +1,149 @@
-
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <script src="config.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="order.css" type="text/css">
-    <title>Order Confirmation</title>
-    <!-- ✅ Use defer here -->
-    <script src="cart.js" defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order Confirmation - IIT Patna Canteen</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+  <style>
+    body { padding-top: 90px; background:#f7f7f7; }
+    .jumbotron { background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.08); }
+    #orderDetails { margin-top: 20px; }
+    #oc_items li { margin-bottom: 8px; }
+    .small-muted { color:#777; font-size:0.9em; }
+  </style>
 </head>
+<body>
 
-<body style="background-image: url('SEPM 150.jpg');">
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <!-- navbar content as before -->
-    </nav>
-
+  <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
-        <div id="confirmationBox" class="jumbotron text-center" style="margin-top: 9%; border-radius: 15px; display: none;">
-            <h1>Your Order is Confirmed</h1>
-            <p>Thank you for choosing Canteen Automation System</p>
-            <p>You can collect your order from the canteen in 15-20 minutes</p>
-            <h3>Your Order ID: <span id="orderId" style="color: blue;"></span></h3>
-        </div>
-
-        <div id="errorBox" class="jumbotron text-center" style="margin-top: 9%; border-radius: 15px; display: none;">
-            <h1 style="color: red;">Order Unable to Place</h1>
-            <p>Please try again or go back to the cart to place your order.</p>
-        </div>
-
-        <h2 style="text-align: center; color: black; padding-top: 50px;">
-            Back to <a href="First Page.html" style="color: rgb(184, 230, 238);"><u>HOME</u></a> Page
-        </h2>
+      <div class="navbar-header">
+        <button class="navbar-toggle" data-toggle="collapse" data-target="#abc">
+          <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="First Page.html">IIT Patna Canteen</a>
+      </div>
+      <div class="collapse navbar-collapse" id="abc">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="First Page.html"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+          <li><a href="login.html"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
-    <footer style="padding-top: 175px;">
-        <!-- footer content as before -->
-    </footer>
+  <div class="container" id="orderConfirmationRoot">
+    <div class="jumbotron text-center" style="border-radius:12px;">
+      <h1>Order Confirmation</h1>
+      <p id="orderStatus" class="small-muted">Checking your order...</p>
 
-<script>
-    window.onload = function () {
-        checkOrderStatus();
-    };
+      <div id="orderDetails" style="display:none; text-align:left; max-width:800px; margin:20px auto;">
+        <h3>Order #<span id="oc_orderId"></span></h3>
+        <p><strong>Email:</strong> <span id="oc_email"></span></p>
+        <p><strong>Placed at:</strong> <span id="oc_time"></span></p>
 
-    async function checkOrderStatus() {
-        const orderId = localStorage.getItem('orderId');
-        document.getElementById("confirmationBox").style.display = "none";
-        document.getElementById("errorBox").style.display = "none";
+        <h4>Items</h4>
+        <ul id="oc_items"></ul>
 
-        if (!orderId) {
-            console.warn("No orderId found in localStorage");
-            document.getElementById("errorBox").style.display = "block";
-            return;
-        }
+        <p><strong>Total:</strong> ₹<span id="oc_total"></span></p>
 
-        console.log("Checking order with ID:", orderId);
+        <p class="small-muted">A confirmation email will be sent to your registered email (if available).</p>
+      </div>
 
+      <div id="orderFailed" style="display:none; margin-top:18px;">
+        <p class="text-danger">We couldn't find your order. If you believe this is an error, please contact the canteen.</p>
+      </div>
+
+      <a href="First Page.html" class="btn btn-primary">Back to Home</a>
+    </div>
+  </div>
+
+  <!-- jQuery & Bootstrap JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <script>
+    (function () {
+      // Backend base URL - override with window.BASE_URL or window.API_BASE if needed
+      const BACKEND_BASE = (window.BASE_URL || window.API_BASE || 'http://localhost:3000').replace(/\/$/, '');
+
+      function getLocalOrderId() {
+        return localStorage.getItem('orderId') || '';
+      }
+
+      function clearLocalOrderId() {
+        try { localStorage.removeItem('orderId'); } catch (e) { /* ignore */ }
+      }
+
+      function escapeHtml(s) {
+        if (!s) return '';
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+
+      function showOrder(order) {
+        document.getElementById('orderStatus').innerText = 'Your order was placed successfully!';
+        document.getElementById('oc_orderId').innerText = order.orderId || '';
+        document.getElementById('oc_email').innerText = order.userEmail || 'N/A';
+        document.getElementById('oc_time').innerText = order.createdAt || '';
+        const itemsUl = document.getElementById('oc_items');
+        itemsUl.innerHTML = '';
+        (order.items || []).forEach(it => {
+          const li = document.createElement('li');
+          li.innerHTML = escapeHtml(it.itemName) + ' — ₹' + Number(it.price).toFixed(2) + ' × ' + (it.quantity || 1);
+          itemsUl.appendChild(li);
+        });
+        document.getElementById('oc_total').innerText = Number(order.total || 0).toFixed(2);
+        document.getElementById('orderDetails').style.display = 'block';
+
+        // Clear local orderId so refresh won't re-query stale ID
+        clearLocalOrderId();
+      }
+
+      function showNotFound(msg) {
+        document.getElementById('orderStatus').innerText = msg || 'Order not found';
+        document.getElementById('orderFailed').style.display = 'block';
+      }
+
+      async function fetchOrder(orderId) {
         try {
-            const response = await fetch(`${BASE_URL}/checkOrder/${orderId}`);
-            if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-
-            const result = await response.json();
-            console.log("API Response:", result);
-
-            if (result.exists) {
-                document.getElementById("confirmationBox").style.display = "block";
-                document.getElementById("orderId").innerText = orderId;
-
-                // ✅ Clear localStorage AFTER confirmation shown
-                setTimeout(() => {
-                    localStorage.removeItem('orderSubmitted');
-                    localStorage.removeItem('orderId');
-                }, 3000); // wait 3 seconds
-            } else {
-                console.warn("Order not found on server.");
-                document.getElementById("errorBox").style.display = "block";
-            }
-        } catch (error) {
-            console.error("Error verifying order:", error);
-            document.getElementById("errorBox").style.display = "block";
+          const url = BACKEND_BASE + '/order/' + encodeURIComponent(orderId);
+          const resp = await fetch(url, { method: 'GET' });
+          if (!resp.ok) {
+            return showNotFound('Order not found (server returned ' + resp.status + ').');
+          }
+          const json = await resp.json();
+          if (!json || !json.success || !json.order) {
+            return showNotFound('Order not found.');
+          }
+          showOrder(json.order);
+        } catch (e) {
+          console.error('Failed to fetch order:', e);
+          showNotFound('Failed to fetch order. Please try again later.');
         }
-    }
-</script>
+      }
 
+      document.addEventListener('DOMContentLoaded', function () {
+        const orderId = getLocalOrderId();
+        if (!orderId) {
+          // if redirect used without orderId, try reading orderId from URL param ?orderId=...
+          const params = new URLSearchParams(window.location.search);
+          const qid = params.get('orderId');
+          if (qid) {
+            fetchOrder(qid);
+            return;
+          }
 
+          document.getElementById('orderStatus').innerText = 'No order found in your browser. You may have been redirected here incorrectly.';
+          document.getElementById('orderFailed').style.display = 'block';
+          return;
+        }
+        // fetch the order from backend
+        fetchOrder(orderId);
+      });
+    })();
+  </script>
 </body>
-
 </html>
-
