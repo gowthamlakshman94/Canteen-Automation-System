@@ -617,8 +617,8 @@ app.get('/health', (req, res) => {
 });
 
 
-// GET /order/:orderId -> return full order details (items array, total, createdAt, userEmail)
-app.get('/order/:orderId', (req, res) => {
+// GET /api/order/:orderId -> return full order details (items array, total, createdAt, userEmail)
+app.get('/api/order/:orderId', (req, res) => {
   const orderId = req.params.orderId;
   if (!orderId) return res.status(400).json({ success: false, message: 'orderId required' });
 
@@ -642,7 +642,7 @@ app.get('/order/:orderId', (req, res) => {
 });
 
 // GET /orders/latest?email=... -> returns the latest order id (and optionally full order)
-app.get('/orders/latest', (req, res) => {
+app.get('/api/orders/latest', (req, res) => {
   const email = req.query.email;
   if (!email) return res.status(400).json({ success: false, message: 'email query param required' });
 
