@@ -307,7 +307,9 @@
 
   function submitOrder(orderData) {
     if (!orderData) return;
-    const email = orderData.userEmail;
+    const email
+::contentReference[oaicite:0]{index=0}
+ = orderData.userEmail;
     if (!email || email === 'unknown') {
       alert('User email not found. Please log in before submitting an order.');
       return;
@@ -367,15 +369,35 @@
     });
 
     // For legacy markup where the "add to cart" wrapper was clickable
+    // Only add wrapper-level listener when there is NO explicit inner .add-to-cart button.
     qsa('.addToCartbutton').forEach(wrapper => {
+      // if wrapper contains a real .add-to-cart button, skip wrapper-level listener
+      if (wrapper.querySelector('.add-to-cart')) {
+        wrapper.removeEventListener('click', addToCartClicked);
+        return;
+      }
       wrapper.removeEventListener('click', addToCartClicked);
       wrapper.addEventListener('click', addToCartClicked);
     });
 
     // Also support modern buttons with class 'add-to-cart' (from your dynamic menu script)
+    // Attach a handler that stops propagation so clicks don't bubble to wrapper handlers.
     qsa('.add-to-cart').forEach(btn => {
-      btn.removeEventListener('click', addToCartClicked);
-      btn.addEventListener('click', addToCartClicked);
+      // remove previously attached wrapper-safe handler if any
+      if (btn._addCartHandler) {
+        btn.removeEventListener('click', btn._addCartHandler);
+      }
+      const handler = function (ev) {
+        // prevent the click from bubbling up to any wrapper handlers
+        try { ev.stopPropagation(); } catch (e) {}
+        // also prevent default to avoid accidental form/anchor navigation
+        if (ev && typeof ev.preventDefault === 'function') ev.preventDefault();
+        // call existing click logic
+        addToCartClicked(ev);
+      };
+      // store handler reference so we can remove it later if needed
+      btn._addCartHandler = handler;
+      btn.addEventListener('click', handler);
     });
 
     // Purchase button
