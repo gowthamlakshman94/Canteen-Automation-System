@@ -56,7 +56,7 @@
             const password = $("input[name='password']").val();
 
             $.ajax({
-                url: "" + BASE_URL + "/login", // Ensure this matches your backend URL
+                url: "" + BASE_URL_FE + "/login", // Ensure this matches your backend URL
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ email, password }),
