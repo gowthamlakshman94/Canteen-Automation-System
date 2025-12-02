@@ -1,65 +1,123 @@
 pipeline {
-    agent any 
-    
-    // Define shared parameters
-    parameters {
-        string(name: 'VERSION', defaultValue: 'latest', description: 'Docker image tag (e.g., v1.0.0)')
-        string(name: 'DOCKER_REGISTRY', defaultValue: 'ghcr.io', description: 'Your Docker Registry URL (ghcr.io)')
-        string(name: 'GITHUB_OWNER', defaultValue: 'gowthamlakshman94', description: 'GitHub username or organization for the GHCR image path.')
+  agent {
+    kubernetes {
+      defaultContainer 'jnlp'
+      yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: jnlp
+    image: jenkins/inbound-agent:3345.v03dee9b_f88fc-3
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "512Mi"
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:debug
+    command:
+      - cat
+    tty: true
+    volumeMounts:
+      - name: workspace-volume
+        mountPath: /home/jenkins/agent
+  volumes:
+    - name: workspace-volume
+      emptyDir: {}
+"""
+    }
+  }
+
+  parameters {
+    string(name: 'VERSION', defaultValue: 'latest', description: 'Docker image tag (e.g., v1.0.0)')
+    string(name: 'DOCKER_REGISTRY', defaultValue: 'ghcr.io', description: 'Your Docker Registry URL (ghcr.io)')
+    string(name: 'GITHUB_OWNER', defaultValue: 'gowthamlakshman94', description: 'GitHub username or organization for the GHCR image path.')
+  }
+
+  environment {
+    DOCKER_CREDENTIAL_ID = 'ghcr-token'   // must be Username with password type in Jenkins
+    KANIKO_EXEC = '/kaniko/executor'
+  }
+
+  stages {
+    stage('Checkout Code') {
+      steps {
+        echo "Cloning source code..."
+        checkout scm
+      }
     }
 
-    // Define shared environment variables
-    environment {
-        // Your specific GHCR credential ID
-        DOCKER_CREDENTIAL_ID = 'ghcr-token'
-    }
-
-    stages {
-        // --- Stage 1: Checkout Code ---
-        stage('Checkout Code') {
-            steps {
-                echo "Cloning source code..."
-                checkout scm 
-            }
-        }
-        
-        // --- Stage 2: Build and Push BOTH Services (Iterative Approach) ---
-        stage('Build & Push All Services') {
-            steps {
-                script {
-                    // Define the list of services to iterate over
-                    def services = [
-                        [name: 'sales-forecaster', path: './sales_forescast'],
-                        [name: 'sales-dashboard', path: './sales_forescast_ui']
-                    ]
-
-                    // Iterate over the list and perform the actions for each service
-                    services.each { service ->
-                        def REPO_NAME = service.name
-                        def CONTEXT_PATH = service.path
-                        def IMAGE_NAME = "${env.DOCKER_REGISTRY}/${params.GITHUB_OWNER}/${REPO_NAME}:${params.VERSION}"
-                        
-                        // --- BUILD ---
-                        sh "echo 'Building Docker image: ${IMAGE_NAME} from path: ${CONTEXT_PATH}'"
-                        sh "docker build -t ${IMAGE_NAME} ${CONTEXT_PATH}"
-                        
-                        // --- PUSH ---
-                        sh "echo 'Logging into Docker Registry and pushing image...'"
-                        withCredentials([usernamePassword(
-                            credentialsId: env.DOCKER_CREDENTIAL_ID, 
-                            usernameVariable: 'DOCKER_USER', 
-                            passwordVariable: 'DOCKER_PASS')]) {
-                            
-                            sh "echo \$DOCKER_PASS | docker login ${env.DOCKER_REGISTRY} -u \$DOCKER_USER --password-stdin"
-                            sh "docker push ${IMAGE_NAME}"
-                        }
-                        sh "echo 'Image Pushed Successfully: ${IMAGE_NAME}'"
-                        
-                        // --- CLEANUP ---
-                        sh "docker rmi ${IMAGE_NAME}"
-                    }
+    stage('Prepare Docker Config (from Jenkins creds)') {
+      steps {
+        container('jnlp') {
+          script {
+            // Ensure docker config dir exists
+            sh 'mkdir -p "${WORKSPACE}/.docker"'
+            // Inject Jenkins username/password credential and create docker config.json
+            withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIAL_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+              sh '''
+                set -e
+                # create base64 auth string username:password (compatible across distros)
+                if command -v base64 >/dev/null 2>&1; then
+                  AUTH=$(printf "%s:%s" "$DOCKER_USER" "$DOCKER_PASS" | base64 -w 0 2>/dev/null || printf "%s:%s" "$DOCKER_USER" "$DOCKER_PASS" | base64)
+                else
+                  AUTH=$(printf "%s:%s" "$DOCKER_USER" "$DOCKER_PASS" | openssl base64 -A)
+                fi
+                cat > "${WORKSPACE}/.docker/config.json" <<-JSON
+                {
+                  "auths": {
+                    "${DOCKER_REGISTRY}": { "auth": "${AUTH}" }
+                  }
                 }
+                JSON
+              '''
             }
+            sh 'ls -la ${WORKSPACE}/.docker || true'
+          }
         }
+      }
     }
+
+    stage('Build & Push All Services (kaniko)') {
+      steps {
+        container('kaniko') {
+          script {
+            def services = [
+              [name: 'sales-forecaster', path: './sales_forescast'],
+              [name: 'sales-dashboard', path: './sales_forescast_ui']
+            ]
+
+            services.each { svc ->
+              def repo = svc.name
+              def ctx = svc.path
+              def image = "${params.DOCKER_REGISTRY}/${params.GITHUB_OWNER}/${repo}:${params.VERSION}"
+
+              echo "Building and pushing: ${image} (context: ${ctx})"
+              sh "ls -la ${WORKSPACE}/${ctx} || true"
+
+              sh """
+                ${KANIKO_EXEC} \\
+                  --context ${WORKSPACE}/${ctx} \\
+                  --dockerfile ${WORKSPACE}/${ctx}/Dockerfile \\
+                  --destination=${image} \\
+                  --cache=true \\
+                  --verbosity=info \\
+                  --docker-config=${WORKSPACE}/.docker
+              """
+              echo "Pushed: ${image}"
+            }
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    success {
+      echo "All images built and pushed successfully."
+    }
+    failure {
+      echo "Build failed — check the logs for Kaniko errors, missing Dockerfile, or auth problems."
+    }
+  }
 }
