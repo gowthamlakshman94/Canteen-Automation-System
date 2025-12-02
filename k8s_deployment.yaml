@@ -5,14 +5,14 @@
 #   --docker-password=<your-personal-access-token> \
 #   --docker-email=<your-email> \
 #   --namespace=canteen-automation
-# Secrets for backend api 
+# Secrets for backend api
 
 # Make sure you apply this secrets
 #kubectl -n canteen-automation create secret generic db-credentials \
 #  --from-literal=username=root \
 #  --from-literal=password=password \
 #  --from-literal=host=mysql \
-#  --from-literal=dbname=canteen_automation 
+#  --from-literal=dbname=canteen_automation
 
 # kubectl create secret generic canteen-backend-secrets \
 #  --from-literal=MYSQL_HOST='mysql' \
@@ -182,7 +182,7 @@ spec:
               service:
                 name: cas-fe
                 port:
-                  number: 80                    
+                  number: 80
           - path: /api  # Backend API path
             pathType: Prefix
             backend:
@@ -211,7 +211,7 @@ spec:
                 name: cas-be
                 port:
                   number: 3000
-          - path: /register  
+          - path: /register
             pathType: Prefix
             backend:
               service:
@@ -238,14 +238,14 @@ spec:
               service:
                 name: cas-be
                 port:
-                  number: 3000              
-          - path: /api/data
+                  number: 3000
+          - path: /dashboard
             pathType: Prefix
             backend:
               service:
                 name: sales-dashboard-service
                 port:
-                  number: 5000                      
+                  number: 80
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -356,7 +356,7 @@ spec:
 #  --from-literal=username=db_user \
 #  --from-literal=password=your_strong_password \
 #  --from-literal=host=mysql-service \
-#  --from-literal=dbname=shop_db 
+#  --from-literal=dbname=shop_db
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -452,4 +452,4 @@ spec:
   ports:
     - protocol: TCP
       port: 80           # External port (browser traffic)
-      targetPort: 5000   # Internal port (container port)		  
+      targetPort: 5000   # Internal port (container port)
