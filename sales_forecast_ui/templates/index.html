@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Forecast Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📊 30-Day Sales Forecast</h2>
+        <canvas id="salesChart"></canvas>
+    </div>
+
+    <script>
+        fetch('/api/data')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('salesChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.dates,
+                        datasets: [{
+                            label: 'Predicted Revenue ($)',
+                            data: data.revenue,
+                            borderColor: '#36A2EB',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            fill: true
+                        },
+                        {
+                            label: 'Confidence Lower',
+                            data: data.lower,
+                            borderColor: 'transparent',
+                            backgroundColor: 'transparent',
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Confidence Upper',
+                            data: data.upper,
+                            borderColor: 'transparent',
+                            backgroundColor: 'rgba(200, 200, 200, 0.2)', # Grey area for uncertainty
+                            fill: '-1', # Fill to the dataset before this one
+                            pointRadius: 0
+                        }]
+                    },
+                    options: { responsive: true }
+                });
+            });
+    </script>
+</body>
+</html>
