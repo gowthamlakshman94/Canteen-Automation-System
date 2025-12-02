@@ -9,8 +9,8 @@
 
 # Make sure you apply this secrets
 #kubectl -n canteen-automation create secret generic db-credentials \
-#  --from-literal=username=db_user \
-#  --from-literal=password=your_strong_password \
+#  --from-literal=username=root \
+#  --from-literal=password=password \
 #  --from-literal=host=mysql \
 #  --from-literal=dbname=canteen_automation 
 
