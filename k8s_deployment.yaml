@@ -21,6 +21,8 @@
 #  --from-literal=MYSQL_DATABASE='canteen_automation' \
 #  --from-literal=GOOGLE_APP_PASSWORD='your-16-char-app-password' \
 #  --from-literal=GOOGLE_SENDER_EMAIL='your.sender@gmail.com' \
+#  --from-literal=HF_API_KEY='hf_xxxYOURKEYxxx' \
+#  --from-literal=HF_CHRONOS_MODEL='amazon/chronos-bolt-base' \
 #  -n canteen-automation
 
 
