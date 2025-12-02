@@ -231,14 +231,7 @@ spec:
               service:
                 name: cas-be
                 port:
-                  number: 3000           
-          - path: /order
-            pathType: Prefix
-            backend:
-              service:
-                name: cas-be
-                port:
-                  number: 3000                     
+                  number: 3000                            
 ---
 apiVersion: v1
 kind: PersistentVolume
