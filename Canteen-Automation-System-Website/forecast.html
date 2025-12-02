@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Sales Forecast</title>
+
+  <!-- Load Chart.js from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Load runtime config (this must be mounted in Kubernetes at /config.js) -->
+  <script src="/config.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 24px;
+      max-width: 1100px;
+      margin: auto;
+      background: #f7f7f7;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    #controls {
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    canvas {
+      background: #fff;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      padding: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      background: #fff;
+      border-radius: 8px;
+      padding: 10px;
+      border-collapse: collapse;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      background: #f0f0f0;
+    }
+  </style>
+
+  <script>
+    // Get API base URL from config.js (mounted ConfigMap)
+    const API_BASE = (window.APP_CONFIG && window.APP_CONFIG.API_BASE)
+      ? window.APP_CONFIG.API_BASE
+      : "";
+
+    // Normalize base (remove trailing slash)
+    function norm(base) {
+      if (!base) return "";
+      return base.endsWith("/") ? base.slice(0, -1) : base;
+    }
+    const API = norm(API_BASE); // final usable API base
+  </script>
+
+</head>
+<body>
+
+  <h1>Sales Forecast (Chronos Model)</h1>
+
+  <div id="controls">
+    <label style="font-size: 16px;">
+      Prediction Days:
+      <select id="days" style="padding: 6px; margin-left: 8px;">
+        <option>7</option>
+        <option selected>14</option>
+        <option>30</option>
+        <option>60</option>
+      </select>
+    </label>
+    <button id="loadBtn"
+            style="margin-left: 16px; padding: 6px 12px; cursor: pointer;">
+      Load Forecast
+    </button>
+  </div>
+
+  <canvas id="chart" height="120"></canvas>
+
+  <h2>Recent History</h2>
+  <table id="histTable">
+    <thead>
+      <tr><th>Date</th><th>Sales (₹)</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+
+<script>
+  const ctx = document.getElementById('chart').getContext('2d');
+  let chart = null;
+
+  async function loadForecast() {
+    const days = document.getElementById("days").value;
+    const url = `${API}/api/forecast?days=${days}`;
+
+    try {
+      const resp = await fetch(url);
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        alert("Forecast Error: " + (data.error || JSON.stringify(data)));
+        return;
+      }
+
+      // Parse forecast
+      const labels = data.forecast.map(f => f.ds);
+      const preds = data.forecast.map(f => Math.round(f.yhat));
+
+      // Create or update chart
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels,
+          datasets: [{
+            label: "Predicted Sales (₹)",
+            data: preds,
+            fill: false,
+            tension: 0.25,
+            borderWidth: 2,
+            pointRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+
+      // Populate history table
+      const tbody = document.querySelector('#histTable tbody');
+      tbody.innerHTML = "";
+
+      if (data.history && data.history.length) {
+        data.history.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${row.ds}</td>
+            <td>${Math.round(row.y)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+    } catch (err) {
+      console.error("Forecast fetch failed:", err);
+      alert("Failed to load forecast: " + err.message);
+    }
+  }
+
+  document.getElementById("loadBtn").addEventListener("click", loadForecast);
+
+  // Load once on page open
+  loadForecast();
+</script>
+
+</body>
+</html>
