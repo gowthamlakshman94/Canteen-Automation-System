@@ -68,7 +68,7 @@
 <script>
 (function () {
   // Backend base URL - override with window.BASE_URL or window.API_BASE if needed
-  const BACKEND_BASE = (window.BASE_URL || window.API_BASE || 'http://localhost').replace(/\/$/, '');
+  const BACKEND_BASE = (window.BASE_URL || window.API_BASE || 'http://cas-be.canteen-automation.svc.cluster.local').replace(/\/$/, '');
 
   function getLocalOrderId() {
     return localStorage.getItem('orderId') || '';
