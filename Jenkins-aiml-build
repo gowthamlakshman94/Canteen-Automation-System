@@ -1,4 +1,3 @@
-
 pipeline {
     agent any 
     
@@ -6,52 +5,13 @@ pipeline {
     parameters {
         string(name: 'VERSION', defaultValue: 'latest', description: 'Docker image tag (e.g., v1.0.0)')
         string(name: 'DOCKER_REGISTRY', defaultValue: 'ghcr.io', description: 'Your Docker Registry URL (ghcr.io)')
-        // NOTE: Replace this with your actual GitHub username or organization name
-        string(name: 'GITHUB_OWNER', defaultValue: 'gowthamlakshman94', description: 'GitHub username or organization for the GHCR image path.')
+        string(name: 'GITHUB_OWNER', defaultValue: gowthamlakshman94', description: 'GitHub username or organization for the GHCR image path.')
     }
 
     // Define shared environment variables
     environment {
         // Your specific GHCR credential ID
         DOCKER_CREDENTIAL_ID = 'ghcr-token'
-    }
-
-    // --- Reusable Function to Build and Push a single service ---
-    def buildAndPush(serviceName, contextPath) {
-        script {
-            // Define service-specific environment variables inside the function
-            def REPO_NAME = serviceName
-            def IMAGE_NAME = "${env.DOCKER_REGISTRY}/${params.GITHUB_OWNER}/${REPO_NAME}:${params.VERSION}"
-            
-            // --- Build ---
-            stage("Build ${serviceName} Image") {
-                echo "Building Docker image: ${IMAGE_NAME} from path: ${contextPath}"
-                sh "docker build -t ${IMAGE_NAME} ${contextPath}"
-            }
-            
-            // --- Push ---
-            stage("Push ${serviceName} Image") {
-                echo "Logging into Docker Registry and pushing image..."
-                
-                withCredentials([usernamePassword(
-                    credentialsId: env.DOCKER_CREDENTIAL_ID, 
-                    usernameVariable: 'DOCKER_USER', 
-                    passwordVariable: 'DOCKER_PASS')]) {
-                    
-                    // Docker login
-                    sh "echo \$DOCKER_PASS | docker login ${env.DOCKER_REGISTRY} -u \$DOCKER_USER --password-stdin"
-                    
-                    // Docker push
-                    sh "docker push ${IMAGE_NAME}"
-                }
-                echo "Image Pushed Successfully: ${IMAGE_NAME}"
-            }
-            
-            // --- Cleanup ---
-            stage("Cleanup ${serviceName}") {
-                sh "docker rmi ${IMAGE_NAME}"
-            }
-        }
     }
 
     stages {
@@ -63,21 +23,49 @@ pipeline {
             }
         }
         
-        // --- Stage 2: Build and Push BOTH Services ---
+        // --- Stage 2: Build and Push BOTH Services (Iterative Approach) ---
         stage('Build & Push All Services') {
             steps {
-                // 1. Build the Forecaster Job (Context: forecaster_job_dir/)
-                buildAndPush('sales-forecaster', './forecaster_job_dir')
-                
-                // 2. Build the Web Dashboard (Context: webapp/)
-                buildAndPush('sales-dashboard', './webapp')
+                script {
+                    // Define the list of services to iterate over
+                    def services = [
+                        [name: 'sales-forecaster', path: './forecaster_job_dir'],
+                        [name: 'sales-dashboard', path: './webapp']
+                    ]
+
+                    // Iterate over the list and perform the actions for each service
+                    services.each { service ->
+                        def REPO_NAME = service.name
+                        def CONTEXT_PATH = service.path
+                        def IMAGE_NAME = "${env.DOCKER_REGISTRY}/${params.GITHUB_OWNER}/${REPO_NAME}:${params.VERSION}"
+                        
+                        // --- BUILD ---
+                        sh "echo 'Building Docker image: ${IMAGE_NAME} from path: ${CONTEXT_PATH}'"
+                        sh "docker build -t ${IMAGE_NAME} ${CONTEXT_PATH}"
+                        
+                        // --- PUSH ---
+                        sh "echo 'Logging into Docker Registry and pushing image...'"
+                        withCredentials([usernamePassword(
+                            credentialsId: env.DOCKER_CREDENTIAL_ID, 
+                            usernameVariable: 'DOCKER_USER', 
+                            passwordVariable: 'DOCKER_PASS')]) {
+                            
+                            sh "echo \$DOCKER_PASS | docker login ${env.DOCKER_REGISTRY} -u \$DOCKER_USER --password-stdin"
+                            sh "docker push ${IMAGE_NAME}"
+                        }
+                        sh "echo 'Image Pushed Successfully: ${IMAGE_NAME}'"
+                        
+                        // --- CLEANUP ---
+                        sh "docker rmi ${IMAGE_NAME}"
+                    }
+                }
             }
         }
         
-        // --- Stage 3: Deployment Trigger (Placeholder) ---
+        // --- Stage 3: Deployment Trigger ---
         stage('Deploy to Kubernetes') {
             steps {
-                echo "Deployment logic goes here (e.g., kubectl apply -f ... or using a Helm chart)"
+                echo "Deployment logic goes here."
                 echo "Images built: sales-forecaster:${params.VERSION} and sales-dashboard:${params.VERSION}"
             }
         }
