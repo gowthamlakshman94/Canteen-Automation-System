@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Menu Addition</title>
-
+  <script src="config.js"></script>
   <!-- Bootstrap -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
@@ -105,8 +105,6 @@
   <!-- Page script -->
   <script>
   (function(){
-    // Change API_BASE if your backend is hosted elsewhere
-    const API_BASE = 'http://cas-be.canteen-automation.svc.cluster.local';
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
     const ALLOWED_TYPES = ['image/jpeg','image/png','image/webp','image/gif'];
 
