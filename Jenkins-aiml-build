@@ -13,6 +13,9 @@ spec:
       requests:
         cpu: "250m"
         memory: "512Mi"
+    volumeMounts:
+      - name: workspace-volume
+        mountPath: /home/jenkins/agent
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
     command:
@@ -21,6 +24,9 @@ spec:
     volumeMounts:
       - name: workspace-volume
         mountPath: /home/jenkins/agent
+  nodeSelector:
+    kubernetes.io/os: linux
+  restartPolicy: Never
   volumes:
     - name: workspace-volume
       emptyDir: {}
@@ -30,12 +36,12 @@ spec:
 
   parameters {
     string(name: 'VERSION', defaultValue: 'latest', description: 'Docker image tag (e.g., v1.0.0)')
-    string(name: 'DOCKER_REGISTRY', defaultValue: 'ghcr.io', description: 'Your Docker Registry URL (ghcr.io)')
-    string(name: 'GITHUB_OWNER', defaultValue: 'gowthamlakshman94', description: 'GitHub username or organization for the GHCR image path.')
+    string(name: 'DOCKER_REGISTRY', defaultValue: 'ghcr.io', description: 'Docker Registry URL')
+    string(name: 'GITHUB_OWNER', defaultValue: 'gowthamlakshman94', description: 'GH owner/org for the image path')
   }
 
   environment {
-    DOCKER_CREDENTIAL_ID = 'ghcr-token'   // must be Username with password type in Jenkins
+    DOCKER_CREDENTIAL_ID = 'ghcr-token'   // Jenkins credential (username/password)
     KANIKO_EXEC = '/kaniko/executor'
   }
 
@@ -49,15 +55,13 @@ spec:
 
     stage('Prepare Docker Config (from Jenkins creds)') {
       steps {
+        // create config.json in workspace using the jnlp container (shared volume)
         container('jnlp') {
           script {
-            // Ensure docker config dir exists
             sh 'mkdir -p "${WORKSPACE}/.docker"'
-            // Inject Jenkins username/password credential and create docker config.json
             withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIAL_ID, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
               sh '''
                 set -e
-                # create base64 auth string username:password (compatible across distros)
                 if command -v base64 >/dev/null 2>&1; then
                   AUTH=$(printf "%s:%s" "$DOCKER_USER" "$DOCKER_PASS" | base64 -w 0 2>/dev/null || printf "%s:%s" "$DOCKER_USER" "$DOCKER_PASS" | base64)
                 else
@@ -73,6 +77,7 @@ spec:
               '''
             }
             sh 'ls -la ${WORKSPACE}/.docker || true'
+            sh 'cat ${WORKSPACE}/.docker/config.json || true'  // masked in logs, but useful if you need to debug locally
           }
         }
       }
@@ -80,12 +85,23 @@ spec:
 
     stage('Build & Push All Services (kaniko)') {
       steps {
+        // run actions inside the kaniko container; it shares workspace via the emptyDir volume
         container('kaniko') {
           script {
+            // Correct service paths from your repo (note underscores)
             def services = [
-              [name: 'sales-forecaster', path: './sales_forescast'],
-              [name: 'sales-dashboard', path: './sales_forescast_ui']
+              [name: 'sales-forecaster', path: './sales_forecast'],
+              [name: 'sales-dashboard', path: './sales_forecast_ui']
             ]
+
+            // Copy docker config into Kaniko's expected location, then build each service
+            // Ensure /kaniko/.docker exists and contains config.json
+            sh '''
+              set -e
+              mkdir -p /kaniko/.docker
+              cp -f "${WORKSPACE}/.docker/config.json" /kaniko/.docker/config.json
+              ls -la /kaniko/.docker || true
+            '''
 
             services.each { svc ->
               def repo = svc.name
@@ -95,14 +111,14 @@ spec:
               echo "Building and pushing: ${image} (context: ${ctx})"
               sh "ls -la ${WORKSPACE}/${ctx} || true"
 
+              // Run kaniko executor (no --docker-config flag)
               sh """
                 ${KANIKO_EXEC} \\
                   --context ${WORKSPACE}/${ctx} \\
                   --dockerfile ${WORKSPACE}/${ctx}/Dockerfile \\
                   --destination=${image} \\
                   --cache=true \\
-                  --verbosity=info \\
-                  --docker-config=${WORKSPACE}/.docker
+                  --verbosity=info
               """
               echo "Pushed: ${image}"
             }
@@ -117,7 +133,7 @@ spec:
       echo "All images built and pushed successfully."
     }
     failure {
-      echo "Build failed — check the logs for Kaniko errors, missing Dockerfile, or auth problems."
+      echo "Build failed — check logs above. Common causes: missing Dockerfile, incorrect context path, or auth issues."
     }
   }
 }
