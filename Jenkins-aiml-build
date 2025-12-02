@@ -61,13 +61,5 @@ pipeline {
                 }
             }
         }
-        
-        // --- Stage 3: Deployment Trigger ---
-        stage('Deploy to Kubernetes') {
-            steps {
-                echo "Deployment logic goes here."
-                echo "Images built: sales-forecaster:${params.VERSION} and sales-dashboard:${params.VERSION}"
-            }
-        }
     }
 }
