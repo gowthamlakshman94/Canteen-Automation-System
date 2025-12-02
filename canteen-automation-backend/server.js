@@ -22,6 +22,32 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 } // 5 MB max; adjust as needed
 });
 
+
+// (near other requires)
+const dotenv = require('dotenv');
+dotenv.config(); // no-op in k8s, useful for local dev via .env
+
+// HF / Chronos config — read from env (populated by k8s secret)
+const HF_API_KEY = process.env.HF_API_KEY || process.env.HF_KEY || '';
+const HF_CHRONOS_MODEL = process.env.HF_CHRONOS_MODEL || 'amazon/chronos-bolt-base';
+const HF_API_URL = process.env.HF_API_URL || 'https://api-inference.huggingface.co/models';
+const DEFAULT_PREDICTION_LENGTH = Number(process.env.DEFAULT_PREDICTION_LENGTH || 30);
+
+// DB envs — these come from your secret (you already used these names in code)
+const MYSQL_HOST = process.env.MYSQL_HOST || 'mysql';
+const MYSQL_USER = process.env.MYSQL_USER || 'root';
+const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD || 'password';
+const MYSQL_DATABASE = process.env.MYSQL_DATABASE || 'canteen_automation';
+
+// Gmail envs (you already used these names earlier in your code)
+const GOOGLE_SENDER_EMAIL = process.env.GOOGLE_SENDER_EMAIL || '';
+const GOOGLE_APP_PASSWORD = process.env.GOOGLE_APP_PASSWORD || '';
+
+// small helpers
+function isHFConfigured() { return !!HF_API_KEY; }
+function isEmailConfigured() { return !!(GOOGLE_SENDER_EMAIL && GOOGLE_APP_PASSWORD); }
+
+
 // Middleware
 app.use(bodyParser.json());
 app.use(cors()); // Enable CORS for all domains (or restrict it to your frontend domain if needed)
@@ -683,6 +709,24 @@ app.get('/api/orders/latest', (req, res) => {
     });
   });
 });
+
+
+const axios = require('axios');
+const dayjs = require('dayjs');
+
+// callChronosModel as before
+async function callChronosModel(payload) {
+  if (!isHFConfigured()) throw new Error('HF_API_KEY not configured');
+  const url = `${HF_API_URL}/${HF_CHRONOS_MODEL}`;
+  const res = await axios.post(url, payload, {
+    headers: {
+      Authorization: `Bearer ${HF_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    timeout: 120000
+  });
+  return res.data;
+}
 
 
 // Start the server
