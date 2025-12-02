@@ -5,7 +5,7 @@ pipeline {
     parameters {
         string(name: 'VERSION', defaultValue: 'latest', description: 'Docker image tag (e.g., v1.0.0)')
         string(name: 'DOCKER_REGISTRY', defaultValue: 'ghcr.io', description: 'Your Docker Registry URL (ghcr.io)')
-        string(name: 'GITHUB_OWNER', defaultValue: gowthamlakshman94', description: 'GitHub username or organization for the GHCR image path.')
+        string(name: 'GITHUB_OWNER', defaultValue: 'gowthamlakshman94', description: 'GitHub username or organization for the GHCR image path.')
     }
 
     // Define shared environment variables
