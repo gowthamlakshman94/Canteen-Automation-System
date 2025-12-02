@@ -1,6 +1,8 @@
-// server.js (modified: adds generic email API + sends confirmation email after /submitOrder)
-// Your original code preserved; only additions are marked and non-invasive.
+// server.js (corrected)
 
+/* -------------------------
+   Required modules
+   ------------------------- */
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
@@ -9,94 +11,86 @@ const app = express();
 const port = 3000;
 const bcrypt = require('bcrypt');
 
-// Add near top with other requires
 const multer = require('multer');
-
-// *** NEW: email deps ***
 const nodemailer = require('nodemailer');
-const { google } = require('googleapis');
-
-// Multer memory storage so we can store Buffer into MySQL BLOB
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 } // 5 MB max; adjust as needed
-});
-
-
-// (near other requires)
+const { google } = require('googleapis'); // kept in case used elsewhere
+const axios = require('axios');
+const dayjs = require('dayjs');
 const dotenv = require('dotenv');
-dotenv.config(); // no-op in k8s, useful for local dev via .env
 
-// HF / Chronos config — read from env (populated by k8s secret)
+dotenv.config(); // loads .env locally; in k8s env comes from secrets
+
+/* -------------------------
+   Runtime config (env vars)
+   ------------------------- */
+// HuggingFace / Chronos
 const HF_API_KEY = process.env.HF_API_KEY || process.env.HF_KEY || '';
 const HF_CHRONOS_MODEL = process.env.HF_CHRONOS_MODEL || 'amazon/chronos-bolt-base';
 const HF_API_URL = process.env.HF_API_URL || 'https://api-inference.huggingface.co/models';
 const DEFAULT_PREDICTION_LENGTH = Number(process.env.DEFAULT_PREDICTION_LENGTH || 30);
 
-// DB envs — these come from your secret (you already used these names in code)
+// Database envs
 const MYSQL_HOST = process.env.MYSQL_HOST || 'mysql';
 const MYSQL_USER = process.env.MYSQL_USER || 'root';
 const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD || 'password';
 const MYSQL_DATABASE = process.env.MYSQL_DATABASE || 'canteen_automation';
 
-// Gmail envs (you already used these names earlier in your code)
+// Gmail envs (single declaration only)
 const GOOGLE_SENDER_EMAIL = process.env.GOOGLE_SENDER_EMAIL || '';
 const GOOGLE_APP_PASSWORD = process.env.GOOGLE_APP_PASSWORD || '';
 
-// small helpers
+// helpers
 function isHFConfigured() { return !!HF_API_KEY; }
 function isEmailConfigured() { return !!(GOOGLE_SENDER_EMAIL && GOOGLE_APP_PASSWORD); }
 
+/* -------------------------
+   Multer setup
+   ------------------------- */
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 } // 5 MB max
+});
 
-// Middleware
+/* -------------------------
+   Middleware
+   ------------------------- */
 app.use(bodyParser.json());
-app.use(cors()); // Enable CORS for all domains (or restrict it to your frontend domain if needed)
+app.use(cors());
 
-// MySQL Connection Pool Setup
+/* -------------------------
+   MySQL Connection Pool Setup
+   ------------------------- */
 const dbPool = mysql.createPool({
   connectionLimit: 10,
-  host: process.env.MYSQL_HOST || 'mysql',
-  user: process.env.MYSQL_USER || 'root',
-  password: process.env.MYSQL_PASSWORD || 'password',
-  database: process.env.MYSQL_DATABASE || 'canteen_automation',
+  host: MYSQL_HOST,
+  user: MYSQL_USER,
+  password: MYSQL_PASSWORD,
+  database: MYSQL_DATABASE,
   waitForConnections: true,
   queueLimit: 0,
   connectTimeout: 10000,
 });
 
-// Function to check MySQL connection and reconnect if lost
 function handleDBConnection() {
   dbPool.getConnection((err, connection) => {
     if (err) {
-      console.error('Database connection failed:', err.stack);
-      setTimeout(handleDBConnection, 5000);  // Retry after 5 seconds
+      console.error('Database connection failed:', err.stack || err);
+      setTimeout(handleDBConnection, 5000);
     } else {
       console.log('Connected to MySQL database.');
-      connection.release();  // Release the connection after checking
+      connection.release();
     }
   });
 }
-
-// Ensure that the MySQL connection is healthy at the start
 handleDBConnection();
 
-
-// ---------------- Email (Gmail App Password only) ----------------
-
-// Read config from env (Kubernetes Secrets or .env for local)
-const GOOGLE_SENDER_EMAIL = process.env.GOOGLE_SENDER_EMAIL || '';
-const GOOGLE_APP_PASSWORD = process.env.GOOGLE_APP_PASSWORD || '';
-
-// Helper: is email available
-function isEmailConfigured() {
-  return !!(GOOGLE_SENDER_EMAIL && GOOGLE_APP_PASSWORD);
-}
-
+/* -------------------------
+   Email helpers (Gmail - App Password)
+   ------------------------- */
 if (!isEmailConfigured()) {
-  console.warn('Email not configured: set GOOGLE_SENDER_EMAIL and GOOGLE_APP_PASSWORD (App Password) to enable email sending.');
+  console.warn('Email not configured: set GOOGLE_SENDER_EMAIL and GOOGLE_APP_PASSWORD to enable email sending.');
 }
 
-// create transporter (reused)
 function createSmtpTransporter() {
   if (!isEmailConfigured()) {
     throw new Error('Email not configured (missing GOOGLE_SENDER_EMAIL or GOOGLE_APP_PASSWORD).');
@@ -110,7 +104,6 @@ function createSmtpTransporter() {
   });
 }
 
-// Generic sendEmail helper
 async function sendEmail({ to, subject, text, html }) {
   if (!isEmailConfigured()) {
     const msg = 'Email skipped: App Password is not configured';
@@ -132,9 +125,9 @@ async function sendEmail({ to, subject, text, html }) {
   return info;
 }
 
-// ---------------- Generic Email API ----------------
-// POST /api/sendEmail
-// body: { to, subject, text?, html? }
+/* -------------------------
+   Generic Email API
+   ------------------------- */
 app.post('/api/sendEmail', async (req, res) => {
   try {
     const { to, subject, text, html } = req.body || {};
@@ -153,7 +146,6 @@ app.post('/api/sendEmail', async (req, res) => {
   }
 });
 
-
 /**********************************************************
  * ----------------- Existing submitOrder ----------------
  * Preserved your original logic; added an async background
@@ -162,15 +154,12 @@ app.post('/api/sendEmail', async (req, res) => {
 app.post('/submitOrder', (req, res) => {
     const { orderId, userEmail, items } = req.body;
 
-    // Generate current timestamp in 'YYYY-MM-DD HH:MM:SS' format
     const createdAt = new Date().toISOString().slice(0, 19).replace("T", " ");
 
-    // Basic validation
     if (!orderId || !userEmail || !items || !Array.isArray(items)) {
         return res.status(400).send({ message: 'Invalid order data' });
     }
 
-    // Prepare values for bulk insert
     const values = items.map(item => [
         orderId,
         userEmail,
@@ -181,7 +170,6 @@ app.post('/submitOrder', (req, res) => {
         createdAt
     ]);
 
-    // Updated SQL to include user_email
     const sql = `
         INSERT INTO orders (order_id, user_email, item_name, price, quantity, delivered, createdAt)
         VALUES ?
@@ -193,10 +181,8 @@ app.post('/submitOrder', (req, res) => {
             return res.status(500).send({ message: 'Error submitting order' });
         }
 
-        // --- DB insert succeeded, respond immediately ---
         res.status(200).send({ message: 'Order submitted successfully', orderId: orderId });
 
-        // --- NEW: send confirmation email in background (best-effort) ---
         (async () => {
           try {
             if (!userEmail || userEmail === 'unknown' || !isEmailConfigured()) {
@@ -204,7 +190,6 @@ app.post('/submitOrder', (req, res) => {
               return;
             }
 
-            // Build HTML for order email (simple)
             const itemsHtml = items.map(it => {
               const name = String(it.itemName || '').replace(/&/g,'&amp;').replace(/</g,'&lt;');
               const price = Number(it.price || 0).toFixed(2);
@@ -227,16 +212,15 @@ app.post('/submitOrder', (req, res) => {
             await sendEmail({ to: userEmail, subject, html });
             console.log(`Confirmation email sent to ${userEmail} for order ${orderId}`);
           } catch (emailErr) {
-            // Log error but do not affect client response
             console.error('Error sending confirmation email (non-fatal):', emailErr && emailErr.message ? emailErr.message : emailErr);
           }
         })();
-        // --- end background email ---
     });
 });
 
-
-// API to fetch orders
+/* -------------------------
+   Orders API
+   ------------------------- */
 app.get('/api/orders', (req, res) => {
   const query = 'SELECT * FROM orders';
   dbPool.query(query, (err, results) => {
@@ -248,7 +232,9 @@ app.get('/api/orders', (req, res) => {
   });
 });
 
-// Update delivery status for a specific item in an order
+/* -------------------------
+   Delivery status update
+   ------------------------- */
 app.post('/api/updateDeliveryStatus', (req, res) => {
   const { order_id, item_name, delivered } = req.body;
 
@@ -272,7 +258,9 @@ app.post('/api/updateDeliveryStatus', (req, res) => {
   });
 });
 
-// API to fetch daily metrics
+/* -------------------------
+   Daily metrics
+   ------------------------- */
 app.get('/api/dailyMetrics', (req, res) => {
   const query = `
     SELECT
@@ -289,7 +277,7 @@ app.get('/api/dailyMetrics', (req, res) => {
       return res.status(500).json({ message: 'Database error' });
     }
 
-    const metrics = result[0];
+    const metrics = result[0] || {};
     res.json({
       totalSales: metrics.totalSales || 0,
       totalOrders: metrics.totalOrders || 0,
@@ -298,8 +286,9 @@ app.get('/api/dailyMetrics', (req, res) => {
   });
 });
 
-
-// API to fetch item-wise metrics
+/* -------------------------
+   Item metrics
+   ------------------------- */
 app.get('/api/itemMetrics', (req, res) => {
   const { from, to } = req.query;
 
@@ -334,8 +323,9 @@ app.get('/api/itemMetrics', (req, res) => {
   });
 });
 
-
-// Route to handle data insertion
+/* -------------------------
+   Daily item insertion (wastage tracking)
+   ------------------------- */
 app.post('/daily-item', (req, res) => {
     const { item_name, quantity_prepared, date } = req.body;
 
@@ -353,7 +343,9 @@ app.post('/daily-item', (req, res) => {
     });
 });
 
-// API to fetch wastage report
+/* -------------------------
+   Daily wastage report
+   ------------------------- */
 app.get('/daily-wastage', (req, res) => {
     const { date } = req.query;
 
@@ -388,6 +380,9 @@ app.get('/daily-wastage', (req, res) => {
     });
 });
 
+/* -------------------------
+   Seasonal Data
+   ------------------------- */
 app.get('/api/seasonalData', (req, res) => {
   const query = `
     SELECT 
@@ -405,16 +400,15 @@ app.get('/api/seasonalData', (req, res) => {
     }
 
     const seasons = {
-      Spring: [3, 4, 5],  // March, April, May
-      Summer: [6, 7, 8],  // June, July, August
-      Autumn: [9, 10, 11], // September, October, November
-      Winter: [12, 1, 2],  // December, January, February
+      Spring: [3, 4, 5],
+      Summer: [6, 7, 8],
+      Autumn: [9, 10, 11],
+      Winter: [12, 1, 2],
     };
 
-    const currentMonth = new Date().getMonth() + 1; // Get current month (1-indexed)
+    const currentMonth = new Date().getMonth() + 1;
     const seasonNames = Object.keys(seasons);
 
-    // Determine the current season and last three seasons
     let currentSeasonIndex = seasonNames.findIndex((season) =>
       seasons[season].includes(currentMonth)
     );
@@ -428,16 +422,13 @@ app.get('/api/seasonalData', (req, res) => {
       const months = seasons[season];
       const filteredData = results.filter((item) => months.includes(item.month));
 
-      // Aggregate the data for each season
       const aggregatedData = filteredData.reduce((seasonAcc, item) => {
         seasonAcc[item.item_name] = (seasonAcc[item.item_name] || 0) + item.total_quantity;
         return seasonAcc;
       }, {});
 
-      // Sort items by total quantity
       const sortedItems = Object.entries(aggregatedData).sort(([, a], [, b]) => b - a);
 
-      // Store the top 5 and bottom 5 items for the season
       acc[season] = {
         top5: sortedItems.slice(0, 5),
         bottom5: sortedItems.slice(-5),
@@ -452,8 +443,9 @@ app.get('/api/seasonalData', (req, res) => {
   });
 });
 
-
-
+/* -------------------------
+   Register / Login
+   ------------------------- */
 app.post('/register', (req, res) => {
     const { name, email, password, contact, city, address } = req.body;
     const hash = bcrypt.hashSync(password, 10);
@@ -493,11 +485,12 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Endpoint to check order by orderId
+/* -------------------------
+   Check Order endpoint
+   ------------------------- */
 app.get('/checkOrder/:orderId', (req, res) => {
     const orderId = req.params.orderId;
 
-    // Query to check if the order exists in the database
     const query = 'SELECT * FROM orders WHERE order_id = ?';
 
     dbPool.query(query, [orderId], (err, results) => {
@@ -507,30 +500,16 @@ app.get('/checkOrder/:orderId', (req, res) => {
         }
 
         if (results.length > 0) {
-            // Order exists
             res.json({ exists: true });
         } else {
-            // Order does not exist
             res.json({ exists: false });
         }
     });
 });
 
-/********************************************************
- * Menu endpoints for menu_addition.html
- * - POST /api/menu           : accepts multipart/form-data (image) and stores into DB (image_blob + image_mime)
- * - GET  /api/menu           : returns menu items metadata (image_url points to next endpoint)
- * - GET  /api/menu/:id/image : serves image blob with proper Content-Type
- ********************************************************/
-
-// NOTE: ensure your `menu_items` table has image_blob LONGBLOB and image_mime VARCHAR column.
-// If not present, run:
-// ALTER TABLE menu_items ADD COLUMN image_blob LONGBLOB;
-// ALTER TABLE menu_items ADD COLUMN image_mime VARCHAR(100);
-
-// POST /api/menu -> receive form data and image file
-// Expects multipart/form-data with fields: name, description, price, category, available and image file field named 'image'
-
+/* -------------------------
+   Menu endpoints
+   ------------------------- */
 app.post('/api/menu', upload.single('image'), (req, res) => {
   try {
     const { name, description, price, category, available } = req.body;
@@ -544,8 +523,8 @@ app.post('/api/menu', upload.single('image'), (req, res) => {
     let image_filename = null;
 
     if (req.file) {
-      image_blob = req.file.buffer;          // Buffer
-      image_mime = req.file.mimetype;        // e.g., image/jpeg
+      image_blob = req.file.buffer;
+      image_mime = req.file.mimetype;
       image_filename = req.file.originalname;
     }
 
@@ -583,8 +562,6 @@ app.post('/api/menu', upload.single('image'), (req, res) => {
   }
 });
 
-// GET /api/menu -> list menu items (no blob in response)
-// supports optional ?category=Breakfast|Lunch|Dinner
 app.get('/api/menu', (req, res) => {
   const { category } = req.query;
   let sql = 'SELECT id, name, description, price, category, available FROM menu_items WHERE available = 1';
@@ -600,8 +577,6 @@ app.get('/api/menu', (req, res) => {
       console.error('Error fetching menu:', err);
       return res.status(500).json({ success: false, message: 'DB error' });
     }
-    // Add image_url that frontend will use to fetch the image blob
-    const host = req.protocol + '://' + req.get('host');
     const items = rows.map(r => ({
       id: r.id,
       name: r.name,
@@ -609,13 +584,12 @@ app.get('/api/menu', (req, res) => {
       price: parseFloat(r.price),
       category: r.category,
       available: r.available,
-      image_url: `/api/menu/${r.id}/image` // relative path; frontend can prepend API_BASE if required
+      image_url: `/api/menu/${r.id}/image`
     }));
     res.json({ success: true, data: items });
   });
 });
 
-// GET /api/menu/:id/image -> serve image blob with correct content-type
 app.get('/api/menu/:id/image', (req, res) => {
   const id = req.params.id;
   const sql = 'SELECT image_blob, image_mime, image_filename FROM menu_items WHERE id = ? LIMIT 1';
@@ -630,20 +604,21 @@ app.get('/api/menu/:id/image', (req, res) => {
 
     const mime = row.image_mime || 'application/octet-stream';
     res.setHeader('Content-Type', mime);
-    // optional caching:
     res.setHeader('Cache-Control', 'public, max-age=3600');
-    // send buffer
     return res.send(row.image_blob);
   });
 });
 
-// Health check endpoint for Kubernetes
+/* -------------------------
+   Health check
+   ------------------------- */
 app.get('/health', (req, res) => {
     res.status(200).send('OK');
 });
 
-
-// GET /api/order/:orderId -> return full order details (items array, total, createdAt, userEmail)
+/* -------------------------
+   Order retrieval endpoints
+   ------------------------- */
 app.get('/api/order/:orderId', (req, res) => {
   const orderId = req.params.orderId;
   if (!orderId) return res.status(400).json({ success: false, message: 'orderId required' });
@@ -667,7 +642,6 @@ app.get('/api/order/:orderId', (req, res) => {
   });
 });
 
-// GET /orders/latest?email=... -> returns the latest order id (and optionally full order)
 app.get('/api/orders/latest', (req, res) => {
   const email = req.query.email;
   if (!email) return res.status(400).json({ success: false, message: 'email query param required' });
@@ -686,10 +660,6 @@ app.get('/api/orders/latest', (req, res) => {
     if (!rows || rows.length === 0) return res.status(404).json({ success: false, message: 'No orders found for this email' });
 
     const latestOrderId = rows[0].order_id;
-    // Option A: return the id only
-    // return res.json({ success: true, orderId: latestOrderId });
-
-    // Option B (recommended): return full order by querying orders table
     const sql2 = 'SELECT order_id, user_email, item_name, price, quantity, createdAt FROM orders WHERE order_id = ? ORDER BY createdAt ASC';
     dbPool.query(sql2, [latestOrderId], (err2, rows2) => {
       if (err2) {
@@ -710,11 +680,9 @@ app.get('/api/orders/latest', (req, res) => {
   });
 });
 
-
-const axios = require('axios');
-const dayjs = require('dayjs');
-
-// callChronosModel as before
+/* -------------------------
+   Chronos: call helper
+   ------------------------- */
 async function callChronosModel(payload) {
   if (!isHFConfigured()) throw new Error('HF_API_KEY not configured');
   const url = `${HF_API_URL}/${HF_CHRONOS_MODEL}`;
@@ -728,8 +696,97 @@ async function callChronosModel(payload) {
   return res.data;
 }
 
+/* -------------------------
+   Forecast endpoint (aggregates DB, calls Chronos)
+   ------------------------- */
+function getDailySeries(callback) {
+  const sql = `
+    SELECT DATE(createdAt) AS ds, SUM(price * quantity) AS y
+    FROM orders
+    WHERE delivered = TRUE
+    GROUP BY DATE(createdAt)
+    ORDER BY ds;
+  `;
+  dbPool.query(sql, (err, rows) => {
+    if (err) {
+      console.error('DB error in getDailySeries:', err);
+      return callback(err);
+    }
+    const series = (rows || []).map(r => ({
+      ds: dayjs(r.ds).format('YYYY-MM-DD'),
+      y: Number(r.y || 0)
+    }));
+    callback(null, series);
+  });
+}
 
-// Start the server
+app.get('/api/forecast', (req, res) => {
+  const days = Number(req.query.days || DEFAULT_PREDICTION_LENGTH || 30);
+
+  if (!isHFConfigured()) {
+    return res.status(503).json({ error: 'Forecast service not configured (HF_API_KEY missing).' });
+  }
+
+  getDailySeries(async (err, series) => {
+    if (err) return res.status(500).json({ error: 'DB error building timeseries' });
+    if (!series || series.length < 5) {
+      return res.status(400).json({ error: 'Not enough historical data (need at least ~5 days).', history: series });
+    }
+
+    try {
+      const past_values = series.map(s => s.y);
+      const payload = {
+        inputs: {
+          past_values,
+          predict_length: days
+        },
+        parameters: { num_samples: 20 }
+      };
+
+      const hfResponse = await callChronosModel(payload);
+
+      let forecasts;
+      if (Array.isArray(hfResponse)) {
+        forecasts = hfResponse;
+      } else if (hfResponse && hfResponse.predictions) {
+        forecasts = hfResponse.predictions;
+      } else if (hfResponse && hfResponse.samples) {
+        const samples = hfResponse.samples;
+        const predictLen = samples[0].length;
+        const medians = [];
+        for (let t = 0; t < predictLen; t++) {
+          const vals = samples.map(s => s[t]).sort((a,b)=>a-b);
+          medians.push(vals[Math.floor(vals.length/2)]);
+        }
+        forecasts = medians;
+      } else if (hfResponse && hfResponse.forecast) {
+        forecasts = hfResponse.forecast;
+      } else {
+        return res.json({ raw: hfResponse });
+      }
+
+      if (!Array.isArray(forecasts)) {
+        return res.status(500).json({ error: 'Unexpected HF response shape', raw: hfResponse });
+      }
+
+      const lastDate = series[series.length - 1].ds;
+      const out = forecasts.slice(0, days).map((val, i) => ({
+        ds: dayjs(lastDate).add(i + 1, 'day').format('YYYY-MM-DD'),
+        yhat: Number(val)
+      }));
+
+      const history = series.slice(-90);
+      return res.json({ history, forecast: out });
+    } catch (hfErr) {
+      console.error('Chronos/HTTP error:', hfErr?.response?.data ?? hfErr.message ?? hfErr);
+      return res.status(500).json({ error: 'Forecasting failed', detail: hfErr?.response?.data ?? hfErr.message });
+    }
+  });
+});
+
+/* -------------------------
+   Start server
+   ------------------------- */
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
