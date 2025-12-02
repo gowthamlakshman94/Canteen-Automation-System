@@ -29,8 +29,8 @@ pipeline {
                 script {
                     // Define the list of services to iterate over
                     def services = [
-                        [name: 'sales-forecaster', path: './forecaster_job_dir'],
-                        [name: 'sales-dashboard', path: './webapp']
+                        [name: 'sales-forecaster', path: './sales_forescast'],
+                        [name: 'sales-dashboard', path: './sales_forescast_ui']
                     ]
 
                     // Iterate over the list and perform the actions for each service
