@@ -1,4 +1,4 @@
 
 // config.js.template
 const BASE_URL = "${BASE_URL}";
-const BASE_URL_FE = "${BASE_URL}";
+const BASE_URL_FE = "${BASE_URL_FE}";
