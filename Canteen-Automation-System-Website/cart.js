@@ -6,7 +6,7 @@
   const CART_CONTAINER_SEL = '.cartItems';
   const TOTAL_PRICE_SEL = '.cart-total-price';
   const PURCHASE_BTN_SEL = '.purchaseBtn';
-  const DEFAULT_API_BASE = 'http://cas-be.canteen-automation.svc.cluster.local';
+  const DEFAULT_API_BASE = 'http://localhost';
 
   // Resolve base URL for order submission (use existing globals if present)
   const BASE_URL = (function () {
