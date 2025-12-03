@@ -1,4 +1,4 @@
-// server.js (corrected)
+// server.js (Prophet sidecar focused; HF removed)
 
 /* -------------------------
    Required modules
@@ -23,10 +23,6 @@ dotenv.config(); // loads .env locally; in k8s env comes from secrets
 /* -------------------------
    Runtime config (env vars)
    ------------------------- */
-// HuggingFace / Chronos
-const HF_API_KEY = process.env.HF_API_KEY || process.env.HF_KEY || '';
-const HF_CHRONOS_MODEL = process.env.HF_CHRONOS_MODEL || 'amazon/chronos-bolt-base';
-const HF_API_URL = process.env.HF_API_URL || 'https://router.huggingface.co/hf-inference/models';
 const DEFAULT_PREDICTION_LENGTH = Number(process.env.DEFAULT_PREDICTION_LENGTH || 30);
 
 // Database envs
@@ -40,7 +36,6 @@ const GOOGLE_SENDER_EMAIL = process.env.GOOGLE_SENDER_EMAIL || '';
 const GOOGLE_APP_PASSWORD = process.env.GOOGLE_APP_PASSWORD || '';
 
 // helpers
-function isHFConfigured() { return !!HF_API_KEY; }
 function isEmailConfigured() { return !!(GOOGLE_SENDER_EMAIL && GOOGLE_APP_PASSWORD); }
 
 /* -------------------------
@@ -148,7 +143,7 @@ app.post('/api/sendEmail', async (req, res) => {
 
 /**********************************************************
  * ----------------- Existing submitOrder ----------------
- * Preserved your original logic; added an async background
+ * Preserved original logic; added an async background
  * email send (non-blocking) AFTER insertion succeeds.
  **********************************************************/
 app.post('/submitOrder', (req, res) => {
@@ -681,24 +676,9 @@ app.get('/api/orders/latest', (req, res) => {
 });
 
 /* -------------------------
-   Chronos: call helper
+   Forecast helpers & endpoint (sidecar -> deterministic fallback)
    ------------------------- */
-async function callChronosModel(payload) {
-  if (!isHFConfigured()) throw new Error('HF_API_KEY not configured');
-  const url = `${HF_API_URL}/${HF_CHRONOS_MODEL}`;
-  const res = await axios.post(url, payload, {
-    headers: {
-      Authorization: `Bearer ${HF_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    timeout: 120000
-  });
-  return res.data;
-}
 
-/* -------------------------
-   Forecast endpoint (aggregates DB, calls Chronos)
-   ------------------------- */
 function getDailySeries(callback) {
   const sql = `
     SELECT DATE(createdAt) AS ds, SUM(price * quantity) AS y
@@ -720,67 +700,82 @@ function getDailySeries(callback) {
   });
 }
 
-app.get('/api/forecast', (req, res) => {
-  const days = Number(req.query.days || DEFAULT_PREDICTION_LENGTH || 30);
+async function callLocalProphetHttp(payload, timeout = 120000) {
+  const url = 'http://127.0.0.1:5000/forecast';
+  const resp = await axios.post(url, payload, { timeout });
+  return resp.data;
+}
 
-  if (!isHFConfigured()) {
-    return res.status(503).json({ error: 'Forecast service not configured (HF_API_KEY missing).' });
+app.get('/api/forecast', (req, res) => {
+  // accept ?days=30 or shorthand ?30
+  let days = Number(req.query.days || 0);
+  if (!days) {
+    const keys = Object.keys(req.query || {});
+    if (keys.length > 0 && /^\d+$/.test(keys[0])) {
+      days = Number(keys[0]);
+    }
   }
+  days = days || DEFAULT_PREDICTION_LENGTH || 30;
 
   getDailySeries(async (err, series) => {
-    if (err) return res.status(500).json({ error: 'DB error building timeseries' });
-    if (!series || series.length < 5) {
-      return res.status(400).json({ error: 'Not enough historical data (need at least ~5 days).', history: series });
+    if (err) {
+      console.error('DB error building timeseries:', err);
+      return res.status(500).json({ error: 'DB error building timeseries' });
+    }
+    if (!series || series.length < 1) {
+      return res.status(400).json({ error: 'Not enough historical data', history: series || [] });
     }
 
+    const history = series.slice(-90);
+    const past_values = series.map(s => Number(s.y || 0));
+    const lastDate = series[series.length - 1].ds;
+
+    // 1) Try local Prophet sidecar
     try {
-      const past_values = series.map(s => s.y);
       const payload = {
-        inputs: {
-          past_values,
-          predict_length: days
-        },
-        parameters: { num_samples: 20 }
+        past_values,
+        past_dates: history.map(h => h.ds),
+        predict_length: days,
+        last_date: lastDate
       };
-
-      const hfResponse = await callChronosModel(payload);
-
-      let forecasts;
-      if (Array.isArray(hfResponse)) {
-        forecasts = hfResponse;
-      } else if (hfResponse && hfResponse.predictions) {
-        forecasts = hfResponse.predictions;
-      } else if (hfResponse && hfResponse.samples) {
-        const samples = hfResponse.samples;
-        const predictLen = samples[0].length;
-        const medians = [];
-        for (let t = 0; t < predictLen; t++) {
-          const vals = samples.map(s => s[t]).sort((a,b)=>a-b);
-          medians.push(vals[Math.floor(vals.length/2)]);
-        }
-        forecasts = medians;
-      } else if (hfResponse && hfResponse.forecast) {
-        forecasts = hfResponse.forecast;
+      const localResp = await callLocalProphetHttp(payload);
+      if (localResp && Array.isArray(localResp.forecast)) {
+        return res.json({ history: localResp.history || history, forecast: localResp.forecast });
       } else {
-        return res.json({ raw: hfResponse });
+        console.warn('Local Prophet sidecar returned unexpected shape; falling back.', localResp);
       }
-
-      if (!Array.isArray(forecasts)) {
-        return res.status(500).json({ error: 'Unexpected HF response shape', raw: hfResponse });
-      }
-
-      const lastDate = series[series.length - 1].ds;
-      const out = forecasts.slice(0, days).map((val, i) => ({
-        ds: dayjs(lastDate).add(i + 1, 'day').format('YYYY-MM-DD'),
-        yhat: Number(val)
-      }));
-
-      const history = series.slice(-90);
-      return res.json({ history, forecast: out });
-    } catch (hfErr) {
-      console.error('Chronos/HTTP error:', hfErr?.response?.data ?? hfErr.message ?? hfErr);
-      return res.status(500).json({ error: 'Forecasting failed', detail: hfErr?.response?.data ?? hfErr.message });
+    } catch (sideErr) {
+      console.error('Local Prophet sidecar error (will use fallback):', sideErr && sideErr.message ? sideErr.message : sideErr);
     }
+
+    // Deterministic local fallback predictor (moving average + small trend)
+    const n = Math.min(14, past_values.length);
+    const tail = past_values.slice(-n);
+    const avg = (tail.length > 0) ? (tail.reduce((a,b)=>a+b,0) / tail.length) : 0;
+
+    let slope = 0;
+    if (tail.length >= 2) {
+      const xMean = (tail.length - 1) / 2;
+      const yMean = avg;
+      let num = 0, den = 0;
+      for (let i = 0; i < tail.length; i++) {
+        const x = i;
+        num += (x - xMean) * (tail[i] - yMean);
+        den += (x - xMean) * (x - xMean);
+      }
+      slope = den === 0 ? 0 : num / den;
+    }
+
+    let prev = tail.length ? tail[tail.length - 1] : avg;
+    const forecast = [];
+    for (let i = 1; i <= days; i++) {
+      const pull = (avg - prev) * 0.08;
+      const next = Math.max(0, prev + slope + pull);
+      forecast.push({ ds: dayjs(lastDate).add(i, 'day').format('YYYY-MM-DD'), yhat: Number(next) });
+      prev = next;
+    }
+
+    return res.json({ history, forecast });
   });
 });
 
