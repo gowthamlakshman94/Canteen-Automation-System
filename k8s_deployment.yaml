@@ -15,9 +15,7 @@
 #  --from-literal=MYSQL_PASSWORD='password' \
 #  --from-literal=MYSQL_DATABASE='canteen_automation' \
 #  --from-literal=GOOGLE_APP_PASSWORD='your-16-char-app-password' \
-#  --from-literal=GOOGLE_SENDER_EMAIL='your.sender@gmail.com' \
-#  --from-literal=HF_API_KEY='hf_xxxYOURKEYxxx' \
-#  --from-literal=HF_CHRONOS_MODEL='amazon/chronos-bolt-base' \
+#  --from-literal=GOOGLE_SENDER_EMAIL='your.sender@gmail.com' 
 
 
 
@@ -147,7 +145,16 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
-
+        - name: prophet-sidecar
+          image: ghcr.io/gowthamlakshman94/prophet-sidecar:0.1
+          ports:
+            - containerPort: 5000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 3
+            periodSeconds: 10
       imagePullSecrets:
         - name: ghcr-secret
 
