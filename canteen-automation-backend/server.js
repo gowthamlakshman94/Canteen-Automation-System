@@ -26,7 +26,7 @@ dotenv.config(); // loads .env locally; in k8s env comes from secrets
 // HuggingFace / Chronos
 const HF_API_KEY = process.env.HF_API_KEY || process.env.HF_KEY || '';
 const HF_CHRONOS_MODEL = process.env.HF_CHRONOS_MODEL || 'amazon/chronos-bolt-base';
-const HF_API_URL = process.env.HF_API_URL || 'ttps://router.huggingface.co/hf-inference/models';
+const HF_API_URL = process.env.HF_API_URL || 'https://router.huggingface.co/hf-inference/models';
 const DEFAULT_PREDICTION_LENGTH = Number(process.env.DEFAULT_PREDICTION_LENGTH || 30);
 
 // Database envs
