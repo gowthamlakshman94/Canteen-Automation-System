@@ -12,7 +12,7 @@ The **Canteen Automation System** allows customers to conveniently order food an
 
 ### Technologies:
 - **Frontend**: HTML, CSS, Bootstrap, JavaScript
-- **Backend**: PHP
+- **Backend**: Nodejs
 - **Database**: MySQL
 
 ---
