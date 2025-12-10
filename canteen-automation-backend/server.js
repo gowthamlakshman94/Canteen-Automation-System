@@ -153,25 +153,47 @@ app.use(requireAuth);
 /* -------------------------
    Generic Email API (PROTECTED)
 ------------------------- */
-app.post('/api/sendEmail', async (req, res) => {
-    try {
-        const { to, subject, text, html } = req.body || {};
-        if (!to || !subject) {
-            return res.status(400).json({ success: false, message: "Missing 'to' or 'subject'" });
-        }
 
-        if (!isEmailConfigured()) {
-            console.warn("Email not configured");
-            return res.status(503).json({ success: false, message: "Email service not configured" });
-        }
+/* -------------------------
+   Email helpers
+------------------------- */
+function isEmailConfigured() {
+    return !!(GOOGLE_SENDER_EMAIL && GOOGLE_APP_PASSWORD);
+}
 
-        const info = await sendEmail({ to, subject, text, html });
-        return res.json({ success: true, info });
-    } catch (err) {
-        console.error("Email error:", err);
-        return res.status(500).json({ success: false, message: "Failed to send email" });
+function createSmtpTransporter() {
+    if (!isEmailConfigured()) {
+        throw new Error('Email not configured (missing GOOGLE_SENDER_EMAIL or GOOGLE_APP_PASSWORD).');
     }
-});
+    return nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: GOOGLE_SENDER_EMAIL,
+            pass: GOOGLE_APP_PASSWORD
+        }
+    });
+}
+
+async function sendEmail({ to, subject, text, html }) {
+    if (!isEmailConfigured()) {
+        const msg = 'Email skipped: App Password is not configured';
+        console.warn(msg);
+        throw new Error(msg);
+    }
+    if (!to || !subject) throw new Error('Missing "to" or "subject"');
+
+    const transporter = createSmtpTransporter();
+    const mailOptions = {
+        from: `"IIT Patna Canteen" <${GOOGLE_SENDER_EMAIL}>`,
+        to,
+        subject,
+        text: text || '',
+        html: html || text || ''
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    return info;
+}
 
 /* -------------------------
    submitOrder (PROTECTED)
