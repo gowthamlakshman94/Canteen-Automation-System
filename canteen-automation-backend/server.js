@@ -724,6 +724,72 @@ app.get('/api/forecast', (req, res) => {
         return res.json({ history, forecast });
     });
 });
+
+/* -------------------------
+   Seasonal Data
+   ------------------------- */
+app.get('/api/seasonalData', (req, res) => {
+  const query = `
+    SELECT 
+      item_name, 
+      SUM(quantity) AS total_quantity, 
+      MONTH(createdAt) AS month 
+    FROM orders 
+    GROUP BY item_name, MONTH(createdAt);
+  `;
+
+  dbPool.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching seasonal data:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    const seasons = {
+      Spring: [3, 4, 5],
+      Summer: [6, 7, 8],
+      Autumn: [9, 10, 11],
+      Winter: [12, 1, 2],
+    };
+
+    const currentMonth = new Date().getMonth() + 1;
+    const seasonNames = Object.keys(seasons);
+
+    let currentSeasonIndex = seasonNames.findIndex((season) =>
+      seasons[season].includes(currentMonth)
+    );
+    const selectedSeasons = [];
+    for (let i = 0; i < 4; i++) {
+      selectedSeasons.unshift(seasonNames[currentSeasonIndex]);
+      currentSeasonIndex = (currentSeasonIndex - 1 + seasonNames.length) % seasonNames.length;
+    }
+
+    const seasonData = selectedSeasons.reduce((acc, season) => {
+      const months = seasons[season];
+      const filteredData = results.filter((item) => months.includes(item.month));
+
+      const aggregatedData = filteredData.reduce((seasonAcc, item) => {
+        seasonAcc[item.item_name] = (seasonAcc[item.item_name] || 0) + item.total_quantity;
+        return seasonAcc;
+      }, {});
+
+      const sortedItems = Object.entries(aggregatedData).sort(([, a], [, b]) => b - a);
+
+      acc[season] = {
+        top5: sortedItems.slice(0, 5),
+        bottom5: sortedItems.slice(-5),
+      };
+      return acc;
+    }, {});
+
+    res.json({
+      selectedSeasons,
+      seasonData,
+    });
+  });
+});
+
+
+
 /* -------------------------
    START SERVER
 ------------------------- */
