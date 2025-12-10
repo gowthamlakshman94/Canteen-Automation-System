@@ -493,3 +493,151 @@ Explore built-in Kubernetes dashboards
 🎯 Optional: Expose Prometheus Using NodePort
 kubectl patch svc monitoring-kube-prometheus-prometheus -n monitoring \
   -p '{"spec": {"type": "NodePort"}}'
+
+
+🚀 K6 Load Testing — README
+
+This folder contains load-testing scripts for the Canteen Automation System backend using k6.
+
+📦 1. Install k6
+macOS
+brew install k6
+
+Ubuntu / Debian
+sudo apt update
+sudo apt install -y gnupg
+curl -fsSL https://dl.k6.io/key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/k6.gpg
+echo "deb [signed-by=/usr/share/keyrings/k6.gpg] https://dl.k6.io/deb stable main" \
+  | sudo tee /etc/apt/sources.list.d/k6.list
+sudo apt update
+sudo apt install k6
+
+Windows (Chocolatey)
+choco install k6
+
+📁 2. Test Script (loadtest.js)
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export const options = {
+  vus: 1000,         // Number of virtual users
+  duration: '30s',   // Total test duration
+};
+
+export default function () {
+  const res = http.get('http://localhost/health');
+
+  check(res, {
+    'status is 200': (r) => r.status === 200,
+  });
+
+  sleep(1); // Wait between iterations
+}
+
+▶️ 3. Run the test locally
+
+Make sure your backend is running (Docker or Node).
+
+Then run:
+
+k6 run loadtest.js
+
+
+You will see output such as:
+
+checks.....................: 100.00%
+http_req_duration..........: avg=12ms ...
+vus........................: 1000
+
+🌐 4. Test Kubernetes backend
+
+If your backend is exposed via NodePort / Ingress / LoadBalancer, update URL:
+
+const res = http.get('http://your-service-domain/health');
+
+
+Then run:
+
+k6 run loadtest.js
+
+
+For NodePort example:
+
+k6 run -e BASE_URL=http://<NODE-IP>:<NODEPORT> loadtest.js
+
+
+(NOTE: If you want dynamic URLs, I can rewrite your script to use env variables.)
+
+🚦 5. Validate performance
+
+Look at:
+
+Metric	Meaning
+http_req_duration	Total request latency
+http_req_failed	How many requests failed
+vus	Concurrent users running
+iterations	Total requests made
+p(95)	95% of requests completed faster than this
+
+Good signals:
+
+http_req_failed is 0%
+
+p(95) < 100ms
+
+CPU & memory stable on backend pods
+
+📌 6. Scale up load
+Example: 5k users for 1 minute
+export const options = {
+  vus: 5000,
+  duration: '60s',
+};
+
+Staged ramp testing
+export const options = {
+  stages: [
+    { duration: '30s', target: 500 },
+    { duration: '1m', target: 2000 },
+    { duration: '30s', target: 0 },
+  ],
+};
+
+🚧 7. Running inside Kubernetes (optional)
+
+You can run K6 as a pod:
+
+kubectl run k6 --image=loadimpact/k6 --restart=Never \
+  -- k6 run - < loadtest.js
+
+
+Or mount a ConfigMap.
+(If you want, I can generate a full k6 Kubernetes Job YAML.)
+
+🧪 8. Test authenticated routes
+
+Since your backend uses HTTP-only cookies, k6 supports cookies automatically:
+
+let login = http.post(`${BASE_URL}/login`, JSON.stringify({
+  email: "test@example.com",
+  password: "1234"
+}), { headers: { "Content-Type": "application/json" }});
+
+// k6 stores cookies automatically per VU
+let res = http.get(`${BASE_URL}/api/orders`, { headers: {} });
+
+
+If you want a full authenticated load test template, say:
+👉 “give me authenticated k6 load testing script”
+
+✅ Summary
+
+You now have:
+
+✔ Simple load testing script
+✔ How to install k6
+✔ How to run locally
+✔ How to run against K8s backend
+✔ How to scale load
+✔ How to interpret performance metrics
+
