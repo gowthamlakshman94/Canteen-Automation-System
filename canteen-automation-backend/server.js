@@ -23,6 +23,9 @@ const app = express();
 const port = 3000;
 
 const AUTH_SECRET = process.env.AUTH_SECRET || "CHANGE_ME_SECRET";
+// Gmail envs
+const GOOGLE_SENDER_EMAIL = process.env.GOOGLE_SENDER_EMAIL || '';
+const GOOGLE_APP_PASSWORD = process.env.GOOGLE_APP_PASSWORD || '';
 
 /* CORS + cookies */
 app.use(cors({
