@@ -411,3 +411,85 @@ kubectl delete namespace jenkins
 
 ---
 
+📘 Monitoring Setup (Prometheus + Grafana using kube-prometheus-stack)
+
+This section explains how to install Prometheus + Grafana in Kubernetes using the Helm chart kube-prometheus-stack, and how to access Grafana using NodePort.
+
+🚀 1. Add Helm Repo
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+📦 2. Create Monitoring Namespace
+kubectl create namespace monitoring
+
+🛠 3. Install kube-prometheus-stack
+helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring
+
+
+This installs:
+
+Prometheus
+
+Grafana
+
+Alertmanager
+
+Node exporter
+
+Kube-state-metrics
+
+Preconfigured dashboards
+
+🌐 4. Expose Grafana Using NodePort
+
+Patch the Grafana service:
+
+kubectl patch svc monitoring-grafana -n monitoring \
+  -p '{"spec": {"type": "NodePort"}}'
+
+
+Check the NodePort:
+
+kubectl get svc monitoring-grafana -n monitoring
+
+
+You will see something like:
+
+monitoring-grafana  NodePort  10.x.x.x   <none>   80:32xxx/TCP
+
+
+Access Grafana at:
+
+http://<NODE-IP>:<NODEPORT>
+
+
+Example:
+
+http://192.168.1.50:32715
+
+🔑 5. Get Grafana Login Credentials
+Username:
+admin
+
+Password (from Kubernetes secret):
+kubectl get secret -n monitoring monitoring-grafana \
+  -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
+
+If the secret name is different, list secrets:
+
+kubectl get secrets -n monitoring | grep grafana
+
+📊 6. Login to Grafana
+
+Open the URL: http://<NODE-IP>:<NODEPORT>
+
+Enter the admin username & password
+
+Go to Dashboards → Browse
+
+Explore built-in Kubernetes dashboards
+
+🎯 Optional: Expose Prometheus Using NodePort
+kubectl patch svc monitoring-kube-prometheus-prometheus -n monitoring \
+  -p '{"spec": {"type": "NodePort"}}'
