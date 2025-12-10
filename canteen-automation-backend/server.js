@@ -1,154 +1,175 @@
-// server.js (Prophet sidecar focused; HF removed)
+// server.js (secured version with JWT + HTTP-only cookie auth)
 
-/* -------------------------
-   Required modules
-   ------------------------- */
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const app = express();
-const port = 3000;
 const bcrypt = require('bcrypt');
-
+const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const nodemailer = require('nodemailer');
-const { google } = require('googleapis'); // kept in case used elsewhere
 const axios = require('axios');
 const dayjs = require('dayjs');
 const dotenv = require('dotenv');
 
-dotenv.config(); // loads .env locally; in k8s env comes from secrets
+dotenv.config();
 
-/* -------------------------
-   Runtime config (env vars)
-   ------------------------- */
-const DEFAULT_PREDICTION_LENGTH = Number(process.env.DEFAULT_PREDICTION_LENGTH || 30);
+const app = express();
+const port = 3000;
 
-// Database envs
-const MYSQL_HOST = process.env.MYSQL_HOST || 'mysql';
-const MYSQL_USER = process.env.MYSQL_USER || 'root';
-const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD || 'password';
-const MYSQL_DATABASE = process.env.MYSQL_DATABASE || 'canteen_automation';
+const AUTH_SECRET = process.env.AUTH_SECRET || "CHANGE_ME_SECRET";
 
-// Gmail envs (single declaration only)
-const GOOGLE_SENDER_EMAIL = process.env.GOOGLE_SENDER_EMAIL || '';
-const GOOGLE_APP_PASSWORD = process.env.GOOGLE_APP_PASSWORD || '';
+/* CORS + cookies */
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 
-// helpers
-function isEmailConfigured() { return !!(GOOGLE_SENDER_EMAIL && GOOGLE_APP_PASSWORD); }
-
-/* -------------------------
-   Multer setup
-   ------------------------- */
-const upload = multer({
-  storage: multer.memoryStorage(),
-  limits: { fileSize: 5 * 1024 * 1024 } // 5 MB max
-});
-
-/* -------------------------
-   Middleware
-   ------------------------- */
 app.use(bodyParser.json());
-app.use(cors());
 
-/* -------------------------
-   MySQL Connection Pool Setup
-   ------------------------- */
+/* Cookie parser */
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+/* MySQL connection */
 const dbPool = mysql.createPool({
-  connectionLimit: 10,
-  host: MYSQL_HOST,
-  user: MYSQL_USER,
-  password: MYSQL_PASSWORD,
-  database: MYSQL_DATABASE,
-  waitForConnections: true,
-  queueLimit: 0,
-  connectTimeout: 10000,
+    connectionLimit: 10,
+    host: process.env.MYSQL_HOST || 'mysql',
+    user: process.env.MYSQL_USER || 'root',
+    password: process.env.MYSQL_PASSWORD || 'password',
+    database: process.env.MYSQL_DATABASE || 'canteen_automation',
+    waitForConnections: true,
+    queueLimit: 0,
+    connectTimeout: 10000,
 });
 
-function handleDBConnection() {
-  dbPool.getConnection((err, connection) => {
-    if (err) {
-      console.error('Database connection failed:', err.stack || err);
-      setTimeout(handleDBConnection, 5000);
-    } else {
-      console.log('Connected to MySQL database.');
-      connection.release();
+/* Login-required middleware */
+function requireAuth(req, res, next) {
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.status(401).json({ success: false, message: "Not authenticated" });
     }
-  });
+
+    try {
+        const decoded = jwt.verify(token, AUTH_SECRET);
+        req.user = decoded; // contains { id, email }
+        next();
+    } catch (err) {
+        return res.status(401).json({ success: false, message: "Invalid session" });
+    }
 }
-handleDBConnection();
+/* -------------------------
+   Register (PUBLIC)
+------------------------- */
+app.post('/register', (req, res) => {
+    const { name, email, password, contact, city, address } = req.body;
+
+    if (!name || !email || !password) {
+        return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+
+    const hash = bcrypt.hashSync(password, 10);
+
+    dbPool.query(
+        "INSERT INTO users (name, email, password, contact, city, address) VALUES (?, ?, ?, ?, ?, ?)",
+        [name, email, hash, contact || null, city || null, address || null],
+        (err, result) => {
+            if (err) {
+                console.error("Register DB error:", err);
+                return res.json({ success: false, message: "Database error" });
+            }
+            res.json({ success: true });
+        }
+    );
+});
 
 /* -------------------------
-   Email helpers (Gmail - App Password)
-   ------------------------- */
-if (!isEmailConfigured()) {
-  console.warn('Email not configured: set GOOGLE_SENDER_EMAIL and GOOGLE_APP_PASSWORD to enable email sending.');
-}
+   Login (PUBLIC)
+------------------------- */
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
 
-function createSmtpTransporter() {
-  if (!isEmailConfigured()) {
-    throw new Error('Email not configured (missing GOOGLE_SENDER_EMAIL or GOOGLE_APP_PASSWORD).');
-  }
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: GOOGLE_SENDER_EMAIL,
-      pass: GOOGLE_APP_PASSWORD
-    }
-  });
-}
+    dbPool.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
+        if (err) {
+            console.error("Login DB error:", err);
+            return res.json({ success: false, message: "Database error" });
+        }
 
-async function sendEmail({ to, subject, text, html }) {
-  if (!isEmailConfigured()) {
-    const msg = 'Email skipped: App Password is not configured';
-    console.warn(msg);
-    throw new Error(msg);
-  }
-  if (!to || !subject) throw new Error('Missing "to" or "subject"');
+        if (results.length === 0) {
+            return res.json({ success: false, message: "User not found" });
+        }
 
-  const transporter = createSmtpTransporter();
-  const mailOptions = {
-    from: `"IIT Patna Canteen" <${GOOGLE_SENDER_EMAIL}>`,
-    to,
-    subject,
-    text: text || '',
-    html: html || text || ''
-  };
+        const user = results[0];
+        if (!bcrypt.compareSync(password, user.password)) {
+            return res.json({ success: false, message: "Invalid password" });
+        }
 
-  const info = await transporter.sendMail(mailOptions);
-  return info;
-}
+        // Create token
+        const token = jwt.sign(
+            { id: user.id, email: user.email },
+            AUTH_SECRET,
+            { expiresIn: "7d" }
+        );
+
+        // Set HTTP-only cookie
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,      // works on localhost
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
+        return res.json({ success: true });
+    });
+});
 
 /* -------------------------
-   Generic Email API
-   ------------------------- */
+   Logout (PROTECTED)
+------------------------- */
+app.post('/logout', requireAuth, (req, res) => {
+    res.clearCookie("token");
+    res.json({ success: true, message: "Logged out" });
+});
+/* -------------------------
+   Health Check (PUBLIC)
+------------------------- */
+app.get('/health', (req, res) => {
+    res.status(200).send("OK");
+});
+
+/* ============================================================
+   🔐 ALL ROUTES BELOW THIS LINE REQUIRE AUTHENTICATION
+   ============================================================ */
+app.use(requireAuth);
+/* -------------------------
+   Generic Email API (PROTECTED)
+------------------------- */
 app.post('/api/sendEmail', async (req, res) => {
-  try {
-    const { to, subject, text, html } = req.body || {};
-    if (!to || !subject) return res.status(400).json({ success: false, message: 'Missing "to" or "subject"' });
+    try {
+        const { to, subject, text, html } = req.body || {};
+        if (!to || !subject) {
+            return res.status(400).json({ success: false, message: "Missing 'to' or 'subject'" });
+        }
 
-    if (!isEmailConfigured()) {
-      console.warn('/api/sendEmail called but email not configured');
-      return res.status(503).json({ success: false, message: 'Email service not configured on server' });
+        if (!isEmailConfigured()) {
+            console.warn("Email not configured");
+            return res.status(503).json({ success: false, message: "Email service not configured" });
+        }
+
+        const info = await sendEmail({ to, subject, text, html });
+        return res.json({ success: true, info });
+    } catch (err) {
+        console.error("Email error:", err);
+        return res.status(500).json({ success: false, message: "Failed to send email" });
     }
-
-    const info = await sendEmail({ to, subject, text, html });
-    return res.json({ success: true, info });
-  } catch (err) {
-    console.error('/api/sendEmail error:', err && err.message ? err.message : err);
-    return res.status(500).json({ success: false, message: 'Failed to send email', error: String(err && err.message ? err.message : err) });
-  }
 });
 
-/**********************************************************
- * ----------------- Existing submitOrder ----------------
- * Preserved original logic; added an async background
- * email send (non-blocking) AFTER insertion succeeds.
- **********************************************************/
+/* -------------------------
+   submitOrder (PROTECTED)
+------------------------- */
 app.post('/submitOrder', (req, res) => {
     const { orderId, userEmail, items } = req.body;
-
     const createdAt = new Date().toISOString().slice(0, 19).replace("T", " ");
 
     if (!orderId || !userEmail || !items || !Array.isArray(items)) {
@@ -172,616 +193,536 @@ app.post('/submitOrder', (req, res) => {
 
     dbPool.query(sql, [values], (err, result) => {
         if (err) {
-            console.error('Error inserting order:', err);
+            console.error('Order insert error:', err);
             return res.status(500).send({ message: 'Error submitting order' });
         }
 
-        res.status(200).send({ message: 'Order submitted successfully', orderId: orderId });
+        res.status(200).send({ message: 'Order submitted successfully', orderId });
 
+        // Optional async email (non-blocking)
         (async () => {
-          try {
-            if (!userEmail || userEmail === 'unknown' || !isEmailConfigured()) {
-              if (!isEmailConfigured()) console.warn('Email not configured; skipping confirmation email');
-              return;
+            try {
+                if (!isEmailConfigured()) return;
+
+                const itemsHtml = items.map(it => {
+                    return `<li>${it.itemName} — ₹${Number(it.price).toFixed(2)} × ${Number(it.quantity)}</li>`;
+                }).join('');
+
+                await sendEmail({
+                    to: userEmail,
+                    subject: `Order Confirmation — #${orderId}`,
+                    html: `
+                        <div style="font-family:Arial;">
+                            <h2>Order Confirmation — #${orderId}</h2>
+                            <ul>${itemsHtml}</ul>
+                            <p>Placed at: ${createdAt}</p>
+                        </div>
+                    `
+                });
+            } catch (emailErr) {
+                console.error("Email async error:", emailErr);
             }
-
-            const itemsHtml = items.map(it => {
-              const name = String(it.itemName || '').replace(/&/g,'&amp;').replace(/</g,'&lt;');
-              const price = Number(it.price || 0).toFixed(2);
-              const qty = Number(it.quantity || 0);
-              return `<li>${name} — ₹${price} × ${qty}</li>`;
-            }).join('');
-
-            const html = `
-              <div style="font-family:Arial, sans-serif; line-height:1.4;">
-                <h2>Order Confirmation — #${orderId}</h2>
-                <p>Hi ${userEmail},</p>
-                <p>Thanks for your order. Here are the details:</p>
-                <ul>${itemsHtml}</ul>
-                <p><strong>Placed at:</strong> ${createdAt}</p>
-                <p>Regards,<br/>IIT Patna Canteen</p>
-              </div>
-            `;
-            const subject = `Order Confirmation — #${orderId}`;
-
-            await sendEmail({ to: userEmail, subject, html });
-            console.log(`Confirmation email sent to ${userEmail} for order ${orderId}`);
-          } catch (emailErr) {
-            console.error('Error sending confirmation email (non-fatal):', emailErr && emailErr.message ? emailErr.message : emailErr);
-          }
         })();
     });
 });
 
 /* -------------------------
-   Orders API
-   ------------------------- */
+   Get All Orders (PROTECTED)
+------------------------- */
 app.get('/api/orders', (req, res) => {
-  const query = 'SELECT * FROM orders';
-  dbPool.query(query, (err, results) => {
-    if (err) {
-      console.error('Error fetching orders:', err);
-      return res.status(500).json({ message: 'Database error' });
-    }
-    res.json(results);
-  });
-});
-
-/* -------------------------
-   Delivery status update
-   ------------------------- */
-app.post('/api/updateDeliveryStatus', (req, res) => {
-  const { order_id, item_name, delivered } = req.body;
-
-  if (typeof delivered !== 'boolean' || !order_id || !item_name) {
-    return res.status(400).json({ message: 'Invalid data' });
-  }
-
-  const query = 'UPDATE orders SET delivered = ? WHERE order_id = ? AND item_name = ?';
-
-  dbPool.query(query, [delivered, order_id, item_name], (err, results) => {
-    if (err) {
-      console.error('Error updating delivery status:', err);
-      return res.status(500).json({ message: 'Database error' });
-    }
-
-    if (results.affectedRows === 0) {
-      return res.status(404).json({ message: 'Item not found' });
-    }
-
-    res.json({ success: true, message: 'Delivery status updated successfully' });
-  });
-});
-
-/* -------------------------
-   Daily metrics
-   ------------------------- */
-app.get('/api/dailyMetrics', (req, res) => {
-  const query = `
-    SELECT
-      SUM(price * quantity) AS totalSales,
-      COUNT(DISTINCT order_id) AS totalOrders,
-      SUM(quantity) AS totalItems
-    FROM orders
-    WHERE DATE(createdAt) = CURDATE();
-  `;
-
-  dbPool.query(query, (err, result) => {
-    if (err) {
-      console.error('Error fetching daily metrics:', err);
-      return res.status(500).json({ message: 'Database error' });
-    }
-
-    const metrics = result[0] || {};
-    res.json({
-      totalSales: metrics.totalSales || 0,
-      totalOrders: metrics.totalOrders || 0,
-      totalItems: metrics.totalItems || 0,
+    dbPool.query("SELECT * FROM orders", (err, results) => {
+        if (err) {
+            console.error("Orders fetch error:", err);
+            return res.status(500).json({ message: "Database error" });
+        }
+        res.json(results);
     });
-  });
 });
 
 /* -------------------------
-   Item metrics
-   ------------------------- */
-app.get('/api/itemMetrics', (req, res) => {
-  const { from, to } = req.query;
+   Update Delivery Status (PROTECTED)
+------------------------- */
+app.post('/api/updateDeliveryStatus', (req, res) => {
+    const { order_id, item_name, delivered } = req.body;
 
-  let sql = `
-    SELECT
-      item_name,
-      SUM(price * quantity) AS totalSales,
-      SUM(quantity) AS totalQuantity,
-      MIN(createdAt) AS createdAt
-    FROM orders
-  `;
-  const params = [];
-
-  if (from && to) {
-    sql += `
-      WHERE createdAt BETWEEN ? AND ?
-    `;
-    params.push(from + ' 00:00:00', to + ' 23:59:59');
-  }
-
-  sql += `
-    GROUP BY item_name
-    ORDER BY totalSales DESC
-  `;
-
-  dbPool.query(sql, params, (err, results) => {
-    if (err) {
-      console.error('Error fetching item metrics:', err);
-      return res.status(500).send({ error: true, message: 'Error fetching item metrics' });
+    if (!order_id || !item_name || typeof delivered !== 'boolean') {
+        return res.status(400).json({ message: "Invalid data" });
     }
-    res.send({ metrics: results });
-  });
+
+    dbPool.query(
+        "UPDATE orders SET delivered = ? WHERE order_id = ? AND item_name = ?",
+        [delivered, order_id, item_name],
+        (err, results) => {
+            if (err) {
+                console.error("Delivery update error:", err);
+                return res.status(500).json({ message: "Database error" });
+            }
+
+            if (results.affectedRows === 0) {
+                return res.status(404).json({ message: "Item not found" });
+            }
+
+            res.json({ success: true });
+        }
+    );
 });
 
 /* -------------------------
-   Daily item insertion (wastage tracking)
-   ------------------------- */
+   Daily Metrics (PROTECTED)
+------------------------- */
+app.get('/api/dailyMetrics', (req, res) => {
+    const query = `
+        SELECT
+            SUM(price * quantity) AS totalSales,
+            COUNT(DISTINCT order_id) AS totalOrders,
+            SUM(quantity) AS totalItems
+        FROM orders
+        WHERE DATE(createdAt) = CURDATE();
+    `;
+
+    dbPool.query(query, (err, result) => {
+        if (err) {
+            console.error("Daily metrics error:", err);
+            return res.status(500).json({ message: "DB error" });
+        }
+
+        const metrics = result[0] || {};
+        res.json({
+            totalSales: metrics.totalSales || 0,
+            totalOrders: metrics.totalOrders || 0,
+            totalItems: metrics.totalItems || 0
+        });
+    });
+});
+
+/* -------------------------
+   Item Metrics (PROTECTED)
+------------------------- */
+app.get('/api/itemMetrics', (req, res) => {
+    const { from, to } = req.query;
+    let sql = `
+        SELECT item_name,
+               SUM(price * quantity) AS totalSales,
+               SUM(quantity) AS totalQuantity,
+               MIN(createdAt) AS createdAt
+        FROM orders
+    `;
+    const params = [];
+
+    if (from && to) {
+        sql += ` WHERE createdAt BETWEEN ? AND ? `;
+        params.push(from + " 00:00:00", to + " 23:59:59");
+    }
+
+    sql += ` GROUP BY item_name ORDER BY totalSales DESC `;
+
+    dbPool.query(sql, params, (err, results) => {
+        if (err) {
+            console.error("Item metrics error:", err);
+            return res.status(500).send({ error: true, message: "Error fetching item metrics" });
+        }
+        res.send({ metrics: results });
+    });
+});
+
+/* -------------------------
+   Daily Item Insert (PROTECTED)
+------------------------- */
 app.post('/daily-item', (req, res) => {
     const { item_name, quantity_prepared, date } = req.body;
 
     if (!item_name || !quantity_prepared || !date) {
-        return res.status(400).json({ message: 'All fields are required.' });
+        return res.status(400).json({ message: "All fields required" });
     }
 
-    const query = 'INSERT INTO daily_item_quantity (item_name, quantity_prepared, date) VALUES (?, ?, ?)';
-    dbPool.query(query, [item_name, quantity_prepared, date], (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ message: 'Database error.' });
+    dbPool.query(
+        "INSERT INTO daily_item_quantity (item_name, quantity_prepared, date) VALUES (?, ?, ?)",
+        [item_name, quantity_prepared, date],
+        (err, result) => {
+            if (err) {
+                console.error("Daily item insert error:", err);
+                return res.status(500).json({ message: "Database error" });
+            }
+            res.status(200).json({ message: "Inserted", id: result.insertId });
         }
-        res.status(200).json({ message: 'Data inserted successfully.', id: result.insertId });
-    });
+    );
 });
 
 /* -------------------------
-   Daily wastage report
-   ------------------------- */
+   Daily Wastage (PROTECTED)
+------------------------- */
 app.get('/daily-wastage', (req, res) => {
     const { date } = req.query;
 
     if (!date) {
-        return res.status(400).json({ message: 'Date is required.' });
+        return res.status(400).json({ message: "Date is required" });
     }
 
     const query = `
-        SELECT 
-            diq.item_name, 
-            diq.quantity_prepared, 
-            IFNULL(SUM(o.quantity), 0) AS quantity_ordered, 
-            (diq.quantity_prepared - IFNULL(SUM(o.quantity), 0)) AS wastage
-        FROM 
-            daily_item_quantity diq
-        LEFT JOIN 
-            orders o
-        ON 
-            diq.item_name = o.item_name AND DATE(o.createdAt) = ?
-        WHERE 
-            diq.date = ?
-        GROUP BY 
-            diq.item_name, diq.quantity_prepared;
+        SELECT diq.item_name,
+               diq.quantity_prepared,
+               IFNULL(SUM(o.quantity), 0) AS quantity_ordered,
+               (diq.quantity_prepared - IFNULL(SUM(o.quantity), 0)) AS wastage
+        FROM daily_item_quantity diq
+        LEFT JOIN orders o
+               ON diq.item_name = o.item_name
+              AND DATE(o.createdAt) = ?
+        WHERE diq.date = ?
+        GROUP BY diq.item_name, diq.quantity_prepared
     `;
 
     dbPool.query(query, [date, date], (err, results) => {
         if (err) {
-            console.error(err);
-            return res.status(500).json({ message: 'Database error.' });
+            console.error("Wastage error:", err);
+            return res.status(500).json({ message: "DB error" });
         }
         res.status(200).json(results);
     });
 });
 
-/* -------------------------
-   Seasonal Data
-   ------------------------- */
-app.get('/api/seasonalData', (req, res) => {
-  const query = `
-    SELECT 
-      item_name, 
-      SUM(quantity) AS total_quantity, 
-      MONTH(createdAt) AS month 
-    FROM orders 
-    GROUP BY item_name, MONTH(createdAt);
-  `;
 
-  dbPool.query(query, (err, results) => {
-    if (err) {
-      console.error('Error fetching seasonal data:', err);
-      return res.status(500).json({ message: 'Database error' });
-    }
-
-    const seasons = {
-      Spring: [3, 4, 5],
-      Summer: [6, 7, 8],
-      Autumn: [9, 10, 11],
-      Winter: [12, 1, 2],
-    };
-
-    const currentMonth = new Date().getMonth() + 1;
-    const seasonNames = Object.keys(seasons);
-
-    let currentSeasonIndex = seasonNames.findIndex((season) =>
-      seasons[season].includes(currentMonth)
-    );
-    const selectedSeasons = [];
-    for (let i = 0; i < 4; i++) {
-      selectedSeasons.unshift(seasonNames[currentSeasonIndex]);
-      currentSeasonIndex = (currentSeasonIndex - 1 + seasonNames.length) % seasonNames.length;
-    }
-
-    const seasonData = selectedSeasons.reduce((acc, season) => {
-      const months = seasons[season];
-      const filteredData = results.filter((item) => months.includes(item.month));
-
-      const aggregatedData = filteredData.reduce((seasonAcc, item) => {
-        seasonAcc[item.item_name] = (seasonAcc[item.item_name] || 0) + item.total_quantity;
-        return seasonAcc;
-      }, {});
-
-      const sortedItems = Object.entries(aggregatedData).sort(([, a], [, b]) => b - a);
-
-      acc[season] = {
-        top5: sortedItems.slice(0, 5),
-        bottom5: sortedItems.slice(-5),
-      };
-      return acc;
-    }, {});
-
-    res.json({
-      selectedSeasons,
-      seasonData,
-    });
-  });
-});
 
 /* -------------------------
-   Register / Login
-   ------------------------- */
-app.post('/register', (req, res) => {
-    const { name, email, password, contact, city, address } = req.body;
-    const hash = bcrypt.hashSync(password, 10);
+   Menu: Create Item (PROTECTED)
+------------------------- */
+app.post('/api/menu', upload.single('image'), (req, res) => {
+    try {
+        const { name, description, price, category, available } = req.body;
 
-    dbPool.query(
-        'INSERT INTO users (name, email, password, contact, city, address) VALUES (?, ?, ?, ?, ?, ?)', 
-        [name, email, hash, contact, city, address], 
-        (err, result) => {
-            if (err) {
-                console.error("Database Insert Error:", err);
-                return res.json({ success: false, message: "Database error" });
+        if (!name || !price) {
+            return res.status(400).json({ success: false, message: "name and price are required" });
+        }
+
+        let image_blob = null;
+        let image_mime = null;
+        let image_filename = null;
+
+        if (req.file) {
+            image_blob = req.file.buffer;
+            image_mime = req.file.mimetype;
+            image_filename = req.file.originalname;
+        }
+
+        const sql = `
+            INSERT INTO menu_items
+                (name, description, price, category, available, image_blob, image_mime, image_filename)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        const availableFlag = (available == null || available === "" ? 1 : (available == "0" ? 0 : 1));
+
+        dbPool.query(
+            sql,
+            [
+                name,
+                description || null,
+                parseFloat(price),
+                category || null,
+                availableFlag,
+                image_blob,
+                image_mime,
+                image_filename
+            ],
+            (err, result) => {
+                if (err) {
+                    console.error("Menu insert error:", err);
+                    return res.status(500).json({ success: false, message: "DB insert error" });
+                }
+                return res.status(201).json({ success: true, data: { id: result.insertId } });
             }
-            res.json({ success: true });
-        }
-    );
+        );
+    } catch (err) {
+        console.error("POST /api/menu error:", err);
+        return res.status(500).json({ success: false, message: "Server error" });
+    }
 });
 
-app.post('/login', (req, res) => {
-    const { email, password } = req.body;
+/* -------------------------
+   Menu: Get Items (PROTECTED)
+------------------------- */
+app.get('/api/menu', (req, res) => {
+    const { category } = req.query;
+    let sql = "SELECT id, name, description, price, category, available FROM menu_items WHERE available = 1";
+    const params = [];
 
-    dbPool.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
+    if (category) {
+        sql += " AND category = ?";
+        params.push(category);
+    }
+
+    sql += " ORDER BY id";
+
+    dbPool.query(sql, params, (err, rows) => {
         if (err) {
-            console.error("Database Query Error:", err);
-            return res.json({ success: false, message: "Database error" });
+            console.error("Menu fetch error:", err);
+            return res.status(500).json({ success: false, message: "DB error" });
         }
 
-        if (results.length === 0) {
-            return res.json({ success: false, message: "User not found" });
-        }
-
-        const user = results[0];
-        if (bcrypt.compareSync(password, user.password)) {
-            res.json({ success: true });
-        } else {
-            res.json({ success: false, message: "Invalid password" });
-        }
+        const items = rows.map(r => ({
+            id: r.id,
+            name: r.name,
+            description: r.description,
+            price: parseFloat(r.price),
+            category: r.category,
+            available: r.available,
+            image_url: `/api/menu/${r.id}/image`
+        }));
+        res.json({ success: true, data: items });
     });
 });
 
 /* -------------------------
-   Check Order endpoint
-   ------------------------- */
-app.get('/checkOrder/:orderId', (req, res) => {
+   Menu Image Fetch (PROTECTED)
+------------------------- */
+app.get('/api/menu/:id/image', (req, res) => {
+    const id = req.params.id;
+    const sql = "SELECT image_blob, image_mime FROM menu_items WHERE id = ? LIMIT 1";
+
+    dbPool.query(sql, [id], (err, rows) => {
+        if (err) {
+            console.error("Menu image error:", err);
+            return res.status(500).send("Server error");
+        }
+        if (!rows || rows.length === 0) return res.status(404).send("Not found");
+
+        const row = rows[0];
+        if (!row.image_blob) return res.status(404).send("No image");
+
+        res.setHeader("Content-Type", row.image_mime || "application/octet-stream");
+        res.setHeader("Cache-Control", "public, max-age=3600");
+        return res.send(row.image_blob);
+    });
+});
+
+/* -------------------------
+   Order Lookup (PROTECTED)
+------------------------- */
+app.get('/api/order/:orderId', (req, res) => {
     const orderId = req.params.orderId;
 
-    const query = 'SELECT * FROM orders WHERE order_id = ?';
-
-    dbPool.query(query, [orderId], (err, results) => {
-        if (err) {
-            console.error('Database query error:', err);
-            return res.status(500).json({ error: 'Internal server error' });
-        }
-
-        if (results.length > 0) {
-            res.json({ exists: true });
-        } else {
-            res.json({ exists: false });
-        }
-    });
-});
-
-/* -------------------------
-   Menu endpoints
-   ------------------------- */
-app.post('/api/menu', upload.single('image'), (req, res) => {
-  try {
-    const { name, description, price, category, available } = req.body;
-
-    if (!name || !price) {
-      return res.status(400).json({ success: false, message: 'name and price are required' });
-    }
-
-    let image_blob = null;
-    let image_mime = null;
-    let image_filename = null;
-
-    if (req.file) {
-      image_blob = req.file.buffer;
-      image_mime = req.file.mimetype;
-      image_filename = req.file.originalname;
-    }
+    if (!orderId) return res.status(400).json({ success: false, message: "orderId required" });
 
     const sql = `
-      INSERT INTO menu_items
-        (name, description, price, category, available, image_blob, image_mime, image_filename)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        SELECT order_id, user_email, item_name, price, quantity, createdAt
+        FROM orders
+        WHERE order_id = ?
+        ORDER BY createdAt ASC
     `;
 
-    const availableFlag = (available === undefined || available === '' ? 1 : (available == '0' ? 0 : 1));
-
-    dbPool.query(
-      sql,
-      [
-        name,
-        description || null,
-        parseFloat(price),
-        category || null,
-        availableFlag,
-        image_blob,
-        image_mime,
-        image_filename || null
-      ],
-      (err, result) => {
+    dbPool.query(sql, [orderId], (err, rows) => {
         if (err) {
-          console.error('Error inserting menu item:', err);
-          return res.status(500).json({ success: false, message: 'DB insert error' });
+            console.error("Order lookup error:", err);
+            return res.status(500).json({ success: false, message: "DB error" });
         }
-        return res.status(201).json({ success: true, data: { id: result.insertId } });
-      }
-    );
-  } catch (err) {
-    console.error('POST /api/menu error:', err);
-    return res.status(500).json({ success: false, message: 'Server error' });
-  }
-});
 
-app.get('/api/menu', (req, res) => {
-  const { category } = req.query;
-  let sql = 'SELECT id, name, description, price, category, available FROM menu_items WHERE available = 1';
-  const params = [];
-  if (category) {
-    sql += ' AND category = ?';
-    params.push(category);
-  }
-  sql += ' ORDER BY id';
+        if (!rows || rows.length === 0) {
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
 
-  dbPool.query(sql, params, (err, rows) => {
-    if (err) {
-      console.error('Error fetching menu:', err);
-      return res.status(500).json({ success: false, message: 'DB error' });
-    }
-    const items = rows.map(r => ({
-      id: r.id,
-      name: r.name,
-      description: r.description,
-      price: parseFloat(r.price),
-      category: r.category,
-      available: r.available,
-      image_url: `/api/menu/${r.id}/image`
-    }));
-    res.json({ success: true, data: items });
-  });
-});
+        const order = {
+            orderId: rows[0].order_id,
+            userEmail: rows[0].user_email,
+            createdAt: rows[0].createdAt,
+            items: rows.map(r => ({
+                itemName: r.item_name,
+                price: Number(r.price),
+                quantity: Number(r.quantity)
+            }))
+        };
 
-app.get('/api/menu/:id/image', (req, res) => {
-  const id = req.params.id;
-  const sql = 'SELECT image_blob, image_mime, image_filename FROM menu_items WHERE id = ? LIMIT 1';
-  dbPool.query(sql, [id], (err, rows) => {
-    if (err) {
-      console.error('Error fetching image blob:', err);
-      return res.status(500).send('Server error');
-    }
-    if (!rows || rows.length === 0) return res.status(404).send('Not found');
-    const row = rows[0];
-    if (!row.image_blob) return res.status(404).send('No image');
+        order.total = order.items.reduce((s, it) => s + it.price * it.quantity, 0);
 
-    const mime = row.image_mime || 'application/octet-stream';
-    res.setHeader('Content-Type', mime);
-    res.setHeader('Cache-Control', 'public, max-age=3600');
-    return res.send(row.image_blob);
-  });
-});
-
-/* -------------------------
-   Health check
-   ------------------------- */
-app.get('/health', (req, res) => {
-    res.status(200).send('OK');
-});
-
-/* -------------------------
-   Order retrieval endpoints
-   ------------------------- */
-app.get('/api/order/:orderId', (req, res) => {
-  const orderId = req.params.orderId;
-  if (!orderId) return res.status(400).json({ success: false, message: 'orderId required' });
-
-  const sql = 'SELECT order_id, user_email, item_name, price, quantity, createdAt FROM orders WHERE order_id = ? ORDER BY createdAt ASC';
-  dbPool.query(sql, [orderId], (err, rows) => {
-    if (err) {
-      console.error('Error fetching order:', err);
-      return res.status(500).json({ success: false, message: 'DB error' });
-    }
-    if (!rows || rows.length === 0) return res.status(404).json({ success: false, message: 'Order not found' });
-
-    const order = {
-      orderId: rows[0].order_id,
-      userEmail: rows[0].user_email,
-      createdAt: rows[0].createdAt,
-      items: rows.map(r => ({ itemName: r.item_name, price: Number(r.price), quantity: Number(r.quantity) })),
-    };
-    order.total = order.items.reduce((s, it) => s + (Number(it.price) * Number(it.quantity || 0)), 0);
-    return res.json({ success: true, order });
-  });
-});
-
-app.get('/api/orders/latest', (req, res) => {
-  const email = req.query.email;
-  if (!email) return res.status(400).json({ success: false, message: 'email query param required' });
-
-  const sql = `SELECT order_id, MAX(createdAt) AS last_time
-               FROM orders
-               WHERE user_email = ?
-               GROUP BY order_id
-               ORDER BY last_time DESC
-               LIMIT 1`;
-  dbPool.query(sql, [email], (err, rows) => {
-    if (err) {
-      console.error('Error fetching latest order id:', err);
-      return res.status(500).json({ success: false, message: 'DB error' });
-    }
-    if (!rows || rows.length === 0) return res.status(404).json({ success: false, message: 'No orders found for this email' });
-
-    const latestOrderId = rows[0].order_id;
-    const sql2 = 'SELECT order_id, user_email, item_name, price, quantity, createdAt FROM orders WHERE order_id = ? ORDER BY createdAt ASC';
-    dbPool.query(sql2, [latestOrderId], (err2, rows2) => {
-      if (err2) {
-        console.error('Error fetching order details:', err2);
-        return res.status(500).json({ success: false, message: 'DB error' });
-      }
-      if (!rows2 || rows2.length === 0) return res.status(404).json({ success: false, message: 'Order not found' });
-
-      const order = {
-        orderId: rows2[0].order_id,
-        userEmail: rows2[0].user_email,
-        createdAt: rows2[0].createdAt,
-        items: rows2.map(r => ({ itemName: r.item_name, price: Number(r.price), quantity: Number(r.quantity) }))
-      };
-      order.total = order.items.reduce((s, it) => s + (Number(it.price) * Number(it.quantity || 0)), 0);
-      return res.json({ success: true, order });
+        return res.json({ success: true, order });
     });
-  });
 });
 
 /* -------------------------
-   Forecast helpers & endpoint (sidecar -> deterministic fallback)
-   ------------------------- */
+   Latest Order Lookup (PROTECTED)
+------------------------- */
+app.get('/api/orders/latest', (req, res) => {
+    const email = req.query.email;
 
+    if (!email) return res.status(400).json({ success: false, message: "email required" });
+
+    const sql = `
+        SELECT order_id, MAX(createdAt) AS last_time
+        FROM orders
+        WHERE user_email = ?
+        GROUP BY order_id
+        ORDER BY last_time DESC
+        LIMIT 1
+    `;
+
+    dbPool.query(sql, [email], (err, rows) => {
+        if (err) {
+            console.error("Latest order ID error:", err);
+            return res.status(500).json({ success: false, message: "DB error" });
+        }
+
+        if (!rows || rows.length === 0) {
+            return res.status(404).json({ success: false, message: "No orders for this email" });
+        }
+
+        const latestOrderId = rows[0].order_id;
+
+        const sql2 = `
+            SELECT order_id, user_email, item_name, price, quantity, createdAt
+            FROM orders
+            WHERE order_id = ?
+            ORDER BY createdAt ASC
+        `;
+
+        dbPool.query(sql2, [latestOrderId], (err2, rows2) => {
+            if (err2) {
+                console.error("Latest order fetch error:", err2);
+                return res.status(500).json({ success: false, message: "DB error" });
+            }
+
+            if (!rows2 || rows2.length === 0) {
+                return res.status(404).json({ success: false, message: "Order not found" });
+            }
+
+            const order = {
+                orderId: rows2[0].order_id,
+                userEmail: rows2[0].user_email,
+                createdAt: rows2[0].createdAt,
+                items: rows2.map(r => ({
+                    itemName: r.item_name,
+                    price: Number(r.price),
+                    quantity: Number(r.quantity)
+                }))
+            };
+
+            order.total = order.items.reduce((s, it) => s + it.price * it.quantity, 0);
+
+            return res.json({ success: true, order });
+        });
+    });
+});
+
+/* -------------------------
+   Forecast Helpers (PROTECTED)
+------------------------- */
 function getDailySeries(callback) {
-  const sql = `
-    SELECT DATE(createdAt) AS ds, SUM(price * quantity) AS y
-    FROM orders
-    WHERE delivered = TRUE
-    GROUP BY DATE(createdAt)
-    ORDER BY ds;
-  `;
-  dbPool.query(sql, (err, rows) => {
-    if (err) {
-      console.error('DB error in getDailySeries:', err);
-      return callback(err);
-    }
-    const series = (rows || []).map(r => ({
-      ds: dayjs(r.ds).format('YYYY-MM-DD'),
-      y: Number(r.y || 0)
-    }));
-    callback(null, series);
-  });
+    const sql = `
+        SELECT DATE(createdAt) AS ds, SUM(price * quantity) AS y
+        FROM orders
+        WHERE delivered = TRUE
+        GROUP BY DATE(createdAt)
+        ORDER BY ds;
+    `;
+
+    dbPool.query(sql, (err, rows) => {
+        if (err) {
+            console.error("Forecast series error:", err);
+            return callback(err);
+        }
+
+        const series = (rows || []).map(r => ({
+            ds: dayjs(r.ds).format("YYYY-MM-DD"),
+            y: Number(r.y || 0)
+        }));
+
+        callback(null, series);
+    });
 }
 
 async function callLocalProphetHttp(payload, timeout = 120000) {
-  const url = 'http://127.0.0.1:5000/forecast';
-  const resp = await axios.post(url, payload, { timeout });
-  return resp.data;
+    const url = "http://127.0.0.1:5000/forecast";
+    const resp = await axios.post(url, payload, { timeout });
+    return resp.data;
 }
 
-app.get('/api/forecast', (req, res) => {
-  // accept ?days=30 or shorthand ?30
-  let days = Number(req.query.days || 0);
-  if (!days) {
-    const keys = Object.keys(req.query || {});
-    if (keys.length > 0 && /^\d+$/.test(keys[0])) {
-      days = Number(keys[0]);
-    }
-  }
-  days = days || DEFAULT_PREDICTION_LENGTH || 30;
-
-  getDailySeries(async (err, series) => {
-    if (err) {
-      console.error('DB error building timeseries:', err);
-      return res.status(500).json({ error: 'DB error building timeseries' });
-    }
-    if (!series || series.length < 1) {
-      return res.status(400).json({ error: 'Not enough historical data', history: series || [] });
-    }
-
-    const history = series.slice(-90);
-    const past_values = series.map(s => Number(s.y || 0));
-    const lastDate = series[series.length - 1].ds;
-
-    // 1) Try local Prophet sidecar
-    try {
-      const payload = {
-        past_values,
-        past_dates: history.map(h => h.ds),
-        predict_length: days,
-        last_date: lastDate
-      };
-      const localResp = await callLocalProphetHttp(payload);
-      if (localResp && Array.isArray(localResp.forecast)) {
-        return res.json({ history: localResp.history || history, forecast: localResp.forecast });
-      } else {
-        console.warn('Local Prophet sidecar returned unexpected shape; falling back.', localResp);
-      }
-    } catch (sideErr) {
-      console.error('Local Prophet sidecar error (will use fallback):', sideErr && sideErr.message ? sideErr.message : sideErr);
-    }
-
-    // Deterministic local fallback predictor (moving average + small trend)
-    const n = Math.min(14, past_values.length);
-    const tail = past_values.slice(-n);
-    const avg = (tail.length > 0) ? (tail.reduce((a,b)=>a+b,0) / tail.length) : 0;
-
-    let slope = 0;
-    if (tail.length >= 2) {
-      const xMean = (tail.length - 1) / 2;
-      const yMean = avg;
-      let num = 0, den = 0;
-      for (let i = 0; i < tail.length; i++) {
-        const x = i;
-        num += (x - xMean) * (tail[i] - yMean);
-        den += (x - xMean) * (x - xMean);
-      }
-      slope = den === 0 ? 0 : num / den;
-    }
-
-    let prev = tail.length ? tail[tail.length - 1] : avg;
-    const forecast = [];
-    for (let i = 1; i <= days; i++) {
-      const pull = (avg - prev) * 0.08;
-      const next = Math.max(0, prev + slope + pull);
-      forecast.push({ ds: dayjs(lastDate).add(i, 'day').format('YYYY-MM-DD'), yhat: Number(next) });
-      prev = next;
-    }
-
-    return res.json({ history, forecast });
-  });
-});
-
 /* -------------------------
-   Start server
-   ------------------------- */
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+   Forecast API (PROTECTED)
+------------------------- */
+app.get('/api/forecast', (req, res) => {
+    let days = Number(req.query.days || 0);
+
+    if (!days) {
+        const keys = Object.keys(req.query || {});
+        if (keys.length > 0 && /^\d+$/.test(keys[0])) {
+            days = Number(keys[0]);
+        }
+    }
+
+    days = days || Number(process.env.DEFAULT_PREDICTION_LENGTH || 30);
+
+    getDailySeries(async (err, series) => {
+        if (err) {
+            return res.status(500).json({ error: "DB error building timeseries" });
+        }
+
+        if (!series || series.length < 1) {
+            return res.status(400).json({ error: "Not enough data", history: series || [] });
+        }
+
+        const history = series.slice(-90);
+        const past_values = series.map(s => s.y);
+        const lastDate = series[series.length - 1].ds;
+
+        // Try Prophet sidecar
+        try {
+            const payload = {
+                past_values,
+                past_dates: history.map(h => h.ds),
+                predict_length: days,
+                last_date: lastDate
+            };
+
+            const localResp = await callLocalProphetHttp(payload);
+
+            if (localResp && Array.isArray(localResp.forecast)) {
+                return res.json({
+                    history: localResp.history || history,
+                    forecast: localResp.forecast
+                });
+            }
+        } catch (e) {
+            console.error("Prophet error:", e);
+        }
+
+        // Fallback local prediction
+        const n = Math.min(14, past_values.length);
+        const tail = past_values.slice(-n);
+        const avg = tail.reduce((a,b)=>a+b,0) / n;
+
+        let slope = 0;
+        if (n >= 2) {
+            const xMean = (n - 1) / 2;
+            const yMean = avg;
+            let num = 0, den = 0;
+
+            for (let i = 0; i < n; i++) {
+                const x = i;
+                num += (x - xMean) * (tail[i] - yMean);
+                den += (x - xMean) ** 2;
+            }
+            slope = den ? num / den : 0;
+        }
+
+        let prev = tail[tail.length - 1];
+        const forecast = [];
+
+        for (let i = 1; i <= days; i++) {
+            const pull = (avg - prev) * 0.08;
+            const next = Math.max(0, prev + slope + pull);
+
+            forecast.push({
+                ds: dayjs(lastDate).add(i, 'day').format("YYYY-MM-DD"),
+                yhat: Number(next)
+            });
+
+            prev = next;
+        }
+
+        return res.json({ history, forecast });
+    });
 });
+/* -------------------------
+   START SERVER
+------------------------- */
+app.listen(port, () => {
+    console.log(`Secure Server running on http://localhost:${port}`);
+});
+	
